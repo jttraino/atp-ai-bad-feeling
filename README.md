@@ -7,6 +7,10 @@ Public archive for the ATP event **"Your AI Program Has a Bad Feeling About This
 - **Details / registration:** https://atpconnect.org/events/your-ai-program-has-a-bad-feeling-about-this/
 - **Event leads:** Scott Harris (One Inc, ATP Finance Chair), Tom Laswell (DC BLOX, ATP Director of Technology), John Slaughter (Alliant Health, ATP Executive Advisory Board)
 
+<p align="center"><img src="assets/repo-qr-code.png" alt="QR code linking to this repo" width="200"></p>
+
+Scan the QR code above (also displayed at the event) to come back to this repo after the event for the station transcripts and closing keynote talking points.
+
 ## Format
 
 Attendees split into five themed stations (~25 people each), each covering a distinct way enterprise AI programs go wrong:
@@ -30,3 +34,7 @@ This repo documents the full method, not just the output — including [how the 
 - `stations/` — transcript and notes per station, added after the event
 - `keynote/` — the synthesized closing keynote talking points, added after the event
 - [`tools/synthesize-keynote/`](tools/synthesize-keynote/) — the tool and guiding framework used to turn the five transcripts into the keynote draft
+
+## Contributing
+
+Pull requests are welcome — corrections to a transcript, additional context on a station's topic, or your own notes if you were in the room are all fair game. This is meant to be a living record of the event, not a frozen archive.

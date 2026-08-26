@@ -7,10 +7,9 @@ The coordinator hosts and records every station's Teams meeting, monitors all fi
 - [ ] Schedule 5 independent Teams meetings, one per station, at the correct times — no Team/channel structure needed, just standalone calendar invites.
 - [ ] For each meeting, confirm it does not require lobby admission (this coordinator's account doesn't default to it, but verify per meeting).
 - [ ] Send each speaker their station's individual meeting link.
-- [ ] Collect each speaker's talk outline/abstract; save into `stations/<name>/outline.md` in this repo.
-- [ ] Test `tools/synthesize-keynote/synthesize.sh` against the collected outlines (as stand-in fallback content) to confirm the framework produces usable output — tune `framework.md` now, not on the day.
+- [ ] Arrange a dry-run time with each speaker — this comes from them reaching out, but chase anyone who hasn't by ~10 days out.
 
-## One week out — mandatory dry run, per speaker
+## Dry run — mandatory, per speaker, ideally a week or more out
 
 - [ ] Join the speaker's actual meeting link with them at the scheduled test time.
 - [ ] Confirm they get in with no lobby/waiting room.
@@ -18,11 +17,17 @@ The coordinator hosts and records every station's Teams meeting, monitors all fi
 - [ ] Start recording + transcription; confirm both actually capture correctly.
 - [ ] Note any fixes needed (mic, connection, anything) and resolve before Sept 17 — this is the same link/setup used on the day.
 
+## Collecting speaker notes (the backup plan)
+
+- [ ] Collect each speaker's talk outline/abstract as soon as they have anything, even a rough draft; save into `stations/<name>/outline.md` in this repo. **Hard deadline: day before the event** — but push for it earlier, since it's what makes the fallback plan actually work if a recording fails.
+- [ ] Once outlines start coming in, test `tools/synthesize-keynote/synthesize.sh` against them (as stand-in fallback content) to confirm the framework produces usable output — tune `framework.md` now, not on the day.
+
 ## Day before / morning of
 
 - [ ] Confirm venue Wi-Fi and power availability at the coordinator table (Social House Roswell) — bring a mobile hotspot as backup regardless.
 - [ ] Coordinator kit: laptop + charger, hotspot + charged battery pack, headphones, all 5 meeting links pinned/bookmarked.
 - [ ] Open all 5 meetings and re-confirm no lobby is configured.
+- [ ] Print the QR code (`assets/repo-qr-code.png`) as signage — large enough to scan from a few feet away — and place it prominently so attendees can find the repo after the event.
 
 ## As each station kicks off
 
