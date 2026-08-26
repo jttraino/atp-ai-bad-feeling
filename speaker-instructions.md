@@ -10,6 +10,7 @@ John Trainor is coordinating this event — he's hosting and recording every sta
 
 - Install the Teams desktop app and sign in ahead of the dry run.
 - Built-in laptop mic is fine *if tested*. If you have a personal mic you already know and trust — a lapel/wireless mic like a Hollyland Lark, DJI Mic, or similar — feel free to use it instead, as long as it doesn't get in the way of your talk. Whatever you use, keep it identical between the dry run and the real event.
+- You don't need to be Luke sniping womp rats in a T-16 back home — but you do need to stay about that close to your mic: "not much bigger than two meters."
 
 ### 3. Send your talk notes — as much detail as possible
 
@@ -33,3 +34,5 @@ If you already have a recording setup you're used to running (a phone voice memo
 - Nothing further required on your end — once you've ended the meeting (per above), you're done.
 - If you ran your own backup recording, send it to John.
 - Your station's transcript will be posted publicly in this repo as part of the event's open archive. If there's anything you'd want reviewed before it goes up, flag it with John before the event.
+
+The Force will be with you, always.

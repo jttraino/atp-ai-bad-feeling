@@ -24,6 +24,8 @@ The coordinator hosts and records every station's Teams meeting, monitors all fi
 
 ## Day before / morning of
 
+The coordinator table is the cockpit for the day — it needs a working hyperdrive (Wi-Fi) and a steady power core, or nobody's making the jump to lightspeed.
+
 - [ ] Confirm venue Wi-Fi and power availability at the coordinator table (Social House Roswell) — bring a mobile hotspot as backup regardless.
 - [ ] Coordinator kit: laptop + charger, hotspot + charged battery pack, headphones, all 5 meeting links pinned/bookmarked.
 - [ ] Open all 5 meetings and re-confirm no lobby is configured.
@@ -31,7 +33,7 @@ The coordinator hosts and records every station's Teams meeting, monitors all fi
 
 ## As each station kicks off
 
-- [ ] Join briefly, click **Start recording and transcription**, then leave — it keeps running without you.
+- [ ] Han shot first — so should you: click **Start recording and transcription** the moment the room settles, then leave — it keeps running without you.
 - [ ] Mark it on the tracker below.
 - [ ] At some point mid-session, quietly spot-check audio (headphones) to confirm it's actually being captured.
 
@@ -59,6 +61,8 @@ The coordinator hosts and records every station's Teams meeting, monitors all fi
 
 ## In the gap before the closing keynote
 
+**SLA: 5 minutes, or 12 parsecs — whichever comes first.** Never tell me the odds; this is the tightest part of the day by design, and the whole point of preparing everything above.
+
 - [ ] Run `./tools/synthesize-keynote/synthesize.sh`.
 - [ ] Check its warnings — any station using a fallback outline instead of a real transcript, or missing entirely.
 - [ ] Skim `keynote/talking-points-draft.md`; adapt live rather than reading it verbatim.
@@ -67,7 +71,7 @@ The coordinator hosts and records every station's Teams meeting, monitors all fi
 
 - Recording/transcription didn't start or stopped: rejoin, restart it — the meeting is still running.
 - Teams fails entirely for a station: fall back to the speaker's phone voice memo (per [`speaker-instructions.md`](speaker-instructions.md)) as the audio source.
-- No usable audio at all: the synthesis script automatically falls back to that speaker's pre-submitted `outline.md` and flags it as such — the station still appears in the keynote, just clearly marked as not sourced from a transcript.
+- No usable audio at all: "I find your lack of transcript disturbing" — but the synthesis script automatically falls back to that speaker's pre-submitted `outline.md` and flags it as such, so the station still appears in the keynote, just clearly marked as not sourced from a transcript.
 
 ## After the event
 
