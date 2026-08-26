@@ -2,9 +2,9 @@
 
 ## Before the Event
 
-### 1. Schedule your dry run with the coordinator
+### 1. Schedule your dry run with John Trainor
 
-Reach out to the event coordinator to get a test of your actual meeting link scheduled — at least a week before the event, ideally. We'll join together, confirm you get in with no lobby/waiting room, test your audio, and confirm recording and transcription are capturing correctly. It's the same link and setup you'll use on Sept 17 — if it works in the test, it works on the day. If anything's off, this is when to fix it.
+John Trainor is coordinating this event — he's hosting and recording every station's Teams meeting. Reach out to him to get a test of your actual meeting link scheduled — at least a week before the event, ideally. You'll join together, confirm you get in with no lobby/waiting room, test your audio, and confirm recording and transcription are capturing correctly. It's the same link and setup you'll use on Sept 17 — if it works in the test, it works on the day. If anything's off, this is when to fix it.
 
 ### 2. Your setup
 
@@ -26,9 +26,10 @@ Send an outline of what you're planning to present — the more complete, the be
 
 ### Backup recording
 
-Also run a simple voice memo app on your phone during the talk, independent of Teams. It's just insurance — if anything on the Teams/laptop side fails, we still have audio.
+If you already have a recording setup you're used to running (a phone voice memo app, or anything else), feel free to run it during your talk as backup, independent of Teams — then just send that file to John afterward. It's insurance: if anything on the Teams/laptop side fails, we still have audio.
 
 ## After the Event
 
 - Nothing further required on your end — once you've ended the meeting (per above), you're done.
-- Your station's transcript will be posted publicly in this repo as part of the event's open archive. If there's anything you'd want reviewed before it goes up, flag it with the coordinator before the event.
+- If you ran your own backup recording, send it to John.
+- Your station's transcript will be posted publicly in this repo as part of the event's open archive. If there's anything you'd want reviewed before it goes up, flag it with John before the event.
