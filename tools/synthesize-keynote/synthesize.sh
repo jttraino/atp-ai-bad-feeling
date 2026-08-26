@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
-# Builds a draft of the closing keynote talking points from whatever is
-# currently sitting in stations/*/, and writes it to keynote/talking-points-draft.md.
+# Builds a draft of the Fully Operational talking points from whatever is
+# currently sitting in bases/*/, and writes it to keynote/talking-points-draft.md.
 #
-# For each station, in priority order, it uses:
-#   1. transcript.md or transcript.txt   — the real Teams transcript, pasted in as plain text
-#   2. transcript.docx                    — converted via pandoc, if pandoc is installed
-#   3. outline.md                         — the speaker's pre-submitted outline, used as a
-#                                            fallback if no transcript was captured
-# A station with none of the above is reported as missing entirely.
+# For each base, in priority order, it uses:
+#   1. transcript.md or transcript.txt   the real Teams transcript, pasted in as plain text
+#   2. transcript.docx                   converted via pandoc, if pandoc is installed
+#   3. outline.md                        the speaker's pre-submitted outline, used as a
+#                                         fallback if no transcript was captured
+# A base with none of the above is reported as missing entirely.
 #
 # Requires the `claude` CLI to be available and logged in.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-STATIONS_DIR="$REPO_ROOT/stations"
+BASES_DIR="$REPO_ROOT/bases"
 FRAMEWORK="$REPO_ROOT/tools/synthesize-keynote/framework.md"
 OUT_DIR="$REPO_ROOT/keynote"
 OUT_FILE="$OUT_DIR/talking-points-draft.md"
@@ -24,7 +24,7 @@ combined="$(mktemp)"
 missing=()
 fallback=()
 
-for dir in "$STATIONS_DIR"/*/; do
+for dir in "$BASES_DIR"/*/; do
   name="$(basename "$dir")"
   content=""
   source_note=""
@@ -40,7 +40,7 @@ for dir in "$STATIONS_DIR"/*/; do
     source_note="Source: transcript (converted from .docx)"
   elif [[ -f "$dir/outline.md" ]]; then
     content="$(cat "$dir/outline.md")"
-    source_note="Source: FALLBACK — speaker's pre-submitted outline, no transcript was captured for this station"
+    source_note="Source: FALLBACK. Speaker's pre-submitted outline, no transcript was captured for this base."
     fallback+=("$name")
   else
     missing+=("$name")
@@ -48,7 +48,7 @@ for dir in "$STATIONS_DIR"/*/; do
   fi
 
   {
-    echo "## Station: $name"
+    echo "## Base: $name"
     echo "_${source_note}_"
     echo
     echo "$content"
@@ -69,7 +69,7 @@ prompt_file="$(mktemp)"
   echo
   echo "---"
   echo
-  echo "Raw station inputs follow below."
+  echo "Raw base inputs follow below."
   echo
   cat "$combined"
 } > "$prompt_file"
@@ -77,4 +77,5 @@ prompt_file="$(mktemp)"
 claude -p "$(cat "$prompt_file")" > "$OUT_FILE"
 
 echo "Draft written to $OUT_FILE"
+echo "Open it in Obsidian. Fleet Command drives Fully Operational live, by hand."
 [[ ${#missing[@]} -gt 0 ]] && echo "Missing entirely (no input at all, not even an outline): ${missing[*]}"
