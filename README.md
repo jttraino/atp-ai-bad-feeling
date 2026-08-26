@@ -19,7 +19,7 @@ Attendees split into five themed stations (~25 people each), each covering a dis
 | [The Wampa Cave](stations/the-wampa-cave/) | Unexpected costs and security vulnerabilities |
 | [The Asteroid Field](stations/the-asteroid-field/) | Compliance, legal obstacles, and scope creep |
 
-Each station runs its own talk/discussion. Immediately afterward, the group reassembles for a closing keynote that distills all five station transcripts into shared talking points — see [`keynote/`](keynote/).
+Each station runs its own talk/discussion, recorded and transcribed via an independent Teams meeting hosted and monitored by an event coordinator (rather than the station speakers). Immediately afterward, the group reassembles for a closing keynote that distills all five station transcripts into shared talking points — see [`keynote/`](keynote/).
 
 ## Contents
 
