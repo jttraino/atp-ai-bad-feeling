@@ -6,6 +6,7 @@ Public archive for the ATP event **"Your AI Program Has a Bad Feeling About This
 - **Location:** Social House Roswell, 1098 Green St, Roswell, GA 30075
 - **Details / registration:** https://atpconnect.org/events/your-ai-program-has-a-bad-feeling-about-this/
 - **Event leads:** Scott Harris (One Inc, ATP Finance Chair), Tom Laswell (DC BLOX, ATP Director of Technology), John Slaughter (Alliant Health, ATP Executive Advisory Board)
+- **Coordinator:** John Trainor (Four Technologies, ATP Executive Advisory Board)
 
 <p align="center"><img src="assets/repo-qr-code.png" alt="QR code linking to this repo" width="200"></p>
 
