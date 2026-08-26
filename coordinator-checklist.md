@@ -69,6 +69,8 @@ The coordinator table is the cockpit for the day — it needs a working hyperdri
 
 ## If something fails mid-session
 
+"In my experience, there's no such thing as luck" — which is why there are three independent layers under each station, not one:
+
 - Recording/transcription didn't start or stopped: rejoin, restart it — the meeting is still running.
 - Teams fails entirely for a station: fall back to the speaker's phone voice memo (per [`speaker-instructions.md`](speaker-instructions.md)) as the audio source.
 - No usable audio at all: "I find your lack of transcript disturbing" — but the synthesis script automatically falls back to that speaker's pre-submitted `outline.md` and flags it as such, so the station still appears in the keynote, just clearly marked as not sourced from a transcript.

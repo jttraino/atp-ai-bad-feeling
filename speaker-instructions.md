@@ -4,7 +4,7 @@
 
 ### 1. Schedule your dry run with John Trainor
 
-John Trainor is coordinating this event — he's hosting and recording every station's Teams meeting. Reach out to him to get a test of your actual meeting link scheduled — at least a week before the event, ideally. You'll join together, confirm you get in with no lobby/waiting room, test your audio, and confirm recording and transcription are capturing correctly. It's the same link and setup you'll use on Sept 17 — if it works in the test, it works on the day. If anything's off, this is when to fix it.
+"Your eyes can deceive you. Don't trust them." Obi-Wan didn't let Luke fly blind on the real thing without a rehearsal first, and neither should you. John Trainor is coordinating this event — he's hosting and recording every station's Teams meeting. Reach out to him to get a test of your actual meeting link scheduled — at least a week before the event, ideally. You'll join together, confirm you get in with no lobby/waiting room, test your audio, and confirm recording and transcription are capturing correctly. It's the same link and setup you'll use on Sept 17 — if it works in the test, it works on the day. If anything's off, this is when to fix it.
 
 ### 2. Your setup
 
