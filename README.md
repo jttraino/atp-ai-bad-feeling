@@ -26,6 +26,7 @@ This repo documents the full method, not just the output — including [how the 
 ## Contents
 
 - [`speaker-instructions.md`](speaker-instructions.md) — what station speakers needed to prepare and run their session
+- [`coordinator-checklist.md`](coordinator-checklist.md) — the event coordinator's runbook for hosting, recording, and monitoring all five stations, and running the closing synthesis
 - `stations/` — transcript and notes per station, added after the event
 - `keynote/` — the synthesized closing keynote talking points, added after the event
 - [`tools/synthesize-keynote/`](tools/synthesize-keynote/) — the tool and guiding framework used to turn the five transcripts into the keynote draft
