@@ -22,7 +22,7 @@ Send an outline of what you're planning to present — the more complete, the be
 - Join your Teams meeting a few minutes early.
 - Open with your name, station, and topic spoken out loud — this becomes a marker in the transcript.
 - **Restate every audience question out loud before you answer it** — the mic likely won't pick up the room.
-- When you're done, just leave the call — no special steps needed to end anything. Recording, transcription, and ending the meeting are all handled on the coordinator's end.
+- When you're done, **explicitly end the meeting** (not just close your laptop or walk away) — this is the clear signal that tells Teams to finalize and prepare the transcript.
 
 ### Backup recording
 
@@ -30,5 +30,5 @@ Also run a simple voice memo app on your phone during the talk, independent of T
 
 ## After the Event
 
-- Nothing required on your end — once you leave the call, you're done.
+- Nothing further required on your end — once you've ended the meeting (per above), you're done.
 - Your station's transcript will be posted publicly in this repo as part of the event's open archive. If there's anything you'd want reviewed before it goes up, flag it with the coordinator before the event.
