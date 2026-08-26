@@ -21,8 +21,11 @@ Attendees split into five themed stations (~25 people each), each covering a dis
 
 Each station runs its own talk/discussion, recorded and transcribed via an independent Teams meeting hosted and monitored by an event coordinator (rather than the station speakers). Immediately afterward, the group reassembles for a closing keynote that distills all five station transcripts into shared talking points — see [`keynote/`](keynote/).
 
+This repo documents the full method, not just the output — including [how the closing keynote talking points were actually synthesized](tools/synthesize-keynote/) from the five station transcripts in the few minutes between sessions ending and the group reassembling.
+
 ## Contents
 
 - [`speaker-instructions.md`](speaker-instructions.md) — what station speakers needed to prepare and run their session
 - `stations/` — transcript and notes per station, added after the event
 - `keynote/` — the synthesized closing keynote talking points, added after the event
+- [`tools/synthesize-keynote/`](tools/synthesize-keynote/) — the tool and guiding framework used to turn the five transcripts into the keynote draft

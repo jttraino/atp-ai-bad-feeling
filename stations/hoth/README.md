@@ -2,4 +2,5 @@
 
 **Theme:** Development-stage use cases stuck in limbo
 
-Transcript and notes for this station will be added after the event on September 17, 2026.
+Before the event: the speaker's outline goes in `outline.md`.
+After the event: the exported transcript goes in `transcript.md` (or `.txt`/`.docx`), used by [`tools/synthesize-keynote/`](../../tools/synthesize-keynote/) to build the keynote draft.
