@@ -1,8 +1,8 @@
-# The Wampa Cave
+# Asteroid Field
 
-**Theme:** Unexpected costs and security vulnerabilities
+**Theme:** Compliance, legal obstacles, and scope creep
 
-Nobody wants to be the one left hanging upside down in the cave. This base is about not leaving your program, or your people, hanging when the costs and the holes show up.
+"Very dangerous. We should stay away from it." And then you fly straight through anyway, because turning back wasn't actually an option.
 
 Before the event: the speaker's outline goes in `outline.md`.
 After the event: the exported transcript goes in `transcript.md` (or `.txt`/`.docx`), used by [`tools/synthesize-keynote/`](../../tools/synthesize-keynote/) to build the keynote draft.

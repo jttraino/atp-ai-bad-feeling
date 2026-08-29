@@ -1,8 +1,8 @@
-# Hoth
+# Snow Monster Cave
 
-**Theme:** Development-stage use cases stuck in limbo
+**Theme:** Unexpected costs and security vulnerabilities
 
-The shield doors are closed. Everyone's dug in at the outpost, waiting on evacuation orders that haven't come yet.
+Nobody wants to be the one left hanging upside down in the cave. This base is about not leaving your program, or your people, hanging when the costs and the holes show up.
 
 Before the event: the speaker's outline goes in `outline.md`.
 After the event: the exported transcript goes in `transcript.md` (or `.txt`/`.docx`), used by [`tools/synthesize-keynote/`](../../tools/synthesize-keynote/) to build the keynote draft.

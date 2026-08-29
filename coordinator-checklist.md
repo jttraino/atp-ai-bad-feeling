@@ -41,11 +41,11 @@ Fleet Command's table is the cockpit for the day. It needs a working hyperdrive 
 
 | Base | Recording started | Audio spot-checked |
 |---|---|---|
-| Cloud City | ☐ | ☐ |
-| Dagobah | ☐ | ☐ |
-| Hoth | ☐ | ☐ |
-| The Wampa Cave | ☐ | ☐ |
-| The Asteroid Field | ☐ | ☐ |
+| Sky City | ☐ | ☐ |
+| Swamp Planet | ☐ | ☐ |
+| Ice Planet | ☐ | ☐ |
+| Snow Monster Cave | ☐ | ☐ |
+| Asteroid Field | ☐ | ☐ |
 
 ## As each base wraps
 
@@ -55,11 +55,11 @@ Fleet Command's table is the cockpit for the day. It needs a working hyperdrive 
 
 | Base | Transcript captured | Notes (e.g. fallback needed) |
 |---|---|---|
-| Cloud City | ☐ | |
-| Dagobah | ☐ | |
-| Hoth | ☐ | |
-| The Wampa Cave | ☐ | |
-| The Asteroid Field | ☐ | |
+| Sky City | ☐ | |
+| Swamp Planet | ☐ | |
+| Ice Planet | ☐ | |
+| Snow Monster Cave | ☐ | |
+| Asteroid Field | ☐ | |
 
 ## In the gap before Fully Operational
 

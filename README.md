@@ -18,11 +18,11 @@ Attendees split into five themed bases (about 25 people each), each covering a d
 
 | Base | Theme |
 |---|---|
-| [Cloud City](bases/cloud-city/) | Infrastructure and integration challenges with third-party tools |
-| [Dagobah](bases/dagobah/) | Technical debt and data quality issues |
-| [Hoth](bases/hoth/) | Development-stage use cases stuck in limbo |
-| [The Wampa Cave](bases/the-wampa-cave/) | Unexpected costs and security vulnerabilities |
-| [The Asteroid Field](bases/the-asteroid-field/) | Compliance, legal obstacles, and scope creep |
+| [Sky City](bases/sky-city/) | Infrastructure and integration challenges with third-party tools |
+| [Swamp Planet](bases/swamp-planet/) | Technical debt and data quality issues |
+| [Ice Planet](bases/ice-planet/) | Development-stage use cases stuck in limbo |
+| [Snow Monster Cave](bases/snow-monster-cave/) | Unexpected costs and security vulnerabilities |
+| [Asteroid Field](bases/asteroid-field/) | Compliance, legal obstacles, and scope creep |
 
 Each base runs its own talk. Fleet Command hosts, records, and transcribes it via an independent Teams meeting, not the speaker. No one in any single base gets the full picture. That's the point of what comes next.
 

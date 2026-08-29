@@ -6,11 +6,11 @@ This is the guiding brief handed to the LLM, alongside the raw base inputs, to p
 
 This is Fully Operational, the closing keynote for ATP's "Your AI Program Has a Bad Feeling About This." It's an interactive workshop on why enterprise AI initiatives fail, run as the honest debrief nobody runs at their own company. Attendees split into five themed small-group bases, each covering a distinct failure mode:
 
-- **Cloud City**: infrastructure and integration challenges with third-party tools
-- **Dagobah**: technical debt and data quality issues
-- **Hoth**: development-stage use cases stuck in limbo
-- **The Wampa Cave**: unexpected costs and security vulnerabilities
-- **The Asteroid Field**: compliance, legal obstacles, and scope creep
+- **Sky City**: infrastructure and integration challenges with third-party tools
+- **Swamp Planet**: technical debt and data quality issues
+- **Ice Planet**: development-stage use cases stuck in limbo
+- **Snow Monster Cave**: unexpected costs and security vulnerabilities
+- **Asteroid Field**: compliance, legal obstacles, and scope creep
 
 After all five run in parallel, the whole group reassembles for one closing keynote. Its job is to give everyone, including people who weren't in a given base, the real, specific substance of what was said there. Then it surfaces what connects across all five.
 
