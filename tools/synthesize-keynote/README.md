@@ -19,7 +19,9 @@ Requires the `claude` CLI installed and logged in. If `pandoc` is installed, `.d
 
 ## Fallback behavior
 
-If a base's transcript wasn't captured for any reason, the script falls back to that speaker's pre-submitted outline (`outline.md`) instead, and the output explicitly flags that base as using a fallback rather than presenting it as equivalent to a real transcript. A base with neither a transcript nor an outline is reported as missing so it isn't silently dropped from the keynote.
+Every base runs as a guided discussion off a list of roughly eight questions, collected ahead of the event into `bases/<name>/questions.md` along with pre-filled likely answers. That file is the fallback. If a base's transcript wasn't captured for any reason, the script uses its question list instead, and the output explicitly flags that base as using a fallback rather than presenting it as equivalent to a real transcript. A base with neither a transcript nor a question list is reported as missing so it isn't silently dropped from the keynote.
+
+The fallback is deliberately weaker than the real thing, and that's the point. It establishes what a base actually covered without inventing quotes from a room nobody recorded.
 
 ## Why this is public
 

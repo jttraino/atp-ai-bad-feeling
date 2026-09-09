@@ -5,7 +5,7 @@ Public archive for the ATP event "Your AI Program Has a Bad Feeling About This."
 - **Date:** September 17, 2026 ABY, 6:00 to 8:00 PM
 - **Location:** Social House Roswell, 1098 Green St, Roswell, GA 30075
 - **Details / registration:** https://atpconnect.org/events/your-ai-program-has-a-bad-feeling-about-this/
-- **Jedi Council:** Scott Harris (One Inc, ATP Finance Chair), Tom Laswell (DC BLOX, ATP Director of Technology), John Slaughter (Alliant Health, ATP Executive Advisory Board)
+- **Jedi Council:** Scott Harris (One Inc, ATP Finance Chair), Tom Lasswell (DC BLOX, ATP Director of Technology), John Slaughter (Alliant Health, ATP Executive Advisory Board)
 - **Fleet Command:** John Trainor (Four Technologies, ATP Executive Advisory Board)
 
 <p align="center"><img src="assets/repo-qr-code.png" alt="QR code linking to this repo" width="200"></p>
@@ -24,7 +24,7 @@ Attendees split into five themed bases (about 25 people each), each covering a d
 | [Snow Monster Cave](bases/snow-monster-cave/) | Unexpected costs and security vulnerabilities |
 | [Asteroid Field](bases/asteroid-field/) | Compliance, legal obstacles, and scope creep |
 
-Each base runs its own talk. Fleet Command hosts, records, and transcribes it via an independent Teams meeting, not the speaker. No one in any single base gets the full picture. That's the point of what comes next.
+Each base is a guided discussion, not a talk: the speaker puts a list of roughly eight questions to their base and the room answers. Fleet Command hosts, records, and transcribes each one via an independent Teams meeting, not the speaker, and every base has an Astromech whose only job is to watch that the capture is actually working. No one in any single base gets the full picture. That's the point of what comes next.
 
 Immediately afterward, the group reassembles for **Fully Operational**, the closing keynote. It has the high ground: the one vantage point that actually sees the patterns across all five bases at once, distilled into shared talking points. See [`keynote/`](keynote/).
 
@@ -32,9 +32,10 @@ This repo documents the full method, not just the output. That includes [how Ful
 
 ## Contents
 
+- [`crew-manifest.md`](crew-manifest.md): who held which role on the day, and what was still unfilled going in
 - [`speaker-instructions.md`](speaker-instructions.md): what base speakers needed to prepare and run their session
 - [`coordinator-checklist.md`](coordinator-checklist.md): Fleet Command's runbook for hosting, recording, and monitoring all five bases, and running the closing synthesis
-- `bases/`: transcript and notes per base, added after the event
+- `bases/`: question list per base before the event, transcript and notes after it
 - `keynote/`: Fully Operational, the synthesized closing keynote talking points, added after the event
 - [`tools/synthesize-keynote/`](tools/synthesize-keynote/): the tool and guiding framework used to turn the five transcripts into the keynote draft
 

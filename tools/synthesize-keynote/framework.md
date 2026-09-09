@@ -16,11 +16,11 @@ After all five run in parallel, the whole group reassembles for one closing keyn
 
 ## Task
 
-You will be given the raw transcript for each of the five bases, or, if a transcript wasn't captured, the speaker's pre-submitted outline instead. Produce a draft of Fully Operational's talking points.
+Each base ran as a guided discussion: the speaker put a list of roughly eight questions to the room and the room answered. You will be given the raw transcript for each of the five bases, or, if a transcript wasn't captured, that base's question list with pre-filled likely answers instead. Produce a draft of Fully Operational's talking points.
 
 ## Required output structure
 
-1. **Per base** (one subsection each, in the order above): 3-5 bullet points capturing the *specific, concrete* things that were actually said. Real examples, numbers, quotes, disagreements. Not generic AI-industry platitudes. If a base's input is marked as a fallback (speaker's outline, not an actual transcript), say so explicitly at the top of that subsection rather than presenting it as equivalent to the others.
+1. **Per base** (one subsection each, in the order above): 3-5 bullet points capturing the *specific, concrete* things that were actually said. Real examples, numbers, quotes, disagreements. Not generic AI-industry platitudes. If a base's input is marked as a fallback (a question list with pre-filled likely answers, not an actual transcript), say so explicitly at the top of that subsection, stay close to what the questions themselves establish was covered, and do not dress the pre-filled answers up as things people in the room actually said.
 2. **Cross-cutting patterns**: 3-5 things that showed up, in some form, across multiple bases. This is the part that makes the keynote worth doing, rather than just reading five summaries back to back.
 3. **Closing line**: one line that ties the throughline back to the event's framing (the honest debrief, the "bad feeling" premise). A note to end the room on, not a recap.
 

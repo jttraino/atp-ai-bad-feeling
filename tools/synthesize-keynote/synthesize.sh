@@ -5,8 +5,9 @@
 # For each base, in priority order, it uses:
 #   1. transcript.md or transcript.txt   the real Teams transcript, pasted in as plain text
 #   2. transcript.docx                   converted via pandoc, if pandoc is installed
-#   3. outline.md                        the speaker's pre-submitted outline, used as a
-#                                         fallback if no transcript was captured
+#   3. questions.md                      the base's question list with pre-filled likely
+#                                         answers, used as a fallback if no transcript
+#                                         was captured
 # A base with none of the above is reported as missing entirely.
 #
 # Requires the `claude` CLI to be available and logged in.
@@ -38,9 +39,9 @@ for dir in "$BASES_DIR"/*/; do
   elif [[ -f "$dir/transcript.docx" ]] && command -v pandoc >/dev/null 2>&1; then
     content="$(pandoc "$dir/transcript.docx" -t plain)"
     source_note="Source: transcript (converted from .docx)"
-  elif [[ -f "$dir/outline.md" ]]; then
-    content="$(cat "$dir/outline.md")"
-    source_note="Source: FALLBACK. Speaker's pre-submitted outline, no transcript was captured for this base."
+  elif [[ -f "$dir/questions.md" ]]; then
+    content="$(cat "$dir/questions.md")"
+    source_note="Source: FALLBACK. Question list with pre-filled likely answers, no transcript was captured for this base."
     fallback+=("$name")
   else
     missing+=("$name")
@@ -57,10 +58,10 @@ for dir in "$BASES_DIR"/*/; do
 done
 
 if [[ ${#missing[@]} -gt 0 ]]; then
-  echo "WARNING: no transcript, docx, or outline found for: ${missing[*]}" >&2
+  echo "WARNING: no transcript, docx, or question list found for: ${missing[*]}" >&2
 fi
 if [[ ${#fallback[@]} -gt 0 ]]; then
-  echo "NOTE: using speaker outline fallback (no transcript) for: ${fallback[*]}" >&2
+  echo "NOTE: using question-list fallback (no transcript) for: ${fallback[*]}" >&2
 fi
 
 prompt_file="$(mktemp)"
@@ -78,4 +79,4 @@ claude -p "$(cat "$prompt_file")" > "$OUT_FILE"
 
 echo "Draft written to $OUT_FILE"
 echo "Open it in Obsidian. Fleet Command drives Fully Operational live, by hand."
-[[ ${#missing[@]} -gt 0 ]] && echo "Missing entirely (no input at all, not even an outline): ${missing[*]}"
+[[ ${#missing[@]} -gt 0 ]] && echo "Missing entirely (no input at all, not even a question list): ${missing[*]}"
