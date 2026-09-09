@@ -1,13 +1,13 @@
 # Keynote Synthesis Tool
 
-This is the actual tool used to turn the five base transcripts into Fully Operational's talking points, in near real time between the bases ending and the group reassembling. It's checked in here so the whole process, not just the resulting content, is visible.
+This is the actual tool used to turn the five base transcripts into the Throne Room talking points, in near real time between the bases ending and the group reassembling. It's checked in here so the whole process, not just the resulting content, is visible.
 
 ## How it fits into the event flow
 
 1. All five bases run in parallel, each recorded and transcribed via a Fleet-Command-hosted Teams meeting (see [`../../speaker-instructions.md`](../../speaker-instructions.md)).
 2. As each session wraps, its exported transcript is dropped into `bases/<name>/transcript.md` (or `.txt`/`.docx`) in this repo.
-3. Run `./synthesize.sh` from anywhere. It reads whatever's currently in `bases/*/`, combines it with the guiding brief in [`framework.md`](framework.md), and calls the `claude` CLI to produce a first-draft `keynote/talking-points-draft.md`.
-4. Fleet Command opens that draft in Obsidian and presents Fully Operational live, clicking through the markdown by hand. It's not an automated slide deck, it's a head start on the five minutes it would otherwise take to build one from a blank page.
+3. Run `./synthesize.sh` from anywhere. It reads whatever's currently in `bases/*/`, combines it with the guiding brief in [`framework.md`](framework.md), and calls the `claude` CLI to produce a first-draft `closing-keynote/talking-points-draft.md`.
+4. Fleet Command opens that draft in Obsidian and presents the Throne Room live, clicking through the markdown by hand. It's not an automated slide deck, it's a head start on the five minutes it would otherwise take to build one from a blank page.
 
 ## Usage
 

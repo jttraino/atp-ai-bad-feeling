@@ -8,10 +8,10 @@ Who holds which role on the day. The point of this file is the empty rows: it ex
 
 | Role | Who | Status | Responsibility |
 |---|---|---|---|
-| Fleet Command | John Trainor (Four Technologies, ATP Executive Advisory Board) | ✅ | Hosts, records, and transcribes all five bases. Runs the closing synthesis and presents Fully Operational. On site 5:00 PM. |
 | Jedi Council | Scott Harris (One Inc, ATP Finance Chair) | ✅ | Event owner. Run of show. |
 | Jedi Council | Tom Lasswell (DC BLOX, ATP Director of Technology) | ✅ | Event owner. Logistics. |
 | Jedi Council | John Slaughter (Alliant Health, ATP Executive Advisory Board) | ✅ | Event owner. Cultivated the base speakers. |
+| Fleet Command | John Trainor (Four Technologies, ATP Executive Advisory Board) | ✅ | Hosts, records, and transcribes all five bases. Runs the closing synthesis and presents the Throne Room. On site 5:00 PM. |
 
 ## Event operations
 

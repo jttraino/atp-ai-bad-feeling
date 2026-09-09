@@ -1,6 +1,6 @@
 # Fleet Command Checklist, ATP Event, September 17, 2026 ABY
 
-Fleet Command hosts and records every base's Teams meeting, monitors all five during the event, and runs the keynote synthesis in the window before Fully Operational, the closing keynote. This is that role's runbook.
+Fleet Command hosts and records every base's Teams meeting, monitors all five during the event, and runs the keynote synthesis in the window before the Throne Room, the closing keynote. This is that role's runbook.
 
 ## Before the event
 
@@ -14,10 +14,10 @@ Fleet Command hosts and records every base's Teams meeting, monitors all five du
 - [ ] Join the speaker's actual meeting link with them at the scheduled test time.
 - [ ] Confirm they get in with no lobby or waiting room.
 - [ ] **Confirm Teams noise suppression is set to Off, not Auto** (Settings > Devices > Noise suppression). This is the setting the whole capture depends on. Auto is tuned to isolate a single voice at a desk and will strip out the room discussion.
-- [ ] Have them walk a few steps away from the laptop and talk at normal volume, the way an attendee in the room will. That, not their close-up voice, is the audio that has to survive.
+- [ ] Have them walk a few steps away from the laptop and talk at normal volume, the way an attendee in the room will. That, not their close-up voice, is the audio that has to survive. Since the speaker is the one asking questions, their own voice was never the thing at risk.
 - [ ] Confirm the laptop is theirs, that they know its password, and that they can change their own settings. A donor laptop that nobody can unlock is the most likely single point of failure on the day.
 - [ ] Confirm the laptop is plugged into power and won't sleep or lock mid-session.
-- [ ] Ask whether they run their own recorder or transcription service. If they do, encourage it, and confirm two things: that it doesn't conflict with Teams for microphone access if it's on the same computer, and that they can actually export and email the file to john@johntrainor.com within minutes of their session ending. A service with a login wall, a manual export step, or an unpredictable processing queue is not usable as backup. Better to know that now than to be waiting on it during the synthesis window.
+- [ ] Ask whether they run their own recorder or transcription service, and encourage it if they do. Confirm two things. First, **it's a completely different device**, not a second app on the laptop already running Teams: same microphone, same spot, same power and sleep and lock failures, plus a real chance the two fight over microphone access and take out the primary. Second, that they can actually export and email the file to john@johntrainor.com within minutes of their session ending. A login wall, a manual export step, or an unpredictable processing queue makes it unusable as backup. Better to know that now than to be waiting on it during the synthesis window.
 - [ ] Start recording and transcription. Confirm both actually capture correctly.
 - [ ] Walk them through **ending** the meeting rather than leaving it, and why.
 - [ ] Note any fixes needed (mic, connection, anything) and resolve before September 17. This is the same link and setup used on the day.
@@ -55,7 +55,7 @@ One per base. R2 rode in the socket watching the systems so the pilot could fly,
 - [ ] Recording is running, and the **live transcript is visibly building** in Teams. This is the real tell that capture is working, and it's visible in the Teams UI without interrupting anything.
 - [ ] Laptop is plugged in, awake, and unlocked. Power, sleep, and lock are the three failure modes.
 - [ ] Network hasn't dropped.
-- [ ] **If the speaker brought a backup recorder, work the room with it.** The laptop is fixed in place and hearing the room at a disadvantage. A handheld device carried toward whoever is speaking is the one thing that captures what the primary can't, so this is an active job, not a passive one. Then make sure it gets emailed to john@johntrainor.com before anyone leaves.
+- [ ] **If the speaker brought a second device, work the room with it.** The laptop is fixed in place and straining to hear; a handheld carried toward whoever is speaking captures exactly what the primary can't. This is an active job, not a passive one. Then make sure it gets emailed to john@johntrainor.com before anyone leaves.
 - [ ] If anything looks wrong, get Tom or Fleet Command. Don't try to fix it mid-discussion.
 
 ## As each base kicks off
@@ -87,7 +87,7 @@ One per base. R2 rode in the socket watching the systems so the pilot could fly,
 | Snow Monster Cave | ☐ | |
 | Asteroid Field | ☐ | |
 
-## In the gap before Fully Operational
+## In the gap before the Throne Room
 
 **Measured worst case: about 8 minutes from last base ending to a presentable draft.** Never tell me the odds. Where that number comes from, tested repeatedly on real 45-minute meetings at the same time of day:
 
@@ -99,15 +99,15 @@ That 8 minutes has to be absorbed by the run of show while the room moves back t
 
 - [ ] Run `./tools/synthesize-keynote/synthesize.sh`.
 - [ ] Check its warnings for any base using its fallback question list instead of a real transcript, or missing entirely.
-- [ ] Open `keynote/talking-points-draft.md` in Obsidian. This is not an automated slide deck. Fleet Command presents it live, clicking through by hand, adapting on the fly rather than reading it verbatim.
+- [ ] Open `closing-keynote/talking-points-draft.md` in Obsidian. This is not an automated slide deck. Fleet Command presents it live, clicking through by hand, adapting on the fly rather than reading it verbatim.
 
 ## If something fails mid-session
 
 "In my experience, there's no such thing as luck." That's why there are three independent layers under each base, not one:
 
 - Recording or transcription didn't start, or stopped: rejoin and restart it. The meeting is still running. This is what the Astromechs are watching for.
-- Teams fails entirely for a base: fall back to the speaker's own recording or transcription service, if they ran one, emailed to john@johntrainor.com as the session ends. Where the Astromech carried it around the room, this may actually be the better capture of the two.
-- No usable audio at all: "I find your lack of transcript disturbing." But the synthesis script automatically falls back to that base's `questions.md`, the question list plus pre-filled likely answers, and flags it as such, so the base still appears in the keynote, clearly marked as not sourced from a transcript.
+- Teams fails entirely for a base: fall back to the speaker's second device, if they brought one, emailed to john@johntrainor.com as the session ends. Where the Astromech carried it around the room, this may actually be the better capture of the two.
+- No usable audio at all: "I find your lack of transcript disturbing." But the synthesis script automatically falls back to that base's `questions.md`, the question list plus pre-filled likely answers, and flags it as such, so the base still appears in the keynote, clearly marked as not sourced from a transcript. An older code, sir, but it checks out.
 
 ## Crew manifest
 

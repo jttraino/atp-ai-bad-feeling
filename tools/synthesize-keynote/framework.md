@@ -1,10 +1,10 @@
 # Keynote Synthesis Framework
 
-This is the guiding brief handed to the LLM, alongside the raw base inputs, to produce the Fully Operational talking points. It's checked into this repo so anyone can see exactly what shaped the synthesis, not just the output.
+This is the guiding brief handed to the LLM, alongside the raw base inputs, to produce the Throne Room talking points. It's checked into this repo so anyone can see exactly what shaped the synthesis, not just the output.
 
 ## Event context (for the model)
 
-This is Fully Operational, the closing keynote for ATP's "Your AI Program Has a Bad Feeling About This." It's an interactive workshop on why enterprise AI initiatives fail, run as the honest debrief nobody runs at their own company. Attendees split into five themed small-group bases, each covering a distinct failure mode:
+This is the Throne Room, the closing keynote for ATP's "Your AI Program Has a Bad Feeling About This." It's an interactive workshop on why enterprise AI initiatives fail, run as the honest debrief nobody runs at their own company. Attendees split into five themed small-group bases, each covering a distinct failure mode:
 
 - **Sky City**: infrastructure and integration challenges with third-party tools
 - **Swamp Planet**: technical debt and data quality issues
@@ -16,7 +16,7 @@ After all five run in parallel, the whole group reassembles for one closing keyn
 
 ## Task
 
-Each base ran as a guided discussion: the speaker put a list of roughly eight questions to the room and the room answered. You will be given the raw transcript for each of the five bases, or, if a transcript wasn't captured, that base's question list with pre-filled likely answers instead. Produce a draft of Fully Operational's talking points.
+Each base ran as a guided discussion: the speaker put a list of roughly eight questions to the room and the room answered. You will be given the raw transcript for each of the five bases, or, if a transcript wasn't captured, that base's question list with pre-filled likely answers instead. Produce a draft of the Throne Room talking points.
 
 ## Required output structure
 

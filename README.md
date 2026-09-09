@@ -26,9 +26,9 @@ Attendees split into five themed bases (about 25 people each), each covering a d
 
 Each base is a guided discussion, not a talk: the speaker puts a list of roughly eight questions to their base and the room answers. Fleet Command hosts, records, and transcribes each one via an independent Teams meeting, not the speaker, and every base has an Astromech whose only job is to watch that the capture is actually working. No one in any single base gets the full picture. That's the point of what comes next.
 
-Immediately afterward, the group reassembles for **Fully Operational**, the closing keynote. It has the high ground: the one vantage point that actually sees the patterns across all five bases at once, distilled into shared talking points. See [`keynote/`](keynote/).
+Immediately afterward, the group reassembles for **the Throne Room**, the closing keynote. Everyone who fought the battle in a different ship, back in one room at the end. It has the high ground: the one vantage point that actually sees the patterns across all five bases at once, distilled into shared talking points. See [`closing-keynote/`](closing-keynote/).
 
-This repo documents the full method, not just the output. That includes [how Fully Operational's talking points were actually synthesized](tools/synthesize-keynote/) from the five base transcripts, in the few minutes between sessions ending and the group reassembling.
+This repo documents the full method, not just the output. That includes [how the Throne Room talking points were actually synthesized](tools/synthesize-keynote/) from the five base transcripts, in the few minutes between sessions ending and the group reassembling.
 
 ## Contents
 
@@ -36,7 +36,7 @@ This repo documents the full method, not just the output. That includes [how Ful
 - [`speaker-instructions.md`](speaker-instructions.md): what base speakers needed to prepare and run their session
 - [`coordinator-checklist.md`](coordinator-checklist.md): Fleet Command's runbook for hosting, recording, and monitoring all five bases, and running the closing synthesis
 - `bases/`: question list per base before the event, transcript and notes after it
-- `keynote/`: Fully Operational, the synthesized closing keynote talking points, added after the event
+- `closing-keynote/`: the Throne Room, the synthesized closing keynote talking points, added after the event
 - [`tools/synthesize-keynote/`](tools/synthesize-keynote/): the tool and guiding framework used to turn the five transcripts into the keynote draft
 
 ## Contributing
