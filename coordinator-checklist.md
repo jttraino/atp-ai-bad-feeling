@@ -30,6 +30,7 @@ Each station runs as a guided discussion off a list of roughly eight questions. 
 - [ ] Chase the sponsors for their final, reviewed version by **Tuesday, September 15**. Wednesday is workable. Thursday morning is the outer edge, and still fine to absorb, since integrating a late list is cheap. An absent list is not.
 - [ ] Pre-fill likely answers against each station's questions and keep them in `questions.md` alongside the questions themselves. This is the actual work that makes the fallback usable, and it has to be done before the day.
 - [ ] Once lists start coming in, run `tools/synthesize-keynote/seed.sh`. It builds a complete, presentable deck from the question lists alone, with every station marked as a fallback. **From that moment there is always a deck**, and every later run can only improve on it. Nothing on the night can leave you standing in front of the room with nothing.
+- [ ] **Commit and push that seeded deck.** `closing-keynote/presentation.html` is generated, not tracked by default, so the published URL that every screen's QR points at does not exist until a deck is pushed. Doing it now means the follow-along link is already live and already tested days before anyone scans it, rather than depending on a push made ninety seconds before you start talking.
 - [ ] Run `tests/rehearse.sh` after any change to the question lists or the tools. It rehearses the whole night, including the disasters, in about two seconds. See [`tests/README.md`](tests/README.md).
 
 ## Day before / morning of

@@ -10,6 +10,8 @@ Press **P** for projector mode, which sizes itself to the screen it is on. Every
 
 **https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html**
 
+That URL serves whatever deck was last committed here, so it is live from the moment the pre-seeded version is pushed and improves as real transcripts land.
+
 A first version is built days before the event by [`tools/synthesize-keynote/seed.sh`](../tools/synthesize-keynote/) from the station question lists alone, so a presentable deck exists before anyone speaks. It is rebuilt in the gap after the stations wrap, from whatever transcripts actually arrived, and any station still running on its question list is labelled as such on its own slide.
 
 Fleet Command drives it live and adapts. It is a set of talking points that happens to be shaped like slides, not a script.
