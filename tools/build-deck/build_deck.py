@@ -299,7 +299,12 @@ def method_screens(mode, generated_at, counts, engine=""):
     qr = qr_data_uri()
     qr_block = (f'<img class="qr" alt="QR code to {REPO_URL}" src="{qr}">' if qr else "")
 
-    if mode == "seeded":
+    if mode == "demo":
+        provenance = (
+            "This copy is a <b>demo</b>, built from invented transcripts so the format can be "
+            "clicked through before the event. The timings and the machinery are real; the "
+            "people, companies and numbers are not.")
+    elif mode == "seeded":
         provenance = (
             "This copy was built <b>before the stations ran</b>, from the question lists and "
             "the answers we expected to hear. It is the floor, not the deck: if every recording "
@@ -447,7 +452,9 @@ def station_screen(st, mode="live"):
     early should be told that rather than left to conclude five recordings broke."""
     flagged = st["source"] == "fallback"
     if not flagged:
-        banner, tag = "", '<span class="pill">TRANSCRIPT</span>'
+        banner = ""
+        tag = ('<span class="pill warn">MOCK TRANSCRIPT</span>' if mode == "demo"
+               else '<span class="pill">TRANSCRIPT</span>')
     elif mode == "seeded":
         banner = ('<div class="flag"><b>This session has not happened yet.</b> You are early. '
                   'What follows is the question list this station\'s sponsor prepared and the '
@@ -610,6 +617,14 @@ TEMPLATE = """<!DOCTYPE html>
   .voices .lab { font-size: calc(var(--fs) * .77); letter-spacing: .08em; color: var(--ink-3); font-weight: 700; margin-right: 4px; }
   .voices button { font-size: calc(var(--fs) * .8); padding: 4px 10px; }
   .voices button.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+  /* Demo builds carry this on every screen, not just the first. A page of invented
+     people and invented numbers sitting at a public URL has to say so wherever the
+     reader happens to land, including on a deep link straight into station four. */
+  .demobar { border: 1px solid var(--warn); border-left-width: 3px; background: #fdf6ee;
+             color: var(--ink-2); padding: 9px 13px; border-radius: 4px;
+             margin-bottom: 16px; font-size: calc(var(--fs) * .8); }
+  .demobar b { color: var(--warn); }
+
   .follow { display: flex; align-items: center; gap: 12px; margin-top: 12px;
             padding-top: 12px; border-top: 1px solid var(--line); }
   .followqr { width: 62px; aspect-ratio: 1 / 1; flex: none; display: block; }
@@ -635,6 +650,7 @@ TEMPLATE = """<!DOCTYPE html>
 <div class="shell">
   <div class="stage">
     <div class="rail" id="rail"></div>
+    <div class="demobar" id="demobar" hidden></div>
     <div class="topline">
       <span class="wordmark">ATP</span>
       <span class="divider-v"></span>
@@ -674,6 +690,7 @@ const VOICES = __VOICES__;
 const UNVOICED = __UNVOICED__;
 const QRS = __QRS__;            // screen id -> inline SVG, one per screen, not per voice
 const FOLLOW_URL = __FOLLOW_URL__;
+const DEMO_NOTICE = __DEMO_NOTICE__;
 let i = 0;
 let voice = "straight";
 const el = id => document.getElementById(id);
@@ -725,6 +742,7 @@ function setVoice(v) {
 function render() {
   const SCREENS = screens();
   const s = SCREENS[i];
+  if (DEMO_NOTICE) { el("demobar").hidden = false; el("demobar").innerHTML = DEMO_NOTICE; }
   el("kicker").textContent = s.kicker.toUpperCase();
   el("count").textContent = (i + 1) + " / " + SCREENS.length;
   el("title").textContent = s.title;
@@ -822,11 +840,19 @@ render();
 """
 
 
+DEMO_NOTICE = (
+    '<b>This is a demo build, not the event.</b> Every person, company and number on '
+    'these screens is invented, generated from mock transcripts to show how the format '
+    'works. The workshop is on September 17, 2026 and has not happened yet. Nothing here '
+    'was said by anybody.')
+
+
 def render_html(decks, order, mode, generated_at, follow_url=""):
     title = "The Throne Room, ATP September 17, 2026"
-    if mode == "seeded":
-        title += " (pre-seeded)"
-    footer = f"ATP &middot; {'Pre-seeded' if mode == 'seeded' else 'Live'} &middot; {generated_at}"
+    label = {"seeded": "Pre-seeded", "demo": "DEMO, invented content", "live": "Live"}[mode]
+    if mode != "live":
+        title += f" ({'demo' if mode == 'demo' else 'pre-seeded'})"
+    footer = f"ATP &middot; {label} &middot; {generated_at}"
     voices = [[k, VOICE_LABELS.get(k, k.title())] for k in order]
     qrs = {}
     if follow_url:
@@ -839,7 +865,8 @@ def render_html(decks, order, mode, generated_at, follow_url=""):
             .replace("__VOICES__", json.dumps(voices, ensure_ascii=False))
             .replace("__UNVOICED__", json.dumps(list(UNVOICED)))
             .replace("__QRS__", json.dumps(qrs, ensure_ascii=False))
-            .replace("__FOLLOW_URL__", json.dumps(follow_url)))
+            .replace("__FOLLOW_URL__", json.dumps(follow_url))
+            .replace("__DEMO_NOTICE__", json.dumps(DEMO_NOTICE if mode == "demo" else "")))
 
 
 # --------------------------------------------------------------------------- payload loading
@@ -873,7 +900,7 @@ def main():
     ap = argparse.ArgumentParser(description="Build the Throne Room deck from a JSON payload.")
     ap.add_argument("--payload", required=True, help="JSON payload file, or - for stdin")
     ap.add_argument("--out", required=True, help="output .html path")
-    ap.add_argument("--mode", choices=["live", "seeded"], default="live")
+    ap.add_argument("--mode", choices=["live", "seeded", "demo"], default="live")
     ap.add_argument("--voice", action="append", default=[], metavar="NAME=PATH",
                     help="a character-voice payload; repeatable. Same schema, same validation.")
     ap.add_argument("--follow-url", default=DEFAULT_FOLLOW_URL,

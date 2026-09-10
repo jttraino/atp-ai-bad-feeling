@@ -23,7 +23,7 @@ KEEP=0
 ALL=(seed happy mixed docx disaster late garbage badschema liar crash nothing noprior fullsize
      hedge-primary hedge-standby hedge-primary-bad hedge-both-bad hedge-disabled
      no-hedge-flag voices voices-partial voices-all-fail voices-launder voices-timid refs-overdone
-     project follow qr-decodes)
+     project follow qr-decodes demo)
 SCENARIOS=("${@:-}")
 [[ -z "${SCENARIOS[0]:-}" ]] && SCENARIOS=("${ALL[@]}")
 
@@ -494,6 +494,24 @@ QRPY
   else
     bad "QR decoded to '$got'"
   fi
+}
+
+scen_demo() {  # a public URL full of invented people has to say so on every screen
+  new_scratch; seed_questions
+  for st in "Sky City" "Swamp Planet" "Ice Planet" "Snow Monster Cave" "Asteroid Field"; do arrive "$st" txt; done
+  ( cd "$SCRATCH" && ./tools/intake-transcript/intake.sh "$SCRATCH/Downloads" ) >/dev/null 2>&1
+  MODE=demo run_synth demo
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "notice is in the deck"                 "deck_says 'This is a demo build, not the event'"
+  check "notice renders on every screen"        "deck_says 'DEMO_NOTICE'"
+  check "says nothing was said by anybody"      "deck_says 'Nothing here was said by anybody'"
+  check "title marks it a demo"                 "deck_says '(demo)'"
+  check "stations say MOCK TRANSCRIPT"          "deck_says 'MOCK TRANSCRIPT'"
+  check "and never plain TRANSCRIPT"            "! deck_says '>TRANSCRIPT<'"
+  check "live builds are unaffected"            "true"
+  run_synth live
+  check "live build has no demo notice"         "! deck_says 'This is a demo build'"
+  check "live build says TRANSCRIPT"            "deck_says '>TRANSCRIPT<'"
 }
 
 # ---------------------------------------------------------------- driver
