@@ -1,18 +1,18 @@
-# Keynote Synthesis
+# Closeout Synthesis
 
 The tool that turns the five station transcripts into the Throne Room deck, in the few minutes between the stations ending and the group reassembling. Checked in here so the whole process, not just the resulting content, is visible.
 
 ```bash
-tools/synthesize-keynote/seed.sh          # days before: build the floor from question lists
-tools/synthesize-keynote/synthesize.sh    # on the night: rebuild from whatever has arrived
+tools/synthesize-closeout/seed.sh          # days before: build the floor from question lists
+tools/synthesize-closeout/synthesize.sh    # on the night: rebuild from whatever has arrived
 
-tools/synthesize-keynote/synthesize.sh --no-hedge          # one model, half the tokens
-tools/synthesize-keynote/synthesize.sh --voices            # add the character voices
-tools/synthesize-keynote/synthesize.sh --voices=yoda,vader # just these two
-tools/synthesize-keynote/synthesize.sh --help
+tools/synthesize-closeout/synthesize.sh --no-hedge          # one model, half the tokens
+tools/synthesize-closeout/synthesize.sh --voices            # add the character voices
+tools/synthesize-closeout/synthesize.sh --voices=yoda,vader # just these two
+tools/synthesize-closeout/synthesize.sh --help
 ```
 
-Both write `closeout-keynote/presentation.html`. Both are safe to re-run as often as you like.
+Both write `closeout/presentation.html`. Both are safe to re-run as often as you like.
 
 ## How it fits into the event
 
@@ -81,11 +81,11 @@ The `claude` CLI, logged in. `pandoc` for `.docx` transcripts. Python 3 for the 
 
 ## Character voices
 
-A live toggle during the keynote: same findings, same numbers, same slide, different narrator. Press **1** to **5**, or **V** to cycle. The screen you are on does not change, so you can switch mid-sentence and keep your place.
+A live toggle during the closeout: same findings, same numbers, same slide, different narrator. Press **1** to **5**, or **V** to cycle. The screen you are on does not change, so you can switch mid-sentence and keep your place.
 
 ```bash
-tools/synthesize-keynote/synthesize.sh --voices             # yoda,vader,threepio
-tools/synthesize-keynote/synthesize.sh --voices=yoda,vader
+tools/synthesize-closeout/synthesize.sh --voices             # yoda,vader,threepio
+tools/synthesize-closeout/synthesize.sh --voices=yoda,vader
 ```
 
 Voices are defined one per file in [`voices/`](voices/), so adding one is writing a paragraph of direction. The shared rules live in [`voices.md`](voices.md).
@@ -128,8 +128,8 @@ Press **P**. That switches the deck into projector mode and it sizes itself to t
 Every screen carries a QR to **its own anchor**, so someone scanning during station four lands on station four, with the full detail that would not fit on the projector.
 
 ```
-FOLLOW_URL=https://jttraino.github.io/atp-ai-bad-feeling/closeout-keynote/presentation.html
-tools/synthesize-keynote/synthesize.sh --no-follow      # no QR, no link
+FOLLOW_URL=https://jttraino.github.io/atp-ai-bad-feeling/closeout/presentation.html
+tools/synthesize-closeout/synthesize.sh --no-follow      # no QR, no link
 ```
 
 The QRs are generated at build time with `qrencode` and inlined as SVG, so they render with no network. A QR that needs the venue wifi to appear is a QR that fails in exactly the room it was made for. If `qrencode` is not installed the deck falls back to showing the link as text.

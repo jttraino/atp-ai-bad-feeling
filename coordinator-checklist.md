@@ -1,6 +1,6 @@
 # Fleet Command Checklist, ATP Event, September 17, 2026 ABY
 
-Fleet Command hosts and records every station's Teams meeting, monitors all five during the event, and runs the keynote synthesis in the window before the Throne Room, the closeout keynote. This is that role's runbook.
+Fleet Command hosts and records every station's Teams meeting, monitors all five during the event, and runs the closeout synthesis in the window before the Throne Room, the closeout session. This is that role's runbook.
 
 ## Before the event
 
@@ -29,8 +29,8 @@ Each station runs as a guided discussion off a list of roughly eight questions. 
 - [ ] Collect each station's question list as soon as it exists, even in draft. Save it into `stations/<name>/questions.md` in this repo.
 - [ ] Chase the sponsors for their final, reviewed version by **Tuesday, September 15**. Wednesday is workable. Thursday morning is the outer edge, and still fine to absorb, since integrating a late list is cheap. An absent list is not.
 - [ ] Pre-fill likely answers against each station's questions and keep them in `questions.md` alongside the questions themselves. This is the actual work that makes the fallback usable, and it has to be done before the day.
-- [ ] Once lists start coming in, run `tools/synthesize-keynote/seed.sh`. It builds a complete, presentable deck from the question lists alone, with every station marked as a fallback. **From that moment there is always a deck**, and every later run can only improve on it. Nothing on the night can leave you standing in front of the room with nothing.
-- [ ] **Commit and push that seeded deck.** `closeout-keynote/presentation.html` is generated, not tracked by default, so the published URL that every screen's QR points at does not exist until a deck is pushed. Doing it now means the follow-along link is already live and already tested days before anyone scans it, rather than depending on a push made ninety seconds before you start talking.
+- [ ] Once lists start coming in, run `tools/synthesize-closeout/seed.sh`. It builds a complete, presentable deck from the question lists alone, with every station marked as a fallback. **From that moment there is always a deck**, and every later run can only improve on it. Nothing on the night can leave you standing in front of the room with nothing.
+- [ ] **Commit and push that seeded deck.** `closeout/presentation.html` is generated, not tracked by default, so the published URL that every screen's QR points at does not exist until a deck is pushed. Doing it now means the follow-along link is already live and already tested days before anyone scans it, rather than depending on a push made ninety seconds before you start talking.
 - [ ] Run `tests/rehearse.sh` after any change to the question lists or the tools. It rehearses the whole night, including the disasters, in about two seconds. See [`tests/README.md`](tests/README.md).
 
 ## Day before / morning of
@@ -100,14 +100,14 @@ One per station. R2 rode in the socket watching the systems so the pilot could f
 - **69 to 164 seconds** for the model to read every word said in the building and answer. This was budgeted at one minute until the rehearsal harness measured it. Note the spread: four runs varied more than twofold, and the slowest was on the smallest input, so this is not something you can shorten by trimming the transcripts. Plan against three minutes, not the median.
 - Under a second to validate and build the deck.
 
-That 10 minutes has to be absorbed by the run of show while the room moves back to the keynote area. **Adjust this section against the real run of show once Scott and Tom have it**, since it's the one number here that depends on somebody else's document. Re-measure any time with `REAL_MODEL=1 tests/rehearse.sh fullsize`.
+That 10 minutes has to be absorbed by the run of show while the room moves back to the closeout area. **Adjust this section against the real run of show once Scott and Tom have it**, since it's the one number here that depends on somebody else's document. Re-measure any time with `REAL_MODEL=1 tests/rehearse.sh fullsize`.
 
 - [ ] Run `tools/intake-transcript/intake.sh` one last time and read its five-station status table.
-- [ ] Run `./tools/synthesize-keynote/synthesize.sh`. It fires two models in parallel: the primary gets 180 seconds, and a haiku standby answers the same question as insurance against a slow night. You do not have to do anything differently; it picks one and tells you which. Add `--no-hedge` to run a single model, which is the right call for a dry run and the wrong one tonight.
+- [ ] Run `./tools/synthesize-closeout/synthesize.sh`. It fires two models in parallel: the primary gets 180 seconds, and a haiku standby answers the same question as insurance against a slow night. You do not have to do anything differently; it picks one and tells you which. Add `--no-hedge` to run a single model, which is the right call for a dry run and the wrong one tonight.
 - [ ] Read its output. It says how many stations came from a real transcript, names any on a fallback, says which model wrote the deck, and names anything it trimmed. If it says the standby carried it, that is fine and the deck says so on screen.
 - [ ] **If it says REJECTED, do not panic and do not re-run blindly.** The deck already on disk is untouched and presentable. Present that.
 - [ ] **Commit and push the deck now, before presenting.** The QR on every screen points at the published copy, and it 404s until this is done. Pages publishes in under a minute, which is about slide three.
-- [ ] Open `closeout-keynote/presentation.html` in a browser, put it on the projector, and **press P**. It sizes itself to the screen. Use + and - if the back of the room still cannot read it, and D to reveal the detail on any screen. Arrow keys to move. Fleet Command presents live, adapting rather than reading it verbatim.
+- [ ] Open `closeout/presentation.html` in a browser, put it on the projector, and **press P**. It sizes itself to the screen. Use + and - if the back of the room still cannot read it, and D to reveal the detail on any screen. Arrow keys to move. Fleet Command presents live, adapting rather than reading it verbatim.
 - [ ] **Optional, only if the room is still settling:** re-run with `--voices` to add the character voices, then press 1 to 5 or V mid-presentation to switch narrator. This takes a few minutes and is never on the critical path, because the deck you already have stays exactly where it is until the voices are ready. If the run of show is tight, skip it: generate them the day before against the seeded deck instead and rehearse with those.
 
 ## If something fails mid-session
@@ -134,4 +134,4 @@ Recorded here because the repo is meant to document the method, and because thes
 
 ## After the event
 
-- [ ] Commit and push the final transcripts and the keynote draft to this repo.
+- [ ] Commit and push the final transcripts and the closeout draft to this repo.

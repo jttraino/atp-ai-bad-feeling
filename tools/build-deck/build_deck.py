@@ -13,7 +13,7 @@ That split is deliberate and it is the whole reliability argument:
     overwritten with something that failed validation.
 
 Usage:
-  build_deck.py --payload payload.json --out closeout-keynote/presentation.html
+  build_deck.py --payload payload.json --out closeout/presentation.html
   build_deck.py --payload payload.json --out ... --mode seeded
 """
 
@@ -348,14 +348,14 @@ def points_html(points):
 
 
 DEFAULT_FOLLOW_URL = ("https://jttraino.github.io/atp-ai-bad-feeling/"
-                      "closeout-keynote/presentation.html")
+                      "closeout/presentation.html")
 
 
 def qr_svg(url):
     """A minimal inline SVG QR for one URL, via qrencode.
 
     Inline and offline on purpose: the venue's wifi is not something to bet the
-    keynote on, and a QR that needs the network to render is a QR that fails in
+    closeout on, and a QR that needs the network to render is a QR that fails in
     exactly the room it was made for. Returns "" if qrencode is missing, and the
     deck falls back to showing the link as text."""
     try:

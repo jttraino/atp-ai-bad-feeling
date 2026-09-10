@@ -1,16 +1,16 @@
 # Deck Builder
 
-Turns a validated JSON payload into `closeout-keynote/presentation.html`: one self-contained file, no network, no dependencies, arrow keys or Next to move, and a QR code back to this repo.
+Turns a validated JSON payload into `closeout/presentation.html`: one self-contained file, no network, no dependencies, arrow keys or Next to move, and a QR code back to this repo.
 
 ```bash
 python3 tools/build-deck/build_deck.py \
   --payload payload.json \
-  --out closeout-keynote/presentation.html \
+  --out closeout/presentation.html \
   --sources sky-city=transcript,swamp-planet=fallback,... \
   --mode live
 ```
 
-You don't normally run this directly. [`tools/synthesize-keynote/synthesize.sh`](../synthesize-keynote/) calls it.
+You don't normally run this directly. [`tools/synthesize-closeout/synthesize.sh`](../synthesize-closeout/) calls it.
 
 ## The split, and why it is the whole point
 

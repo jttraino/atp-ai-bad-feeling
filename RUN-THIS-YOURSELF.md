@@ -1,8 +1,8 @@
 # Run This Yourself
 
-This repo is the whole method for an event called "Your AI Program Has a Bad Feeling About This": five parallel rooms, nobody in more than one of them, and a closeout keynote built from all five in the ten minutes it took people to walk back to their seats.
+This repo is the whole method for an event called "Your AI Program Has a Bad Feeling About This": five parallel rooms, nobody in more than one of them, and a closeout session built from all five in the ten minutes it took people to walk back to their seats.
 
-Two things are worth taking. The **event format**, which is a way to get a room of senior people to say true things out loud. And the **discipline behind the keynote**, which is a small, boring set of rules that made an AI system reliable enough to stand behind in front of a hundred people, with no chance to review the output.
+Two things are worth taking. The **event format**, which is a way to get a room of senior people to say true things out loud. And the **discipline behind the closeout**, which is a small, boring set of rules that made an AI system reliable enough to stand behind in front of a hundred people, with no chance to review the output.
 
 The second one is the point. The event is about why enterprise AI initiatives fail. It would be embarrassing to run it on an AI program that fails, so the program was built the way we keep telling people to build theirs, and this document is what that actually meant in practice.
 
@@ -36,7 +36,7 @@ The model is asked for JSON against a fixed schema. Not for a deck, not for HTML
 
 You cannot check free text. You can check a schema. The narrower the thing you ask for, the more of the answer a machine can verify without you.
 
-*Here: [`framework.md`](tools/synthesize-keynote/framework.md) is the brief; the schema is enforced in code before anything renders.*
+*Here: [`framework.md`](tools/synthesize-closeout/framework.md) is the brief; the schema is enforced in code before anything renders.*
 
 ### 4. Separate "wrong" from "untidy"
 
@@ -144,8 +144,8 @@ If that passes, the pipeline works on your machine and you can start replacing o
 
 | Change | Where |
 |---|---|
-| The five stations, their ids and themes | `STATIONS` in [`build_deck.py`](tools/build-deck/build_deck.py), and the list in [`framework.md`](tools/synthesize-keynote/framework.md) |
-| What the synthesis is asked for | [`framework.md`](tools/synthesize-keynote/framework.md) |
+| The five stations, their ids and themes | `STATIONS` in [`build_deck.py`](tools/build-deck/build_deck.py), and the list in [`framework.md`](tools/synthesize-closeout/framework.md) |
+| What the synthesis is asked for | [`framework.md`](tools/synthesize-closeout/framework.md) |
 | Your question lists | `stations/<name>/questions.md`, one per station |
 | The two method screens | `method_screens()` and `receipts_screen()` in `build_deck.py`. Replace ours with something true about how you ran yours. |
 | Branding and the published URL | `--brand` in the template, and `FOLLOW_URL` |
@@ -160,7 +160,7 @@ The pipeline shells out to one command. `CLAUDE_BIN` points at it, and the only 
 So any provider works behind a ten line shim. [`tests/stubs/claude`](tests/stubs/claude) is a working example of exactly that shim, written for the rehearsal harness:
 
 ```bash
-CLAUDE_BIN=./my-provider-shim tools/synthesize-keynote/synthesize.sh
+CLAUDE_BIN=./my-provider-shim tools/synthesize-closeout/synthesize.sh
 ```
 
 Keep the JSON schema and the validation regardless of provider. That is the part doing the work.
@@ -171,7 +171,7 @@ These are plain text and portable. Paste them into whatever your organization ha
 
 **1. Adapt the repo to your event** (for a tool that can read and edit the checkout)
 
-> This repo runs a five-room workshop and builds the closeout keynote from the room transcripts. Read RUN-THIS-YOURSELF.md and coordinator-checklist.md first. Adapt it for us: our event is [WHAT IT IS] for [WHO IS COMING], and our five sessions are [LIST]. Update the station ids and themes everywhere they appear, rewrite tools/synthesize-keynote/framework.md for our themes, and replace the two method screens with placeholders I can fill in. Then run tests/rehearse.sh and fix anything that fails. Do not change the JSON schema or the validation.
+> This repo runs a five-room workshop and builds the closeout session from the room transcripts. Read RUN-THIS-YOURSELF.md and coordinator-checklist.md first. Adapt it for us: our event is [WHAT IT IS] for [WHO IS COMING], and our five sessions are [LIST]. Update the station ids and themes everywhere they appear, rewrite tools/synthesize-closeout/framework.md for our themes, and replace the two method screens with placeholders I can fill in. Then run tests/rehearse.sh and fix anything that fails. Do not change the JSON schema or the validation.
 
 **2. Draft the question lists**
 
@@ -181,7 +181,7 @@ The guessed answers are not padding. They are the fallback that stands in for th
 
 **3. Rewrite the synthesis brief**
 
-> Read tools/synthesize-keynote/framework.md. It tells a model how to turn five session transcripts into keynote content, and it returns JSON against a fixed schema. Keep the schema, the length targets and the ground rules exactly as they are. Rewrite the event context and the five session descriptions for our event: [DESCRIBE]. Remove the Star Wars section and replace it with [YOUR THEME, OR NOTHING].
+> Read tools/synthesize-closeout/framework.md. It tells a model how to turn five session transcripts into closeout content, and it returns JSON against a fixed schema. Keep the schema, the length targets and the ground rules exactly as they are. Rewrite the event context and the five session descriptions for our event: [DESCRIBE]. Remove the Star Wars section and replace it with [YOUR THEME, OR NOTHING].
 
 **4. Pressure-test it before you rely on it**
 
@@ -197,7 +197,7 @@ Then save the JSON and run the deck builder on it directly:
 
 ```bash
 python3 tools/build-deck/build_deck.py --payload out.json \
-  --out closeout-keynote/presentation.html \
+  --out closeout/presentation.html \
   --sources sky-city=transcript,swamp-planet=transcript,...
 ```
 

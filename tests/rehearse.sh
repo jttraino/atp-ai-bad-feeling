@@ -16,7 +16,7 @@ set -uo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 FIX="$REPO/tests/fixtures"
 STUBS="$REPO/tests/stubs"
-DEFAULT_FOLLOW="https://jttraino.github.io/atp-ai-bad-feeling/closeout-keynote/presentation.html"
+DEFAULT_FOLLOW="https://jttraino.github.io/atp-ai-bad-feeling/closeout/presentation.html"
 KEEP=0
 [[ "${1:-}" == "--keep" ]] && { KEEP=1; shift; }
 
@@ -41,9 +41,9 @@ check(){ if eval "$2"; then ok "$1"; else bad "$1"; fi; }
 new_scratch() {
   SCRATCH="$(mktemp -d)"
   cp -r "$REPO"/{stations,tools,assets} "$SCRATCH/"
-  mkdir -p "$SCRATCH/closeout-keynote" "$SCRATCH/Downloads"
+  mkdir -p "$SCRATCH/closeout" "$SCRATCH/Downloads"
   rm -f "$SCRATCH"/stations/*/questions.md "$SCRATCH"/stations/*/transcript.*
-  DECK="$SCRATCH/closeout-keynote/presentation.html"
+  DECK="$SCRATCH/closeout/presentation.html"
 }
 
 seed_questions() {  # the pre-event artifact: question lists in place
@@ -63,7 +63,7 @@ arrive() {  # arrive <station-name-fragment> <ext>   drop a file into mock Downl
 # the real timeline this already happened and is not what we are timing tonight.
 establish_floor() {
   ( cd "$SCRATCH" && MODE=seeded CLAUDE_BIN="$STUBS/claude" STUB_MODE=good FAST_MODEL="" \
-      ./tools/synthesize-keynote/synthesize.sh ) >"$SCRATCH/seed.log" 2>&1
+      ./tools/synthesize-closeout/synthesize.sh ) >"$SCRATCH/seed.log" 2>&1
 }
 
 run_synth() {
@@ -71,14 +71,14 @@ run_synth() {
   t0=$(date +%s%N)
   if [[ "${REAL_MODEL:-0}" == "1" ]]; then
     ( cd "$SCRATCH" && MODE="$mode" CLAUDE_BIN=claude VOICES="${VOICES:-}" \
-        ./tools/synthesize-keynote/synthesize.sh ${SYNTH_ARGS:-} ) >"$SCRATCH/synth.log" 2>&1
+        ./tools/synthesize-closeout/synthesize.sh ${SYNTH_ARGS:-} ) >"$SCRATCH/synth.log" 2>&1
   else
     ( cd "$SCRATCH" && MODE="$mode" CLAUDE_BIN="$STUBS/claude" STUB_MODE="${STUB_MODE:-good}" \
         STUB_MODE_PRIMARY="${STUB_MODE_PRIMARY:-}" STUB_MODE_FAST="${STUB_MODE_FAST:-}" \
         STUB_DELAY_PRIMARY="${STUB_DELAY_PRIMARY:-0}" STUB_DELAY_FAST="${STUB_DELAY_FAST:-0}" \
         DEADLINE_S="${DEADLINE_S:-150}" GRACE_S="${GRACE_S:-60}" FAST_MODEL="${FAST_MODEL-haiku}" \
         STUB_VOICE_FAIL="${STUB_VOICE_FAIL:-}" STUB_VOICE_VAGUE="${STUB_VOICE_VAGUE:-}" STUB_VOICE_TIMID="${STUB_VOICE_TIMID:-}" STUB_OVERDO_REFS="${STUB_OVERDO_REFS:-}" VOICES="${VOICES:-}" FOLLOW_URL="${FOLLOW_URL-$DEFAULT_FOLLOW}" \
-        ./tools/synthesize-keynote/synthesize.sh ${SYNTH_ARGS:-} ) >"$SCRATCH/synth.log" 2>&1
+        ./tools/synthesize-closeout/synthesize.sh ${SYNTH_ARGS:-} ) >"$SCRATCH/synth.log" 2>&1
   fi
   RC=$?
   t1=$(date +%s%N)

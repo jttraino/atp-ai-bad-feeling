@@ -2,7 +2,7 @@
 
 A second pass, run after the deck's content already exists and has been validated. It rewrites the words in a character's voice and changes nothing else.
 
-The point is a live toggle during the keynote: same findings, same numbers, same slide, different narrator. It is a joke that only works if the substance survives it, so the substance is not negotiable.
+The point is a live toggle during the closeout: same findings, same numbers, same slide, different narrator. It is a joke that only works if the substance survives it, so the substance is not negotiable.
 
 ## Your input
 

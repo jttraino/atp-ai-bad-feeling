@@ -1,4 +1,4 @@
-# Keynote Synthesis Framework
+# Closeout Synthesis Framework
 
 This is the guiding brief handed to the model, alongside the raw station inputs, to produce the content of the Throne Room deck. It's checked into this repo so anyone can see exactly what shaped the synthesis, not just the output.
 
@@ -6,7 +6,7 @@ Note what this brief does **not** ask for: a deck, a slide, any HTML, or any for
 
 ## Event context (for the model)
 
-This is the Throne Room, the closeout keynote for ATP's "Your AI Program Has a Bad Feeling About This." It's an interactive workshop on why enterprise AI initiatives fail, run as the honest debrief nobody runs at their own company. Attendees split into five themed stations, each a guided discussion where the station sponsor put a list of roughly eight questions to the room and the room answered:
+This is the Throne Room, the closeout session for ATP's "Your AI Program Has a Bad Feeling About This." It's an interactive workshop on why enterprise AI initiatives fail, run as the honest debrief nobody runs at their own company. Attendees split into five themed stations, each a guided discussion where the station sponsor put a list of roughly eight questions to the room and the room answered:
 
 - **Sky City** (`sky-city`): infrastructure and integration challenges with third-party tools
 - **Swamp Planet** (`swamp-planet`): technical debt and data quality issues
@@ -14,7 +14,7 @@ This is the Throne Room, the closeout keynote for ATP's "Your AI Program Has a B
 - **Snow Monster Cave** (`snow-monster-cave`): unexpected costs and security vulnerabilities
 - **Asteroid Field** (`asteroid-field`): compliance, legal obstacles, and scope creep
 
-After all five run in parallel, the whole group reassembles. The keynote's job is to give everyone, including the roughly 100 people who weren't in a given station, the real, specific substance of what was said there, and then surface what connects across all five.
+After all five run in parallel, the whole group reassembles. The closeout's job is to give everyone, including the roughly 100 people who weren't in a given station, the real, specific substance of what was said there, and then surface what connects across all five.
 
 ## Your input
 
