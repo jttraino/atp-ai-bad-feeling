@@ -52,7 +52,7 @@ VOICE_LABELS = {"straight": "Straight", "solo": "Han Solo", "threepio": "C-3PO",
 
 # Screens written by us, not by the model. They stay in one voice: they are the
 # credibility of the whole deck, and a joke is a bad place to keep your evidence.
-UNVOICED = ("method", "reliability")
+UNVOICED = ("method", "reliability", "receipts")
 
 LIMITS = {"lede": 500, "takeaway": 280, "t": 150, "d": 560, "closing_line": 360}
 
@@ -355,36 +355,87 @@ def method_screens(mode, generated_at, counts, engine=""):
             "id": "reliability",
             "kicker": "The transferable part",
             "title": "Why this worked when your AI program did not",
-            "takeaway": "Give the model the judgment call. Never give it the parts you can verify.",
+            "takeaway": "Give the model the judgment call. Never give it anything you could check by machine instead.",
             "body":
-                '<p class="lede">Nothing here needed a better model. It needed the boring things '
-                'around the model to be decided in advance.</p>'
+                '<p class="lede">Nothing here needed a better model. It needed the unglamorous things '
+                'around the model to be decided in advance, and every one of them is a thing your '
+                'program can do on Monday.</p>'
                 + points_html([
-                    {"t": "One source of truth, in version control, before the event",
-                     "d": "Roles, deadlines, failure modes, and the exact fallback behavior were written "
-                          "down and argued over in a public repo. AI fails when there is no good source "
-                          "of truth, and it fails silently."},
-                    {"t": "Constrain the output, then validate it",
-                     "d": "A free-text answer cannot be checked. A schema can. The narrower the thing you "
-                          "ask for, the more of the result you can verify automatically."},
-                    {"t": "Design the degraded path first",
-                     "d": "We knew what a failed recording would look like on screen before we knew whether "
-                          "any recording would fail. A fallback invented under time pressure is not a fallback."},
-                    {"t": "Label provenance where the audience can see it",
-                     "d": "Any station on a fallback is marked as one, on its own slide. The failure mode "
-                          "to fear is not a wrong answer, it is a wrong answer that looks exactly like a "
-                          "right one."},
-                    {"t": "Rehearse the whole pipeline, not the parts",
-                     "d": "We ran the night end to end against mock transcripts, including every disaster, "
-                          "and timed it. That found four real defects, one of which only appears at full "
-                          "transcript length and would have failed live, in this room, tonight."},
-                ])
-                + '<div class="callout"><div class="h">Take it with you</div>'
-                  f'<div class="b">The event runbooks, the synthesis tool, the guiding brief, and the '
-                  f'rehearsal harness that produced this deck are all public. Scan the code or go to '
-                  f'<b>{REPO_URL}</b>.</div>{qr_block}</div>',
+                    {"t": "Deterministic wherever determinism is available",
+                     "d": "The model wrote the words. Code decided the running order, the branding, "
+                          "which stations are flagged, the navigation, the QR, and this sentence. A "
+                          "model that cannot choose the running order cannot get the running order "
+                          "wrong. Shrink what it is allowed to decide and you shrink what a human has "
+                          "to check at 7:50pm."},
+                    {"t": "Never ask a model a question you can already answer",
+                     "d": "Which stations produced a real recording is a fact sitting on a disk. The "
+                          "deck reads it from there and throws away whatever the model says about it. "
+                          "That closed a real hole: a model that relabelled a failed station as a real "
+                          "one silently deleted the warning built to catch exactly that."},
+                    {"t": "Constrain the output until it can be validated",
+                     "d": "It returns JSON against a fixed schema, not slides. Unknown station, missing "
+                          "station, too many bullets: rejected, and the deck already on disk stands "
+                          "untouched. You cannot check free text. You can check a schema."},
+                    {"t": "Write the evals before the night, and test the disasters",
+                     "d": "137 automated checks across 24 rehearsals of this evening, including no "
+                          "transcript at all, prose instead of JSON, a crashed CLI, a transcript "
+                          "arriving late, and a narrator quietly dropping the numbers. The happy path "
+                          "is the least useful thing you can test."},
+                    {"t": "Score the things you would otherwise argue about",
+                     "d": "Did the voices keep every figure? Diffed, not eyeballed. Did a voice change "
+                          "anything worth a button? Under 60% of fields rewritten and it is flagged. Too "
+                          "many jokes on one slide? Counted. Each one replaced a judgement call somebody "
+                          "would have had to make under time pressure, badly."},
+                    {"t": "Measure it, do not estimate it",
+                     "d": "The run of show budgeted one minute for this synthesis. Measured against real "
+                          "full-length transcripts it is 69 to 167 seconds, and the slowest run was on "
+                          "the smallest input. Every number on the first screen came from a stopwatch."},
+                ]),
         },
     ]
+
+
+def receipts_screen(qr_block):
+    """The last screen: what the discipline on the previous one actually caught.
+
+    This is the event's own premise turned on the event. A room full of people who do
+    not run an honest debrief at their own company is owed one, and the only one we can
+    honestly give them is ours."""
+    return {
+        "id": "receipts",
+        "kicker": "Our own bad feeling",
+        "title": "What that discipline caught, in this deck, this week",
+        "takeaway": "Every one of these was found by running the thing. Not one was found by reading it.",
+        "body":
+            '<p class="lede">This is an AI program too, so it had a bad feeling about itself. '
+            'Six defects, all of them from rehearsal, none of them from review.</p>'
+            + points_html([
+                {"t": "A bug that would have failed live, in this room, tonight",
+                 "d": "The prompt was passed as a shell argument. Linux caps a single argument at 128KB "
+                      "and five real transcripts come to 285KB, so it worked in every small test and "
+                      "would have died the moment it saw the real thing, with everyone sitting here."},
+                {"t": "The model could quietly promote a failed station to a real one",
+                 "d": "Which deleted the on-screen warning that exists to prevent precisely that. Not "
+                      "fixed with a better prompt. Fixed by never asking."},
+                {"t": "A 26-character overrun threw away an entire run",
+                 "d": "Validation could not tell the difference between output that was wrong and output "
+                      "that was merely too long. Now it can: one rejects, the other gets trimmed."},
+                {"t": "Two models running in parallel were running in sequence",
+                 "d": "And producing perfect output the whole time. Caught only because a test asserted "
+                      "on elapsed time rather than on the result."},
+                {"t": "The QR codes rendered as perfectly sized blank squares",
+                 "d": "Right dimensions, right position, nothing inside. No assertion about the markup "
+                      "would have caught it, so the test now scans the code back with a barcode reader."},
+                {"t": "A narrator that rewrote 9% of the deck and called it a voice",
+                 "d": "It passed every schema check and was pointless. That is the failure mode worth "
+                      "fearing: not the answer that is obviously wrong, the one that looks exactly right."},
+            ])
+            + '<div class="callout"><div class="h">Take the whole thing</div>'
+              '<div class="b">The principles above, each with the code that implements it and the '
+              'defect it caught, plus how to run this format yourself: read RUN-THIS-YOURSELF.md. '
+              'The runbooks, the tool, the brief and every transcript are public too. Scan any '
+              'screen, or go to <b>' + REPO_URL + '</b>.</div>' + qr_block + '</div>',
+    }
 
 
 def station_screen(st, mode="live"):
@@ -441,6 +492,7 @@ def build(data, mode, generated_at, engine=""):
               'tool that built it, is at <b>' + REPO_URL + '</b>. Take it and run this at your own '
               'company.</div>' + qr_block + '</div>',
     })
+    screens.append(receipts_screen(qr_block))
     return screens
 
 

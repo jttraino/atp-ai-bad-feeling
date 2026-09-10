@@ -148,7 +148,7 @@ scen_seed() {  # days before: build the floor from question lists alone
   check "deck says it was built pre-event"      "deck_says 'before the stations ran'"
   check "title marks it pre-seeded"             "deck_says 'pre-seeded'"
   check "QR code embedded"                      "deck_says 'data:image/png;base64,'"
-  check "8 screens: 2 method, 5 stations, 1 patterns" "[[ \$(deck_screens) -eq 8 ]]"
+  check "9 screens: 2 method, 5 stations, patterns, receipts" "[[ \$(deck_screens) -eq 9 ]]"
 }
 
 scen_happy() {  # the night, everything works
@@ -369,7 +369,7 @@ scen_no_hedge_flag() {  # --no-hedge on a run that succeeds: one model, no stand
   check "exits 0"                               "[[ $RC -eq 0 ]]"
   check "no standby was started"                "! grep -q 'running in parallel' '$SCRATCH/synth.log'"
   check "primary still produced the deck"       "grep -q 'from the primary model' '$SCRATCH/synth.log'"
-  check "deck is complete"                      "[[ \$(deck_screens) -eq 8 ]]"
+  check "deck is complete"                      "[[ \$(deck_screens) -eq 9 ]]"
 }
 
 scen_voices() {  # the live toggle
@@ -391,7 +391,7 @@ scen_voices_partial() {  # one voice fails: drop it, keep the rest, never lose t
   check "exits 0"                               "[[ $RC -eq 0 ]]"
   check "the bad voice was dropped"             "grep -q 'vader: unusable' '$SCRATCH/synth.log'"
   check "the good voice survived"               "[[ \"\$(deck_voices)\" == 'straight yoda' ]]"
-  check "deck is still complete"                "[[ \$(deck_screens) -eq 8 ]]"
+  check "deck is still complete"                "[[ \$(deck_screens) -eq 9 ]]"
 }
 
 scen_voices_all_fail() {  # every voice fails: straight deck stands, exit still clean
@@ -429,7 +429,7 @@ scen_refs_overdone() {  # Star Wars references piling up on one slide
   check "exits 0, this is advice not a failure"  "[[ $RC -eq 0 ]]"
   check "flags the crowded screen"               "grep -q 'more than one Star Wars reference' '$SCRATCH/synth.log'"
   check "names which screen"                     "grep -q 'sky-city (2)' '$SCRATCH/synth.log'"
-  check "deck is built regardless"               "[[ \$(deck_screens) -eq 8 ]]"
+  check "deck is built regardless"               "[[ \$(deck_screens) -eq 9 ]]"
 }
 
 # ---- projector legibility and the follow-along link ----------------------------
@@ -452,7 +452,7 @@ scen_follow() {  # every screen carries a link to itself
   check "exits 0"                               "[[ $RC -eq 0 ]]"
   check "follow bar is in the deck"             "deck_says 'Follow along on your phone'"
   check "url is per screen, not just the deck"  "deck_says 'FOLLOW_URL + \"#\" + s.id'"
-  check "a QR exists for every screen"          "[[ \$(deck_json QRS | python3 -c 'import json,sys;print(len(json.load(sys.stdin)))') -eq 8 ]]"
+  check "a QR exists for every screen"          "[[ \$(deck_json QRS | python3 -c 'import json,sys;print(len(json.load(sys.stdin)))') -eq 9 ]]"
   check "deep links land on that screen"        "deck_says 'screens().findIndex(s => s.id === id)'"
   check "address bar tracks the screen"         "deck_says 'history.replaceState'"
   FOLLOW_URL="" run_synth live

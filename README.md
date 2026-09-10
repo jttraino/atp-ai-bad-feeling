@@ -30,8 +30,15 @@ Immediately afterward, the group reassembles for **the Throne Room**, the closin
 
 This repo documents the full method, not just the output. That includes [how the Throne Room deck was actually synthesized](tools/synthesize-keynote/) from the five station transcripts in the few minutes between sessions ending and the group reassembling, and [the rehearsal harness](tests/) we used to run the whole night end to end beforehand, including every way it could fail.
 
+## Take this and run it yourself
+
+**[RUN-THIS-YOURSELF.md](RUN-THIS-YOURSELF.md)** is the transferable part: ten principles that made the closing keynote reliable enough to present unreviewed in front of a hundred people, each with the code that implements it and the defect it caught, followed by how to run the event format at your own organization.
+
+The short version, since the event is about why enterprise AI programs fail and it would be embarrassing to run it on one that does: be deterministic wherever determinism is available, never ask a model a question you can already answer, constrain the output until a machine can validate it, write the evals before the night and test the disasters, score the things you would otherwise argue about, and measure instead of estimating.
+
 ## Contents
 
+- [`RUN-THIS-YOURSELF.md`](RUN-THIS-YOURSELF.md): the principles behind the method, and how to run it at your own organization
 - [`crew-manifest.md`](crew-manifest.md): who held which role on the day, and what was still unfilled going in
 - [`station-sponsor-instructions.md`](station-sponsor-instructions.md): what station sponsors needed to prepare and run their session
 - [`coordinator-checklist.md`](coordinator-checklist.md): Fleet Command's runbook for hosting, recording, and monitoring all five stations, and running the closing synthesis
