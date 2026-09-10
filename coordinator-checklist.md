@@ -100,8 +100,8 @@ One per station. R2 rode in the socket watching the systems so the pilot could f
 That 10 minutes has to be absorbed by the run of show while the room moves back to the keynote area. **Adjust this section against the real run of show once Scott and Tom have it**, since it's the one number here that depends on somebody else's document. Re-measure any time with `REAL_MODEL=1 tests/rehearse.sh fullsize`.
 
 - [ ] Run `tools/intake-transcript/intake.sh` one last time and read its five-station status table.
-- [ ] Run `./tools/synthesize-keynote/synthesize.sh`.
-- [ ] Read its output. It says how many stations came from a real transcript, names any on a fallback, and names anything it trimmed.
+- [ ] Run `./tools/synthesize-keynote/synthesize.sh`. It fires two models in parallel: the primary gets 180 seconds, and a haiku standby answers the same question as insurance against a slow night. You do not have to do anything differently; it picks one and tells you which.
+- [ ] Read its output. It says how many stations came from a real transcript, names any on a fallback, says which model wrote the deck, and names anything it trimmed. If it says the standby carried it, that is fine and the deck says so on screen.
 - [ ] **If it says REJECTED, do not panic and do not re-run blindly.** The deck already on disk is untouched and presentable. Present that.
 - [ ] Open `closing-keynote/presentation.html` in a browser. Arrow keys or Next. Fleet Command presents it live, adapting on the fly rather than reading it verbatim.
 
@@ -112,7 +112,8 @@ That 10 minutes has to be absorbed by the run of show while the room moves back 
 - Recording or transcription didn't start, or stopped: rejoin and restart it. The meeting is still running. This is what the Astromechs are watching for.
 - Teams fails entirely for a station: fall back to the sponsor's second device, if they brought one, emailed to john@johntrainor.com as the session ends. Where the Astromech carried it around the room, this may actually be the better capture of the two.
 - No usable audio at all: "I find your lack of transcript disturbing." But the synthesis script automatically falls back to that station's `questions.md`, the question list plus pre-filled likely answers, and the deck flags it in a banner on that station's own slide. The station still appears, clearly marked as not sourced from a transcript. An older code, sir, but it checks out.
-- The model returns nonsense, or the CLI dies: the run is rejected, nothing is overwritten, and the deck already on disk stands. This is rehearsed in `tests/rehearse.sh` under `garbage`, `badschema` and `crash`.
+- The primary model is slow, or returns nonsense: the haiku standby has been running the same job in parallel the whole time, and its answer is used instead. The deck credits it on the provenance line. Rehearsed under `hedge-standby` and `hedge-primary-bad`.
+- Both models fail, or the venue network is down: the run is rejected, nothing is overwritten, and the deck already on disk stands. Rehearsed under `garbage`, `badschema`, `crash` and `hedge-both-bad`.
 
 ## Crew manifest
 

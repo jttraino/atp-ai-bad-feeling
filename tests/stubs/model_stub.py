@@ -13,9 +13,21 @@ selected by STUB_MODE so the harness can rehearse the failure paths too:
   liar      marks a fallback station as a transcript      (the dangerous one)
   fail      exits nonzero, as a crashed or rate-limited CLI would
 """
-import json, os, re, sys
+import json, os, re, sys, time
 
-MODE = os.environ.get("STUB_MODE", "good")
+# Which of the two hedged paths are we standing in for? synthesize.sh passes --model
+# only for the standby, so an empty or non-haiku model is the primary.
+MODEL = os.environ.get("STUB_MODEL", "")
+LANE = "FAST" if "haiku" in MODEL.lower() else "PRIMARY"
+
+# STUB_MODE still sets both lanes at once, for the scenarios that don't care.
+# STUB_MODE_PRIMARY / STUB_MODE_FAST override per lane, and the DELAY pair fakes
+# latency so the deadline logic can actually be rehearsed.
+MODE = os.environ.get(f"STUB_MODE_{LANE}") or os.environ.get("STUB_MODE", "good")
+DELAY = float(os.environ.get(f"STUB_DELAY_{LANE}", "0") or 0)
+if DELAY:
+    time.sleep(DELAY)
+
 prompt = " ".join(sys.argv[1:]) or sys.stdin.read()
 
 if MODE == "fail":

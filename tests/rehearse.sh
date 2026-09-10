@@ -19,7 +19,8 @@ STUBS="$REPO/tests/stubs"
 KEEP=0
 [[ "${1:-}" == "--keep" ]] && { KEEP=1; shift; }
 
-ALL=(seed happy mixed docx disaster late garbage badschema liar crash nothing noprior fullsize)
+ALL=(seed happy mixed docx disaster late garbage badschema liar crash nothing noprior fullsize
+     hedge-primary hedge-standby hedge-primary-bad hedge-both-bad hedge-disabled)
 SCENARIOS=("${@:-}")
 [[ -z "${SCENARIOS[0]:-}" ]] && SCENARIOS=("${ALL[@]}")
 
@@ -57,7 +58,7 @@ arrive() {  # arrive <station-name-fragment> <ext>   drop a file into mock Downl
 # The floor: what seed.sh built days before the event. Always the stub, because in
 # the real timeline this already happened and is not what we are timing tonight.
 establish_floor() {
-  ( cd "$SCRATCH" && MODE=seeded CLAUDE_BIN="$STUBS/claude" STUB_MODE=good \
+  ( cd "$SCRATCH" && MODE=seeded CLAUDE_BIN="$STUBS/claude" STUB_MODE=good FAST_MODEL="" \
       ./tools/synthesize-keynote/synthesize.sh ) >"$SCRATCH/seed.log" 2>&1
 }
 
@@ -69,6 +70,9 @@ run_synth() {
         ./tools/synthesize-keynote/synthesize.sh ) >"$SCRATCH/synth.log" 2>&1
   else
     ( cd "$SCRATCH" && MODE="$mode" CLAUDE_BIN="$STUBS/claude" STUB_MODE="${STUB_MODE:-good}" \
+        STUB_MODE_PRIMARY="${STUB_MODE_PRIMARY:-}" STUB_MODE_FAST="${STUB_MODE_FAST:-}" \
+        STUB_DELAY_PRIMARY="${STUB_DELAY_PRIMARY:-0}" STUB_DELAY_FAST="${STUB_DELAY_FAST:-0}" \
+        DEADLINE_S="${DEADLINE_S:-150}" GRACE_S="${GRACE_S:-60}" FAST_MODEL="${FAST_MODEL-haiku}" \
         ./tools/synthesize-keynote/synthesize.sh ) >"$SCRATCH/synth.log" 2>&1
   fi
   RC=$?
@@ -195,7 +199,7 @@ scen_garbage() {  # the model returns prose instead of JSON
   check "run fails loudly"                      "[[ $RC -ne 0 ]]"
   check "says REJECTED"                         "grep -q 'REJECTED' '$SCRATCH/synth.log'"
   check "existing deck is byte-identical"       "[[ \$(md5sum '$DECK' | cut -d' ' -f1) == '$before' ]]"
-  check "tells you the old deck still stands"   "grep -q 'previous deck still stands' '$SCRATCH/synth.log'"
+  check "tells you the old deck still stands"   "grep -q 'untouched and presentable' '$SCRATCH/synth.log'"
 }
 
 scen_badschema() {  # well-formed JSON that breaks the rules
@@ -243,7 +247,7 @@ scen_noprior() {  # a bad model run with no seeded deck behind it: the case seed
   new_scratch; seed_questions
   STUB_MODE=garbage run_synth live
   check "run fails loudly"                      "[[ $RC -ne 0 ]]"
-  check "says there is nothing to fall back to" "grep -q 'no deck at' '$SCRATCH/synth.log'"
+  check "says there is nothing to fall back to" "grep -q 'no deck to fall back on' '$SCRATCH/synth.log'"
   check "tells you to run seed.sh"              "grep -q 'Run seed.sh' '$SCRATCH/synth.log'"
   check "and there is indeed no deck"           "[[ ! -f '$DECK' ]]"
 }
@@ -269,6 +273,62 @@ scen_fullsize() {  # timing against transcripts the length a real 45-minute stat
   fi
 }
 
+# ---- the hedge: two models in parallel, deliberately not a race -----------------
+
+scen_hedge_primary() {  # primary is fine, standby is irrelevant
+  new_scratch; seed_questions; establish_floor
+  STUB_DELAY_FAST=4 DEADLINE_S=30 run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "primary won"                           "grep -q 'from the primary model' '$SCRATCH/synth.log'"
+  check "standby never mentioned as the source" "! grep -q 'standby, because' '$SCRATCH/synth.log'"
+  check "deck credits the primary"              "deck_says 'Written by the primary model'"
+  if [[ $ELAPSED_MS -lt 4000 ]]; then ok "did not wait for the slower standby (${ELAPSED_MS}ms)"
+  else bad "waited ${ELAPSED_MS}ms; it should not block on the standby"; fi
+}
+
+scen_hedge_standby() {  # primary blows the deadline, standby carries the room
+  new_scratch; seed_questions; establish_floor
+  STUB_DELAY_PRIMARY=30 DEADLINE_S=3 GRACE_S=10 run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "says the primary missed the deadline"  "grep -q 'missed the 3s deadline' '$SCRATCH/synth.log'"
+  check "standby supplied the content"          "grep -q 'haiku standby' '$SCRATCH/synth.log'"
+  check "deck admits it on the provenance line" "deck_says 'haiku standby'"
+  check "still has real transcript detail"      "grep -Eqi '400,000|four hundred thousand' '$DECK'"
+  if [[ $ELAPSED_MS -lt 15000 ]]; then ok "finished near the deadline, not the primary's 30s (${ELAPSED_MS}ms)"
+  else bad "took ${ELAPSED_MS}ms; the deadline did not cut the primary off"; fi
+}
+
+scen_hedge_primary_bad() {  # primary returns fast but useless: don't sit out the deadline
+  new_scratch; seed_questions; establish_floor
+  STUB_MODE_PRIMARY=garbage STUB_MODE_FAST=good DEADLINE_S=60 run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "names the primary as unusable"         "grep -q 'Primary unusable' '$SCRATCH/synth.log'"
+  check "standby supplied the content"          "grep -q 'haiku standby' '$SCRATCH/synth.log'"
+  if [[ $ELAPSED_MS -lt 20000 ]]; then ok "switched immediately, did not wait out 60s (${ELAPSED_MS}ms)"
+  else bad "waited ${ELAPSED_MS}ms for a deadline it had no reason to wait for"; fi
+}
+
+scen_hedge_both_bad() {  # both paths fail: the seeded deck is the whole point
+  new_scratch; seed_questions; establish_floor
+  local before; before=$(md5sum "$DECK" | cut -d' ' -f1)
+  STUB_MODE=garbage DEADLINE_S=3 GRACE_S=3 run_synth live
+  check "fails loudly"                          "[[ $RC -ne 0 ]]"
+  check "reports both paths"                    "[[ \$(grep -c 'unusable' '$SCRATCH/synth.log') -ge 2 ]]"
+  check "points at the deck already on disk"    "grep -q 'untouched and presentable' '$SCRATCH/synth.log'"
+  check "and that deck is byte-identical"       "[[ \$(md5sum '$DECK' | cut -d' ' -f1) == '$before' ]]"
+}
+
+scen_hedge_disabled() {  # FAST_MODEL empty: single path, no hang waiting on a standby
+  new_scratch; seed_questions; establish_floor
+  local before; before=$(md5sum "$DECK" | cut -d' ' -f1)
+  FAST_MODEL="" STUB_MODE=garbage DEADLINE_S=30 run_synth live
+  check "fails loudly"                          "[[ $RC -ne 0 ]]"
+  check "no standby was started"                "! grep -q 'running in parallel' '$SCRATCH/synth.log'"
+  check "existing deck untouched"               "[[ \$(md5sum '$DECK' | cut -d' ' -f1) == '$before' ]]"
+  if [[ $ELAPSED_MS -lt 20000 ]]; then ok "gave up promptly, no phantom standby wait (${ELAPSED_MS}ms)"
+  else bad "hung ${ELAPSED_MS}ms waiting for a standby that was never started"; fi
+}
+
 # ---------------------------------------------------------------- driver
 echo
 echo "Rehearsal: ${SCENARIOS[*]}"
@@ -278,7 +338,7 @@ echo
 for SCEN in "${SCENARIOS[@]}"; do
   echo "  ${c_d}scenario:${c_0} $SCEN"
   ELAPSED_MS=0
-  "scen_$SCEN"
+  "scen_${SCEN//-/_}"
   echo "    ${c_d}synthesis wall time: ${ELAPSED_MS}ms${c_0}"
   if [[ $KEEP == 1 ]]; then echo "    ${c_d}scratch: $SCRATCH${c_0}"; else rm -rf "$SCRATCH"; fi
   echo

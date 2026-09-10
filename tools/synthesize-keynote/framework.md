@@ -52,7 +52,7 @@ Schema rules. The structural ones are hard: break one and the whole run is rejec
 - Do **not** report which stations were on a transcript and which were on a fallback. You are told, above, so that you write appropriately, but the deck takes that from disk. Anything you say about it is discarded. We don't ask a model to report a fact we already know.
 - `points`: 3 to 5 per station. `patterns`: 3 to 5 total.
 - Length targets: `lede` 500, `takeaway` 280, `closing_line` 360, each `t` 150, each `d` 560. These protect the slide layout. Going over gets your text trimmed on a word boundary rather than rejected, so write to the target and don't pad.
-- Plain text only in every field. No HTML, no markdown, no bullet characters.
+- Plain text only in every field. No HTML, no markdown, no bullet characters. Don't use em dashes; the builder rewrites them to commas anyway, so write the comma yourself.
 
 ## Ground rules
 

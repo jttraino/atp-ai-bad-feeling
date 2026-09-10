@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 # Stands in for the `claude` CLI on PATH during rehearsals.
-# Accepts and ignores -p, exactly as the real CLI takes the prompt as an argument.
-while [[ "${1:-}" == -* ]]; do shift; done
+# Understands the two flags synthesize.sh actually passes: --model and -p.
+MODEL=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --model) MODEL="$2"; shift 2 ;;
+    --model=*) MODEL="${1#*=}"; shift ;;
+    -p|--print) shift ;;
+    -*) shift ;;
+    *) break ;;
+  esac
+done
+export STUB_MODEL="$MODEL"
 exec python3 "$(dirname "$(readlink -f "$0")")/model_stub.py" "$@"

@@ -26,6 +26,11 @@ REAL_MODEL=1 tests/rehearse.sh fullsize    # the real claude CLI, real-length tr
 | `nothing` | No transcript and no question list. The one case we refuse to paper over. |
 | `noprior` | A bad model run with no seeded deck behind it. The case `seed.sh` exists to prevent. |
 | `fullsize` | Transcripts inflated to the ~8,500 words a real 45-minute station produces, and timed. |
+| `hedge-primary` | Both models run; the primary is fine and the standby is ignored. |
+| `hedge-standby` | The primary blows the deadline and the standby carries the room. |
+| `hedge-primary-bad` | The primary returns fast but useless; switch immediately rather than waiting out the deadline. |
+| `hedge-both-bad` | Both models fail. The seeded deck is the whole point. |
+| `hedge-disabled` | `FAST_MODEL=""`. Single path, and no hang waiting on a standby that was never started. |
 
 ## What the reps actually found
 
@@ -40,6 +45,10 @@ Every one of these was a real defect found by running the thing, not by reading 
 **Synthesis takes between 69 and 164 seconds, and the coordinator checklist said 60.** Four real-model runs came in at 69, 102, 105 and 164 seconds. The important part is not the median, it is that **the slowest run was on the smallest input**: latency varies more than twofold for reasons that have nothing to do with how much we ask it to read, so it cannot be shortened by trimming transcripts. The run of show now gets a three-minute slice rather than a one-minute one, which moves the end-to-end worst case from roughly 8 minutes to roughly 10. Had we measured once and written that number down, we would have planned against 105 seconds and been wrong by a minute on the night.
 
 **A 600-word test transcript flatters everything.** The fixtures are written to be readable. Real stations produce something like 8,500 words each. `tests/inflate.py` pads the fixtures to that length so the timing rep measures the real thing; without it, two of the four findings above stay hidden.
+
+**The parallel models ran strictly in sequence, and looked fine doing it.** `primary_pid=$(spawn primary ...)` starts a background subshell, but the subshell inherits the command substitution's pipe, and `$( )` blocks until every holder of that pipe closes it. So each "background" call blocked the caller until it finished. The hedge produced correct output the entire time; it was simply useless, because both calls were serial. Found only because `hedge-primary` asserts on elapsed time rather than on the result. A test that had checked the output alone would have passed forever.
+
+**`kill` on an already-dead process tripped `set -e`.** Cleaning up the losing model ended the script with a nonzero status even after a completely successful run. Found by `hedge-primary` asserting `exits 0`.
 
 ## Layout
 
