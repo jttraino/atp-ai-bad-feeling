@@ -39,6 +39,7 @@ The short version, since the event is about why enterprise AI programs fail and 
 ## Contents
 
 - [`RUN-THIS-YOURSELF.md`](RUN-THIS-YOURSELF.md): the principles behind the method, and how to run it at your own organization
+- [`updates/`](updates/): status notes sent to the organizing team while this was being built
 - [`crew-manifest.md`](crew-manifest.md): who held which role on the day, and what was still unfilled going in
 - [`station-sponsor-instructions.md`](station-sponsor-instructions.md): what station sponsors needed to prepare and run their session
 - [`coordinator-checklist.md`](coordinator-checklist.md): Fleet Command's runbook for hosting, recording, and monitoring all five stations, and running the closing synthesis
