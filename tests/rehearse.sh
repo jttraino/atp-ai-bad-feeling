@@ -16,12 +16,14 @@ set -uo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 FIX="$REPO/tests/fixtures"
 STUBS="$REPO/tests/stubs"
+DEFAULT_FOLLOW="https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html"
 KEEP=0
 [[ "${1:-}" == "--keep" ]] && { KEEP=1; shift; }
 
 ALL=(seed happy mixed docx disaster late garbage badschema liar crash nothing noprior fullsize
      hedge-primary hedge-standby hedge-primary-bad hedge-both-bad hedge-disabled
-     no-hedge-flag voices voices-partial voices-all-fail voices-launder voices-timid refs-overdone)
+     no-hedge-flag voices voices-partial voices-all-fail voices-launder voices-timid refs-overdone
+     project follow qr-decodes)
 SCENARIOS=("${@:-}")
 [[ -z "${SCENARIOS[0]:-}" ]] && SCENARIOS=("${ALL[@]}")
 
@@ -31,6 +33,7 @@ c_g=$'\033[32m'; c_r=$'\033[31m'; c_y=$'\033[33m'; c_d=$'\033[2m'; c_0=$'\033[0m
 [[ -t 1 ]] || { c_g=""; c_r=""; c_y=""; c_d=""; c_0=""; }
 
 ok()   { pass=$((pass+1)); echo "    ${c_g}PASS${c_0}  $1"; }
+skip() { echo "    ${c_y}SKIP${c_0}  $1"; }
 bad()  { fail=$((fail+1)); FAILURES+=("$SCEN: $1"); echo "    ${c_r}FAIL${c_0}  $1"; }
 check(){ if eval "$2"; then ok "$1"; else bad "$1"; fi; }
 
@@ -74,7 +77,7 @@ run_synth() {
         STUB_MODE_PRIMARY="${STUB_MODE_PRIMARY:-}" STUB_MODE_FAST="${STUB_MODE_FAST:-}" \
         STUB_DELAY_PRIMARY="${STUB_DELAY_PRIMARY:-0}" STUB_DELAY_FAST="${STUB_DELAY_FAST:-0}" \
         DEADLINE_S="${DEADLINE_S:-150}" GRACE_S="${GRACE_S:-60}" FAST_MODEL="${FAST_MODEL-haiku}" \
-        STUB_VOICE_FAIL="${STUB_VOICE_FAIL:-}" STUB_VOICE_VAGUE="${STUB_VOICE_VAGUE:-}" STUB_VOICE_TIMID="${STUB_VOICE_TIMID:-}" STUB_OVERDO_REFS="${STUB_OVERDO_REFS:-}" VOICES="${VOICES:-}" \
+        STUB_VOICE_FAIL="${STUB_VOICE_FAIL:-}" STUB_VOICE_VAGUE="${STUB_VOICE_VAGUE:-}" STUB_VOICE_TIMID="${STUB_VOICE_TIMID:-}" STUB_OVERDO_REFS="${STUB_OVERDO_REFS:-}" VOICES="${VOICES:-}" FOLLOW_URL="${FOLLOW_URL-$DEFAULT_FOLLOW}" \
         ./tools/synthesize-keynote/synthesize.sh ${SYNTH_ARGS:-} ) >"$SCRATCH/synth.log" 2>&1
   fi
   RC=$?
@@ -422,6 +425,70 @@ scen_refs_overdone() {  # Star Wars references piling up on one slide
   check "flags the crowded screen"               "grep -q 'more than one Star Wars reference' '$SCRATCH/synth.log'"
   check "names which screen"                     "grep -q 'sky-city (2)' '$SCRATCH/synth.log'"
   check "deck is built regardless"               "[[ \$(deck_screens) -eq 8 ]]"
+}
+
+# ---- projector legibility and the follow-along link ----------------------------
+
+scen_project() {  # presentation mode has to exist in the file and be self-sizing
+  new_scratch; seed_questions; establish_floor
+  run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "P toggles a presenting class"          "deck_says 'classList.toggle(\"presenting\"'"
+  check "type scales off one variable"          "deck_says 'calc(var(--base-fs) * var(--s))'"
+  check "autofit shrinks to the real screen"    "deck_says 'root.scrollHeight > window.innerHeight'"
+  check "manual nudge overrides autofit"        "deck_says 'if (!presenting || scale) return'"
+  check "projector shows headlines, not detail" "deck_says ':root.presenting ol.points .d { display: none; }'"
+  check "D reveals detail on demand"            "deck_says 'classList.toggle(\"details\")'"
+}
+
+scen_follow() {  # every screen carries a link to itself
+  new_scratch; seed_questions; establish_floor
+  run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "follow bar is in the deck"             "deck_says 'Follow along on your phone'"
+  check "url is per screen, not just the deck"  "deck_says 'FOLLOW_URL + \"#\" + s.id'"
+  check "a QR exists for every screen"          "[[ \$(deck_json QRS | python3 -c 'import json,sys;print(len(json.load(sys.stdin)))') -eq 8 ]]"
+  check "deep links land on that screen"        "deck_says 'screens().findIndex(s => s.id === id)'"
+  check "address bar tracks the screen"         "deck_says 'history.replaceState'"
+  FOLLOW_URL="" run_synth live
+  check "--no-follow really removes it"         "[[ \$(deck_json QRS | python3 -c 'import json,sys;print(len(json.load(sys.stdin)))') -eq 0 ]]"
+}
+
+scen_qr_decodes() {  # the only check that would have caught a blank QR
+  new_scratch; seed_questions; establish_floor
+  run_synth live
+  if ! command -v chromium >/dev/null || ! command -v zbarimg >/dev/null; then
+    skip "QR decode needs chromium and zbarimg"; return
+  fi
+  python3 - "$DECK" "$SCRATCH" <<'QRPY'
+import json, pathlib, re, sys
+src = pathlib.Path(sys.argv[1]).read_text()
+i = src.index("const QRS = ") + len("const QRS = ")
+depth=0;j=i;instr=False;esc=False
+while j < len(src):
+    c=src[j]
+    if instr:
+        if esc: esc=False
+        elif c=="\\": esc=True
+        elif c=='"': instr=False
+    elif c=='"': instr=True
+    elif c=="{": depth+=1
+    elif c=="}":
+        depth-=1
+        if depth==0: break
+    j+=1
+qrs=json.loads(src[i:j+1])
+svg=qrs["swamp-planet"]
+pathlib.Path(sys.argv[2]+"/qr.html").write_text(
+  '<body style="margin:0;background:#fff"><style>.followqr{width:300px;aspect-ratio:1;display:block}</style>'+svg+'</body>')
+QRPY
+  chromium --headless --disable-gpu --no-sandbox --hide-scrollbars --virtual-time-budget=3000     --window-size=320,320 --screenshot="$SCRATCH/qr.png" "file://$SCRATCH/qr.html" >/dev/null 2>&1
+  local got; got="$(zbarimg --quiet --raw "$SCRATCH/qr.png" 2>/dev/null | tr -d '\n')"
+  if [[ "$got" == "$DEFAULT_FOLLOW#swamp-planet" ]]; then
+    ok "QR scans to the right screen's URL"
+  else
+    bad "QR decoded to '$got'"
+  fi
 }
 
 # ---------------------------------------------------------------- driver

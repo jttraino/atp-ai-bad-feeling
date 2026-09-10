@@ -24,12 +24,16 @@
 #   GRACE_S       extra time to wait for the standby after that (default: 45)
 #   VOICES        comma separated character voices, or empty for none (default: none)
 #   VOICE_MODEL   model for the voice passes (default: the primary)
+#   FOLLOW_URL    published URL of the deck. Every screen shows a QR to its own anchor
+#                 so the room can follow along on a phone. Empty string turns it off.
 #
 # Flags:
 #   --no-hedge            one model only, half the tokens, no insurance
 #   --voices[=a,b,c]      add character voices; default set is yoda,vader,solo,threepio
 #   --no-voices           explicit off
 #   --deadline SECONDS
+#   --follow-url URL      override the published URL shown in the QR on every screen
+#   --no-follow           no QR, no follow-along link
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -46,6 +50,7 @@ DEADLINE_S="${DEADLINE_S:-180}"
 GRACE_S="${GRACE_S:-45}"
 VOICES="${VOICES-}"
 VOICE_MODEL="${VOICE_MODEL-$PRIMARY_MODEL}"
+FOLLOW_URL="${FOLLOW_URL-https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html}"
 VOICE_DIR="$REPO_ROOT/tools/synthesize-keynote/voices"
 VOICE_BRIEF="$REPO_ROOT/tools/synthesize-keynote/voices.md"
 DEFAULT_VOICES="yoda,vader,solo,threepio"
@@ -58,6 +63,8 @@ while [[ $# -gt 0 ]]; do
     --voices=*)   VOICES="${1#*=}"; shift ;;
     --no-voices)  VOICES=""; shift ;;
     --deadline)   DEADLINE_S="$2"; shift 2 ;;
+    --follow-url) FOLLOW_URL="$2"; shift 2 ;;
+    --no-follow)  FOLLOW_URL=""; shift ;;
     -h|--help)    awk 'NR>1 && /^#/ {sub(/^# ?/, ""); print; next} NR>1 {exit}' "${BASH_SOURCE[0]}"; exit 0 ;;
     *) echo "Unknown option: $1" >&2; exit 64 ;;
   esac
@@ -251,7 +258,7 @@ fi
 echo "Usable output in ${model_elapsed}s from $engine" >&2
 
 if ! python3 "$BUILDER" --payload "$winner" --out "$OUT_FILE" --mode "$MODE" \
-    --sources "$sources" --engine "$engine"; then
+    --sources "$sources" --engine "$engine" --follow-url "$FOLLOW_URL"; then
   echo "FAILED after $(( $(date +%s) - started ))s. Present the deck that is already there." >&2
   exit 2
 fi
@@ -327,7 +334,7 @@ PYEOF
       # Rebuild with the voices folded in. Same validator, same everything: a voice is
       # just another payload that has to pass the schema before it can reach a slide.
       if python3 "$BUILDER" --payload "$winner" --out "$OUT_FILE" --mode "$MODE" \
-          --sources "$sources" --engine "$engine" "${voice_args[@]}"; then
+          --sources "$sources" --engine "$engine" --follow-url "$FOLLOW_URL" "${voice_args[@]}"; then
         echo "Voices added in $(( $(date +%s) - voice_started ))s." >&2
       else
         echo "Voice rebuild failed; the straight deck on disk is untouched." >&2

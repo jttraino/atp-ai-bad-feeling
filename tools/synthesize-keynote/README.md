@@ -105,3 +105,33 @@ Voices are defined one per file in [`voices/`](voices/), so adding one is writin
 | Reference density | More than one Star Wars reference on a single screen. Invisible slide by slide, obvious across a deck. |
 
 **The two method screens never change voice.** They are our words rather than the model's, and they are the evidence for everything else in the deck. A joke is a bad place to keep your evidence.
+
+## Presenting it
+
+Press **P**. That switches the deck into projector mode and it sizes itself to the screen it is actually on.
+
+| Key | Does |
+|---|---|
+| Arrows, space, PageUp/Down | Move between screens |
+| **P** | Projector mode on and off |
+| **D** | Reveal the detail text on the current screen |
+| **+** / **-** | Nudge the type size, which overrides the automatic fit |
+| **1** to **5**, **V** | Character voices |
+| Home / End | First and last screen |
+
+**Projector mode shows headlines, not detail, and that is a measurement rather than a preference.** Five headlines each followed by two lines of detail needs 1458px of a 993px screen at type large enough to read from the back of a room. Something has to go, and it should be the thing nobody reads off a wall in a bar. Headlines plus the takeaway is a slide; headlines plus 400 characters of detail is a document being projected at people. Press D if you want the detail on a particular screen.
+
+**It fits itself to the room.** The deck starts at double size and shrinks until the screen fits the screen, because a projector cannot scroll and the takeaway is the last element on every slide, so anything that overflows takes the line for the room with it. The moment you nudge with + or -, the automatic fit stops arguing with you: at that point you are standing in the room and it is not.
+
+## Following along on a phone
+
+Every screen carries a QR to **its own anchor**, so someone scanning during station four lands on station four, with the full detail that would not fit on the projector.
+
+```
+FOLLOW_URL=https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html
+tools/synthesize-keynote/synthesize.sh --no-follow      # no QR, no link
+```
+
+The QRs are generated at build time with `qrencode` and inlined as SVG, so they render with no network. A QR that needs the venue wifi to appear is a QR that fails in exactly the room it was made for. If `qrencode` is not installed the deck falls back to showing the link as text.
+
+**The link only resolves once the deck is pushed.** Two things have to be true: GitHub Pages enabled on the repo, and this run's deck committed and pushed. Push it immediately after synthesis and before you start talking; Pages takes under a minute to publish, which is roughly slide three.

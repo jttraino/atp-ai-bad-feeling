@@ -6,6 +6,10 @@ Yavin 4, at the end. Everyone who flew the battle in a different ship, in differ
 
 `presentation.html` lands here: one self-contained file, no network, arrow keys or Next to move, and a QR code back to this repo on the way out.
 
+Press **P** for projector mode, which sizes itself to the screen it is on. Every screen also carries a QR to its own anchor on the published copy, so anyone in the room can scan mid-talk and land on that exact screen with the full detail the projector cannot show:
+
+**https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html**
+
 A first version is built days before the event by [`tools/synthesize-keynote/seed.sh`](../tools/synthesize-keynote/) from the station question lists alone, so a presentable deck exists before anyone speaks. It is rebuilt in the gap after the stations wrap, from whatever transcripts actually arrived, and any station still running on its question list is labelled as such on its own slide.
 
 Fleet Command drives it live and adapts. It is a set of talking points that happens to be shaped like slides, not a script.

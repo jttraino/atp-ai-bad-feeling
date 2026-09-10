@@ -40,6 +40,8 @@ Fleet Command's table is the cockpit for the day. It needs a working hyperdrive 
 - [ ] Kit: laptop plus charger, hotspot plus charged battery pack, headphones, all 5 meeting links pinned or bookmarked.
 - [ ] Open all 5 meetings and re-confirm no lobby is configured.
 - [ ] Print the QR code (`assets/repo-qr-code.png`) as signage, large enough to scan from a few feet away, and place it prominently so attendees can find the repo after the event.
+- [ ] Confirm GitHub Pages is enabled on the repo (Settings, Pages, deploy from `master` / root). Every screen of the closing deck shows a QR to its own anchor on that site so the room can follow along on their phones, and none of those links work until Pages is on. Check by loading the published URL on a phone.
+- [ ] Rehearse on the actual projector at 5:00 setup: press **P**, walk to the back of the room, and confirm you can read a station screen and scan its QR. Nudge with + and - until you can.
 
 ## Arrival and setup
 
@@ -103,7 +105,8 @@ That 10 minutes has to be absorbed by the run of show while the room moves back 
 - [ ] Run `./tools/synthesize-keynote/synthesize.sh`. It fires two models in parallel: the primary gets 180 seconds, and a haiku standby answers the same question as insurance against a slow night. You do not have to do anything differently; it picks one and tells you which. Add `--no-hedge` to run a single model, which is the right call for a dry run and the wrong one tonight.
 - [ ] Read its output. It says how many stations came from a real transcript, names any on a fallback, says which model wrote the deck, and names anything it trimmed. If it says the standby carried it, that is fine and the deck says so on screen.
 - [ ] **If it says REJECTED, do not panic and do not re-run blindly.** The deck already on disk is untouched and presentable. Present that.
-- [ ] Open `closing-keynote/presentation.html` in a browser. Arrow keys or Next. Fleet Command presents it live, adapting on the fly rather than reading it verbatim.
+- [ ] **Commit and push the deck now, before presenting.** The QR on every screen points at the published copy, and it 404s until this is done. Pages publishes in under a minute, which is about slide three.
+- [ ] Open `closing-keynote/presentation.html` in a browser, put it on the projector, and **press P**. It sizes itself to the screen. Use + and - if the back of the room still cannot read it, and D to reveal the detail on any screen. Arrow keys to move. Fleet Command presents live, adapting rather than reading it verbatim.
 - [ ] **Optional, only if the room is still settling:** re-run with `--voices` to add the character voices, then press 1 to 5 or V mid-presentation to switch narrator. This takes a few minutes and is never on the critical path, because the deck you already have stays exactly where it is until the voices are ready. If the run of show is tight, skip it: generate them the day before against the seeded deck instead and rehearse with those.
 
 ## If something fails mid-session

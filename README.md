@@ -36,7 +36,7 @@ This repo documents the full method, not just the output. That includes [how the
 - [`station-sponsor-instructions.md`](station-sponsor-instructions.md): what station sponsors needed to prepare and run their session
 - [`coordinator-checklist.md`](coordinator-checklist.md): Fleet Command's runbook for hosting, recording, and monitoring all five stations, and running the closing synthesis
 - `stations/`: question list per station before the event, transcript and notes after it
-- `closing-keynote/`: the Throne Room, the synthesized closing keynote talking points, added after the event
+- [`closing-keynote/`](closing-keynote/): the Throne Room, the synthesized closing keynote deck, added after the event. [Read it here.](https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html)
 - [`tools/synthesize-keynote/`](tools/synthesize-keynote/): the tool and guiding framework used to turn the five transcripts into the keynote deck
 - [`tools/intake-transcript/`](tools/intake-transcript/): files transcripts off the laptop and out of email as they arrive
 - [`tools/build-deck/`](tools/build-deck/): validates the model's output and renders the deck, deterministically
