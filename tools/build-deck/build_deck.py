@@ -620,6 +620,15 @@ TEMPLATE = """<!DOCTYPE html>
   /* Demo builds carry this on every screen, not just the first. A page of invented
      people and invented numbers sitting at a public URL has to say so wherever the
      reader happens to land, including on a deep link straight into station four. */
+  /* Selecting a narrator on a screen that never changes voice used to do nothing at
+     all, with the only explanation in small grey type at the far edge of the voice
+     bar. The deck opens on one of those screens, so the first thing anyone tried
+     looked broken. Say it where they are looking. */
+  .voicenote { border-left: 3px solid var(--brand); background: var(--fill);
+               padding: 9px 13px; border-radius: 4px; margin-bottom: 18px;
+               font-size: calc(var(--fs) * .85); color: var(--ink-2); }
+  .voicenote b { color: var(--ink); }
+
   .demobar { border: 1px solid var(--warn); border-left-width: 3px; background: #fdf6ee;
              color: var(--ink-2); padding: 9px 13px; border-radius: 4px;
              margin-bottom: 16px; font-size: calc(var(--fs) * .8); }
@@ -659,6 +668,7 @@ TEMPLATE = """<!DOCTYPE html>
     </div>
     <h1 id="title"></h1>
     <div class="rule"></div>
+    <div class="voicenote" id="voicenote" hidden></div>
     <div id="body"></div>
     <div class="takeaway">
       <div class="h">THE LINE FOR THE ROOM</div>
@@ -771,9 +781,26 @@ function render() {
 
   el("prev").disabled = i === 0;
   el("next").disabled = i === SCREENS.length - 1;
+  const unvoiced = UNVOICED.indexOf(s.id) !== -1;
+  const label = (VOICES.find(v => v[0] === voice) || ["", ""])[1];
   el("voiceHint").textContent =
-    UNVOICED.indexOf(s.id) !== -1 ? "this screen is ours, so it stays straight"
-                                  : "keys 1-" + VOICES.length + ", V to cycle, P to project, D for detail";
+    unvoiced ? "this screen is ours, so it stays straight"
+             : "keys 1-" + VOICES.length + ", V to cycle, P to project, D for detail";
+
+  // Say plainly why nothing changed, on the screen where nothing changed.
+  const note = el("voicenote");
+  if (unvoiced && voice !== "straight") {
+    note.hidden = false;
+    note.innerHTML = "<b>" + label + " is not narrating this screen.</b> The screens about " +
+      "how this was built are ours, not the model's, so they stay in one voice. " +
+      "Move to any station screen and " + label + " takes over.";
+  } else {
+    note.hidden = true;
+  }
+  // Dim the buttons here too, so the control looks as inert as it is.
+  document.querySelectorAll("#voiceButtons button").forEach(b => {
+    b.style.opacity = unvoiced && b.dataset.voice !== "straight" ? "0.45" : "";
+  });
   window.scrollTo(0, 0);
 }
 el("prev").onclick = () => { i = Math.max(0, i - 1); render(); };

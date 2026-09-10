@@ -382,6 +382,8 @@ scen_voices() {  # the live toggle
   check "straight text is still there too"      "grep -Eqi '400,000|four hundred thousand' '$DECK'"
   check "voice bar is rendered"                 "deck_says 'id=\"voiceButtons\"'"
   check "method screens excluded from voicing"  "deck_says 'UNVOICED'"
+  check "and say so where the reader is looking" "deck_says 'is not narrating this screen'"
+  check "inert voice buttons are dimmed"        "deck_says 'b.style.opacity'"
   check "straight deck was up before voices"    "grep -q 'Straight deck up' '$SCRATCH/synth.log'"
 }
 
