@@ -65,7 +65,9 @@ Schema rules. The structural ones are hard: break one and the whole run is rejec
 
 The station names invite it, and the room will enjoy it when it lands. It has to land on its own, though: a reference that has been dragged into place is worse than no reference, and the substance always comes first.
 
-**Use one where the finding genuinely has that shape, and nowhere else. Three or four across the entire deck is right. Ten is a disaster.** Skip a slide entirely rather than force one onto it. Never bend a fact to reach a joke, and never let a reference replace the specific number or example it is sitting next to.
+**At most one per screen, and prefer fewer.** Never two on the same slide: that is the point where the room stops hearing the finding and starts waiting for the next gag. Skip a screen entirely rather than force one onto it, and most screens should have none. Never bend a fact to reach a joke, and never let a reference replace the specific number or example it is sitting next to.
+
+The event's own title is already the joke, so **"a bad feeling about this" may appear once in the entire deck and not more.**
 
 Lines that tend to fit what this event is actually about:
 

@@ -216,6 +216,32 @@ def voice_divergence(straight, voiced):
     return sum(1 for x, y in zip(a, b) if x.strip() != y.strip()) / len(a)
 
 
+# Counted, not policed. The brief asks for at most one reference per screen because
+# two on a slide is where the room stops hearing the finding and starts waiting for
+# the next gag. A model will drift past that, and drift is invisible while you are
+# reading any single slide and obvious across a whole deck.
+REFERENCES = [
+    "bad feeling", "older code", "tell me the odds", "how the force works",
+    "lack of", "droids you", "do or do not", "there is no try", "no try",
+    "it's a trap", "garbage will do", "high ground", "i am your father",
+    "the force is strong", "these are not the droids", "great, kid",
+]
+
+
+def reference_report(data):
+    """(per-screen overuse, total count). Advisory only."""
+    over, total = [], 0
+    for st in data["stations"] + [{"id": "patterns", "lede": "", "takeaway": data["closing_line"],
+                                   "points": data["patterns"]}]:
+        blob = " ".join([st.get("lede", ""), st.get("takeaway", "")]
+                        + [p["t"] for p in st["points"]] + [p["d"] for p in st["points"]]).lower()
+        n = sum(blob.count(r) for r in REFERENCES)
+        total += n
+        if n > 1:
+            over.append((st["id"], n))
+    return over, total
+
+
 def e(s):
     return html.escape(s, quote=False)
 
@@ -665,6 +691,13 @@ def main():
 
     if args.check:
         return 0
+
+    over, total = reference_report(data)
+    if over:
+        detail = ", ".join(f"{sid} ({n})" for sid, n in over)
+        print(f"NOTE: more than one Star Wars reference on a screen: {detail}. "
+              f"{total} in the deck overall. The brief asks for at most one per screen; "
+              f"cut the weaker one before presenting.", file=sys.stderr)
 
     for warning in CLAMPED:
         print(f"CLAMPED: {warning}", file=sys.stderr)

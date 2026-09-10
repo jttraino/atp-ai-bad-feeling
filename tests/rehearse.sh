@@ -21,7 +21,7 @@ KEEP=0
 
 ALL=(seed happy mixed docx disaster late garbage badschema liar crash nothing noprior fullsize
      hedge-primary hedge-standby hedge-primary-bad hedge-both-bad hedge-disabled
-     no-hedge-flag voices voices-partial voices-all-fail voices-launder voices-timid)
+     no-hedge-flag voices voices-partial voices-all-fail voices-launder voices-timid refs-overdone)
 SCENARIOS=("${@:-}")
 [[ -z "${SCENARIOS[0]:-}" ]] && SCENARIOS=("${ALL[@]}")
 
@@ -74,7 +74,7 @@ run_synth() {
         STUB_MODE_PRIMARY="${STUB_MODE_PRIMARY:-}" STUB_MODE_FAST="${STUB_MODE_FAST:-}" \
         STUB_DELAY_PRIMARY="${STUB_DELAY_PRIMARY:-0}" STUB_DELAY_FAST="${STUB_DELAY_FAST:-0}" \
         DEADLINE_S="${DEADLINE_S:-150}" GRACE_S="${GRACE_S:-60}" FAST_MODEL="${FAST_MODEL-haiku}" \
-        STUB_VOICE_FAIL="${STUB_VOICE_FAIL:-}" STUB_VOICE_VAGUE="${STUB_VOICE_VAGUE:-}" STUB_VOICE_TIMID="${STUB_VOICE_TIMID:-}" VOICES="${VOICES:-}" \
+        STUB_VOICE_FAIL="${STUB_VOICE_FAIL:-}" STUB_VOICE_VAGUE="${STUB_VOICE_VAGUE:-}" STUB_VOICE_TIMID="${STUB_VOICE_TIMID:-}" STUB_OVERDO_REFS="${STUB_OVERDO_REFS:-}" VOICES="${VOICES:-}" \
         ./tools/synthesize-keynote/synthesize.sh ${SYNTH_ARGS:-} ) >"$SCRATCH/synth.log" 2>&1
   fi
   RC=$?
@@ -413,6 +413,15 @@ scen_voices_timid() {  # a voice that validates perfectly and is pointless on st
   check "warns the voice barely differs"        "grep -q 'were actually rewritten' '$SCRATCH/synth.log'"
   check "tells you which file to strengthen"    "grep -q 'voices/yoda.md' '$SCRATCH/synth.log'"
   check "voice is still offered"                "[[ \"\$(deck_voices)\" == 'straight yoda' ]]"
+}
+
+scen_refs_overdone() {  # Star Wars references piling up on one slide
+  new_scratch; seed_questions; establish_floor
+  STUB_OVERDO_REFS=1 run_synth live
+  check "exits 0, this is advice not a failure"  "[[ $RC -eq 0 ]]"
+  check "flags the crowded screen"               "grep -q 'more than one Star Wars reference' '$SCRATCH/synth.log'"
+  check "names which screen"                     "grep -q 'sky-city (2)' '$SCRATCH/synth.log'"
+  check "deck is built regardless"               "[[ \$(deck_screens) -eq 8 ]]"
 }
 
 # ---------------------------------------------------------------- driver
