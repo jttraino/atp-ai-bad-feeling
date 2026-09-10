@@ -522,27 +522,52 @@ scen_theming() {  # one accent per station, and none of them unreadable
   ( cd "$SCRATCH" && ./tools/intake-transcript/intake.sh "$SCRATCH/Downloads" ) >/dev/null 2>&1
   run_synth live
   check "exits 0"                               "[[ $RC -eq 0 ]]"
-  check "five distinct station accents"         "[[ \$(deck_json ACCENTS | python3 -c 'import json,sys;d=json.load(sys.stdin);print(len(set(d.values())))') -eq 5 ]]"
-  check "accent is applied per screen"          "deck_says 'ACCENTS[s.id] || DEFAULT_ACCENT'"
-  check "print pages carry their accent too"    "deck_says 'style=\"--brand:'"
-  check "paper and ink are never themed"        "[[ \$(grep -c -- '--bg: #ffffff' '$DECK') -eq 1 ]]"
+  check "five distinct station themes"          "[[ \$(deck_json THEMES | python3 -c 'import json,sys;d=json.load(sys.stdin);print(len({v[\"surface\"] for v in d.values()}))') -eq 5 ]]"
+  check "theme is applied per screen"           "deck_says 'applyTheme(s.id)'"
+  check "dark stations really are dark"         "[[ \$(deck_json THEMES | python3 -c 'import json,sys;d=json.load(sys.stdin);print(sum(1 for v in d.values() if int(v[\"surface\"][1:3],16) < 64))') -eq 3 ]]"
+  check "print pages carry their theme too"     "deck_says 'themeVars(s.id)'"
+  check "method screens keep the default"       "deck_says 'THEMES[id] || DEFAULT_THEME'"
 
   # Every accent readable from the back of the room, measured rather than eyeballed.
-  local res; res="$(python3 - "$DECK" <<'CONTRASTPY2'
+  # Every text colour against its own surface, measured off the built deck rather
+  # than trusted. This is the check that has now caught two pre-existing failures.
+  local res; res="$(python3 - "$DECK" <<'CONTRASTPY'
 import json, re, sys, pathlib
 src = pathlib.Path(sys.argv[1]).read_text()
+def grab(name):
+    i = src.index(f"const {name} = ") + len(f"const {name} = ")
+    depth=0;j=i;instr=False;esc=False
+    while j < len(src):
+        c=src[j]
+        if instr:
+            if esc: esc=False
+            elif c=="\\": esc=True
+            elif c=='"': instr=False
+        elif c=='"': instr=True
+        elif c in "{[": depth+=1
+        elif c in "}]":
+            depth-=1
+            if depth==0: break
+        j+=1
+    return json.loads(src[i:j+1])
 def lum(h):
     h=h.lstrip("#"); ch=[int(h[k:k+2],16)/255 for k in (0,2,4)]
     ch=[c/12.92 if c<=0.03928 else ((c+0.055)/1.055)**2.4 for c in ch]
     return 0.2126*ch[0]+0.7152*ch[1]+0.0722*ch[2]
-ratio=lambda fg:(lambda a,b:(a+0.05)/(b+0.05))(*sorted((lum(fg),lum("#ffffff")),reverse=True))
-cols=re.findall(r'"(#[0-9A-Fa-f]{6})"', re.search(r"const ACCENTS = (\{[^}]*\})", src).group(1))
-cols.append(re.search(r'const DEFAULT_ACCENT = "(#[0-9A-Fa-f]{6})"', src).group(1))
-print("FAIL" if any(ratio(c) < 4.5 for c in cols) else "OK", min(f"{ratio(c):.2f}" for c in cols))
-CONTRASTPY2
+def ratio(fg,bg):
+    a,b=sorted((lum(fg),lum(bg)),reverse=True); return (a+0.05)/(b+0.05)
+FLOORS={"ink":7.0,"ink2":4.5,"ink3":4.5,"accent":4.5,"warn":4.0}
+themes=grab("THEMES"); themes["default"]=grab("DEFAULT_THEME")
+bad=[]; worst=99
+for name,t in themes.items():
+    for k,floor in FLOORS.items():
+        r=ratio(t[k],t["surface"]); worst=min(worst,r)
+        if r<floor: bad.append(f"{name}.{k} {r:.2f}:1<{floor}")
+print(("FAIL " + ", ".join(bad)) if bad else f"OK {worst:.2f}")
+CONTRASTPY
 )"
-  if [[ "$res" == OK* ]]; then ok "every accent clears WCAG AA (worst ${res#OK })"
-  else bad "an accent fails WCAG AA: $res"; fi
+  if [[ "$res" == OK* ]]; then ok "every text colour clears its floor (worst ${res#OK })"
+  else bad "a text colour is below its contrast floor: $res"; fi
 }
 
 scen_docs() {  # the scenario table has silently drifted twice; stop it happening again

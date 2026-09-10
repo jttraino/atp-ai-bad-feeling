@@ -37,13 +37,26 @@ On a hard rejection the existing deck is left byte-for-byte untouched and the fa
 
 This closes a real hole found in rehearsal: a model that relabelled a fallback as a transcript made the on-screen "not from a transcript" warning disappear, which is precisely the failure the warning exists to prevent. The fix is not a better prompt. It is not asking the question.
 
-## Station accents
+## Station themes
 
-Each station screen carries its own accent colour, so the room can see it has moved without being told: Bespin amber for Sky City, Dagobah moss for Swamp Planet, glacial blue for Ice Planet, deep red for Snow Monster Cave, slate for Asteroid Field. The three screens about the method keep the default blue, since those are ours.
+Each station screen gets a complete palette, not an accent: page background, card, ink, secondary and muted text, rules, and the warning colours.
 
-**Only the accent changes.** Paper stays white and ink stays near-black on every screen. This gets projected into a bar, and a themed background would undo the work that made it readable from the back of the room.
+| Station | Look |
+|---|---|
+| Sky City | Bespin above the clouds. Warm sunset gradient, cream card, dark ink. |
+| Swamp Planet | Dagobah under the canopy. Dark, deep green. |
+| Ice Planet | Hoth in daylight. Pale blue-white, white card. |
+| Snow Monster Cave | Inside the cave. Near-black with red. |
+| Asteroid Field | Deep space, with rocks. Near-black with slate blue. |
+| The three method screens | Default light. Those screens are ours. |
 
-**Every accent is checked against white at build time and the build fails below WCAG AA.** Five palettes is five chances to get contrast wrong by eye. The first thing that check found was that the original brand blue had been failing at 3.98:1 all along, in the point numerals and the pill text, since before any theming existed.
+Backgrounds are CSS gradients rather than images, so the file stays self-contained and renders with no network. Themes are applied by setting CSS variables per screen, so the layout never knows which station it is on.
+
+**Every text colour is measured against its own surface at build time and the build fails below its floor**: 7:1 for body ink, because that is the slide and the back of the room is a long way away, 4.5:1 for secondary, muted and accent text, 4:1 for warnings. Dark themes are not a legibility problem when the contrast is checked; unchecked ones are.
+
+That check has now caught two failures that predate any theming: the original brand blue at 3.98:1 in the point numerals, and the original muted grey at 3.80:1 in the kicker and page count.
+
+The QR keeps a white panel on every theme, because a QR needs a light quiet zone to scan. Verified by rendering it on the darkest card and scanning it back.
 
 ## Output
 

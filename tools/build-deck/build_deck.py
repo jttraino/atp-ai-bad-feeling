@@ -47,23 +47,73 @@ STATION_THEME = {s[0]: s[2] for s in STATIONS}
 # boundary and reported. Structural problems (a missing station, a bad id, the wrong
 # number of points, output that isn't JSON) are still hard rejections, because those
 # mean the model misunderstood the task rather than got wordy.
-# One accent per station, so the room can see it has moved without being told. Only
-# the accent changes: paper stays white and ink stays near-black on every screen,
-# because this gets projected into a bar and a themed background would undo the work
-# that made it readable from the back.
+# A full palette per station, not just an accent, because an accent was not enough to
+# tell the room it had moved. Dark for the swamp, the cave and the asteroid field;
+# light for Bespin and Hoth.
 #
-# Every value is checked against white at build time and the build fails below WCAG AA.
-# Five palettes is five chances to get contrast wrong by eye, and the first thing the
-# check found was that the original brand blue had been failing at 3.98:1 all along.
-DEFAULT_ACCENT = "#2C6FBF"
-ACCENTS = {
-    "sky-city": "#A4560A",           # Bespin, late afternoon
-    "swamp-planet": "#3F5D28",       # Dagobah moss
-    "ice-planet": "#176684",         # Hoth, glacial
-    "snow-monster-cave": "#9B2226",  # the cave, and the room about breaches
-    "asteroid-field": "#455663",     # slate
+# `bg` is the page behind the card and can be any CSS background, so the clouds and the
+# murk are gradients rather than images and the file stays self-contained and offline.
+# Everything else is a flat colour, and every text colour is measured against its own
+# surface at build time. The build fails below threshold, because five palettes is five
+# chances to make something unreadable and this gets projected into a bar.
+#
+# The check earned its keep twice before any of these existed: the original brand blue
+# was failing at 3.98:1 and the original muted grey at 3.80:1.
+THEMES = {
+    "sky-city": {  # Bespin, late afternoon, above the clouds
+        "bg": ("radial-gradient(1200px 520px at 12% 8%, #FFE7C7 0%, rgba(255,231,199,0) 62%), "
+               "radial-gradient(900px 420px at 88% 22%, #FFD1B0 0%, rgba(255,209,176,0) 60%), "
+               "radial-gradient(1000px 500px at 50% 100%, #F7B98A 0%, rgba(247,185,138,0) 65%), "
+               "linear-gradient(170deg, #FFF3E2 0%, #FBD9BC 55%, #EFA97A 100%)"),
+        "surface": "#FFFBF5", "fill": "#FBF1E4", "line": "#EBDCC8",
+        "ink": "#2A1A0C", "ink2": "#5C4531", "ink3": "#7A6047",
+        "accent": "#9A4F08", "warn": "#8F4B08", "warnbg": "#FDF1E1",
+    },
+    "swamp-planet": {  # Dagobah, under the canopy
+        "bg": ("radial-gradient(900px 480px at 20% 10%, #2C4020 0%, rgba(44,64,32,0) 60%), "
+               "radial-gradient(760px 420px at 82% 78%, #1B3018 0%, rgba(27,48,24,0) 62%), "
+               "linear-gradient(165deg, #16210F 0%, #1B2A13 50%, #0E170A 100%)"),
+        "surface": "#1E2C15", "fill": "#26361B", "line": "#3A4E2C",
+        "ink": "#EDF3E4", "ink2": "#C3D2B2", "ink3": "#9DB088",
+        "accent": "#A8D06A", "warn": "#E8B45C", "warnbg": "#33280F",
+    },
+    "ice-planet": {  # Hoth, daylight on the plain
+        "bg": ("radial-gradient(1100px 480px at 24% 6%, #FFFFFF 0%, rgba(255,255,255,0) 60%), "
+               "radial-gradient(900px 500px at 78% 82%, #BFDCEC 0%, rgba(191,220,236,0) 62%), "
+               "linear-gradient(175deg, #F2F9FD 0%, #DCEBF5 55%, #C2DAEA 100%)"),
+        "surface": "#FFFFFF", "fill": "#F0F7FB", "line": "#D6E5EF",
+        "ink": "#0E2430", "ink2": "#3A5665", "ink3": "#5B7787",
+        "accent": "#0F5B78", "warn": "#8F4B08", "warnbg": "#FDF1E1",
+    },
+    "snow-monster-cave": {  # inside the cave, and the room about breaches
+        "bg": ("radial-gradient(820px 420px at 78% 12%, #3A1E1B 0%, rgba(58,30,27,0) 62%), "
+               "radial-gradient(900px 500px at 14% 88%, #2A1412 0%, rgba(42,20,18,0) 60%), "
+               "linear-gradient(170deg, #1A1110 0%, #241514 55%, #0F0908 100%)"),
+        "surface": "#241615", "fill": "#2E1C1A", "line": "#452926",
+        "ink": "#F6E9E7", "ink2": "#D6B8B4", "ink3": "#B08F8B",
+        "accent": "#F0736B", "warn": "#F0A35C", "warnbg": "#3A2412",
+    },
+    "asteroid-field": {  # deep space, and the rocks
+        "bg": ("radial-gradient(2px 2px at 18% 22%, #7C8B95 0%, rgba(124,139,149,0) 100%), "
+               "radial-gradient(3px 3px at 62% 14%, #6B7A85 0%, rgba(107,122,133,0) 100%), "
+               "radial-gradient(2px 2px at 84% 62%, #7C8B95 0%, rgba(124,139,149,0) 100%), "
+               "radial-gradient(900px 520px at 70% 20%, #1D242A 0%, rgba(29,36,42,0) 64%), "
+               "linear-gradient(168deg, #0C0F12 0%, #141A1F 55%, #080A0C 100%)"),
+        "surface": "#171B1E", "fill": "#1F262B", "line": "#333D44",
+        "ink": "#E9EDF0", "ink2": "#B8C2C9", "ink3": "#93A0A8",
+        "accent": "#7FB4D4", "warn": "#E8B45C", "warnbg": "#2A2412",
+    },
 }
-MIN_CONTRAST = 4.5
+
+DEFAULT_THEME = {  # the three screens that are ours
+    "bg": "#f5f7f8", "surface": "#ffffff", "fill": "#f5f7f8", "line": "#e3e7e9",
+    "ink": "#14181a", "ink2": "#4a5257", "ink3": "#697276",
+    "accent": "#2C6FBF", "warn": "#B4610C", "warnbg": "#fdf6ee",
+}
+
+# Minimum contrast of each text colour against its own surface. ink is held to AAA
+# because it is the body of the slide and the back of the room is a long way away.
+CONTRAST_FLOORS = {"ink": 7.0, "ink2": 4.5, "ink3": 4.5, "accent": 4.5, "warn": 4.0}
 
 
 def _relative_luminance(hex_colour):
@@ -73,18 +123,19 @@ def _relative_luminance(hex_colour):
     return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2]
 
 
-def contrast_ratio(fg, bg="#ffffff"):
+def contrast_ratio(fg, bg):
     a, b = sorted((_relative_luminance(fg), _relative_luminance(bg)), reverse=True)
     return (a + 0.05) / (b + 0.05)
 
 
-def check_accents():
+def check_themes():
     """Refuse to build a deck nobody at the back can read. Returns a list of failures."""
     bad = []
-    for name, colour in [("default", DEFAULT_ACCENT)] + sorted(ACCENTS.items()):
-        r = contrast_ratio(colour)
-        if r < MIN_CONTRAST:
-            bad.append(f"{name} {colour} is {r:.2f}:1 against white, below AA {MIN_CONTRAST}:1")
+    for name, t in [("default", DEFAULT_THEME)] + sorted(THEMES.items()):
+        for key, floor in CONTRAST_FLOORS.items():
+            r = contrast_ratio(t[key], t["surface"])
+            if r < floor:
+                bad.append(f"{name}.{key} {t[key]} on {t['surface']} is {r:.2f}:1, needs {floor}:1")
     return bad
 
 
@@ -559,11 +610,14 @@ TEMPLATE = """<!DOCTYPE html>
     --s: 1;
     --fs: calc(var(--base-fs) * var(--s));
     --maxw: 940px;
-    --brand: __DEFAULT_ACCENT__;
+    /* Set per screen from THEMES. The defaults here are the method-screen palette. */
+    --brand: #2C6FBF;
+    --page: #f5f7f8;
+    --warnbg: #fdf6ee;
     --warn: #B4610C;
     --ink: #14181a;
     --ink-2: #4a5257;
-    --ink-3: #7b8489;
+    --ink-3: #697276;
     --line: #e3e7e9;
     --fill: #f5f7f8;
     --bg: #ffffff;
@@ -571,7 +625,8 @@ TEMPLATE = """<!DOCTYPE html>
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0;
-    background: var(--fill); color: var(--ink);
+    background: var(--page); color: var(--ink);
+    transition: background 320ms ease, color 200ms ease;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     font-size: var(--fs); line-height: 1.5;
   }
@@ -604,11 +659,12 @@ TEMPLATE = """<!DOCTYPE html>
   :root.presenting .followqr { width: calc(var(--fs) * 4.6); }
   :root.presenting .follow .t { font-size: calc(var(--fs) * .62); }
   .shell { max-width: var(--maxw); margin: 0 auto; padding: 28px 24px 64px; }
-  .stage { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 34px 38px 30px; }
+  .stage { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 34px 38px 30px;
+           box-shadow: 0 1px 3px rgba(0,0,0,.07), 0 14px 44px rgba(0,0,0,.12); }
 
   .rail { display: flex; gap: 4px; margin-bottom: 22px; }
-  .rail span { flex: 1; height: 3px; background: #dfe4e6; cursor: pointer; }
-  .rail span.done { background: #b9c1c4; }
+  .rail span { flex: 1; height: 3px; background: var(--line); cursor: pointer; }
+  .rail span.done { background: var(--ink-3); }
   .rail span.now { background: var(--brand); }
 
   .topline { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
@@ -633,7 +689,7 @@ TEMPLATE = """<!DOCTYPE html>
           padding: 1px 6px; vertical-align: 2px; margin-left: 4px; }
   .pill.warn { color: var(--warn); border-color: var(--warn); }
 
-  .flag { border: 1px solid var(--warn); border-left-width: 3px; background: #fdf6ee;
+  .flag { border: 1px solid var(--warn); border-left-width: 3px; background: var(--warnbg);
           color: var(--ink-2); padding: 11px 14px; border-radius: 4px; margin-bottom: 18px; font-size: calc(var(--fs) * .93); }
   .flag b { color: var(--warn); }
 
@@ -648,8 +704,8 @@ TEMPLATE = """<!DOCTYPE html>
   .takeaway .b { font-weight: 600; }
 
   .nav { display: flex; align-items: center; gap: 8px; margin-top: 22px; }
-  button { font: inherit; font-size: calc(var(--fs) * .87); padding: 6px 14px; border-radius: 4px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
-  button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  button { font: inherit; font-size: calc(var(--fs) * .87); padding: 6px 14px; border-radius: 4px; border: 1px solid var(--line); background: var(--fill); color: var(--ink); cursor: pointer; }
+  button.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   button:disabled { opacity: .4; cursor: default; }
   .nav .right { margin-left: auto; font-size: calc(var(--fs) * .8); color: var(--ink-3); }
 
@@ -657,7 +713,7 @@ TEMPLATE = """<!DOCTYPE html>
             padding-top: 14px; border-top: 1px solid var(--line); }
   .voices .lab { font-size: calc(var(--fs) * .77); letter-spacing: .08em; color: var(--ink-3); font-weight: 700; margin-right: 4px; }
   .voices button { font-size: calc(var(--fs) * .8); padding: 4px 10px; }
-  .voices button.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .voices button.on { background: var(--brand); color: var(--bg); border-color: var(--brand); }
   /* Demo builds carry this on every screen, not just the first. A page of invented
      people and invented numbers sitting at a public URL has to say so wherever the
      reader happens to land, including on a deep link straight into station four. */
@@ -670,14 +726,15 @@ TEMPLATE = """<!DOCTYPE html>
                font-size: calc(var(--fs) * .85); color: var(--ink-2); }
   .voicenote b { color: var(--ink); }
 
-  .demobar { border: 1px solid var(--warn); border-left-width: 3px; background: #fdf6ee;
+  .demobar { border: 1px solid var(--warn); border-left-width: 3px; background: var(--warnbg);
              color: var(--ink-2); padding: 9px 13px; border-radius: 4px;
              margin-bottom: 16px; font-size: calc(var(--fs) * .8); }
   .demobar b { color: var(--warn); }
 
   .follow { display: flex; align-items: center; gap: 12px; margin-top: 12px;
             padding-top: 12px; border-top: 1px solid var(--line); }
-  .followqr { width: 62px; aspect-ratio: 1 / 1; flex: none; display: block; }
+  .followqr { width: 62px; aspect-ratio: 1 / 1; flex: none; display: block;
+              background: #fff; padding: 4px; border-radius: 3px; }
   .follow .t { font-size: calc(var(--fs) * .8); color: var(--ink-3); line-height: 1.45; }
   .follow .t b { color: var(--ink-2); }
   .follow .u { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -687,7 +744,7 @@ TEMPLATE = """<!DOCTYPE html>
 
   #printAll { display: none; }
   @media print {
-    body { background: #fff; }
+    body { background: #fff; --page: #fff; }
     .rail, .nav, .stage { display: none !important; }
     .shell { max-width: none; padding: 0; }
     #printAll { display: block; }
@@ -739,8 +796,8 @@ TEMPLATE = """<!DOCTYPE html>
 const DECKS = __DECKS__;
 const VOICES = __VOICES__;
 const UNVOICED = __UNVOICED__;
-const ACCENTS = __ACCENTS__;
-const DEFAULT_ACCENT = __DEFAULT_ACCENT_JS__;
+const THEMES = __THEMES__;
+const DEFAULT_THEME = __DEFAULT_THEME_JS__;
 const QRS = __QRS__;            // screen id -> inline SVG, one per screen, not per voice
 const FOLLOW_URL = __FOLLOW_URL__;
 const DEMO_NOTICE = __DEMO_NOTICE__;
@@ -748,6 +805,21 @@ let i = 0;
 let voice = "straight";
 const el = id => document.getElementById(id);
 const screens = () => DECKS[voice] || DECKS.straight;
+
+// Themes are applied by setting the CSS variables, so one object drives the whole
+// look of a screen and nothing about the layout knows which station it is on.
+const VARS = {surface: "--bg", fill: "--fill", line: "--line", ink: "--ink",
+              ink2: "--ink-2", ink3: "--ink-3", accent: "--brand", warn: "--warn",
+              warnbg: "--warnbg", bg: "--page"};
+function themeFor(id) { return THEMES[id] || DEFAULT_THEME; }
+function applyTheme(id) {
+  const t = themeFor(id), st = document.documentElement.style;
+  for (const k in VARS) st.setProperty(VARS[k], t[k]);
+}
+function themeVars(id) {  // inline form, for the print view where each page differs
+  const t = themeFor(id);
+  return Object.keys(VARS).map(k => VARS[k] + ":" + t[k]).join(";");
+}
 
 const store = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 const load = (k, d) => { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } };
@@ -795,7 +867,7 @@ function setVoice(v) {
 function render() {
   const SCREENS = screens();
   const s = SCREENS[i];
-  document.documentElement.style.setProperty("--brand", ACCENTS[s.id] || DEFAULT_ACCENT);
+  applyTheme(s.id);
   if (DEMO_NOTICE) { el("demobar").hidden = false; el("demobar").innerHTML = DEMO_NOTICE; }
   el("kicker").textContent = s.kicker.toUpperCase();
   el("count").textContent = (i + 1) + " / " + SCREENS.length;
@@ -883,7 +955,7 @@ document.onkeydown = ev => {
 function buildPrint() {
   const SCREENS = screens();
   el("printAll").innerHTML = SCREENS.map((s, n) =>
-    '<div class="page" style="--brand:' + (ACCENTS[s.id] || DEFAULT_ACCENT) + '">' +
+    '<div class="page" style="' + themeVars(s.id) + '">' +
     '<div class="topline"><span class="wordmark">ATP</span>' +
     '<span class="divider-v"></span><span class="kicker">' + s.kicker.toUpperCase() + '</span>' +
     '<span class="count">' + (n + 1) + ' / ' + SCREENS.length + '</span></div>' +
@@ -939,9 +1011,8 @@ def render_html(decks, order, mode, generated_at, follow_url=""):
             .replace("__QRS__", json.dumps(qrs, ensure_ascii=False))
             .replace("__FOLLOW_URL__", json.dumps(follow_url))
             .replace("__DEMO_NOTICE__", json.dumps(DEMO_NOTICE if mode == "demo" else ""))
-            .replace("__DEFAULT_ACCENT__", DEFAULT_ACCENT)
-            .replace("__DEFAULT_ACCENT_JS__", json.dumps(DEFAULT_ACCENT))
-            .replace("__ACCENTS__", json.dumps(ACCENTS, ensure_ascii=False)))
+            .replace("__THEMES__", json.dumps(THEMES, ensure_ascii=False))
+            .replace("__DEFAULT_THEME_JS__", json.dumps(DEFAULT_THEME, ensure_ascii=False)))
 
 
 # --------------------------------------------------------------------------- payload loading
@@ -1030,11 +1101,11 @@ def main():
     for warning in CLAMPED:
         print(f"CLAMPED: {warning}", file=sys.stderr)
 
-    failures = check_accents()
+    failures = check_themes()
     if failures:
         for f in failures:
-            print(f"REJECTED: accent contrast: {f}", file=sys.stderr)
-        print("REJECTED: fix ACCENTS in build_deck.py. Nothing was written.", file=sys.stderr)
+            print(f"REJECTED: contrast: {f}", file=sys.stderr)
+        print("REJECTED: fix THEMES in build_deck.py. Nothing was written.", file=sys.stderr)
         return 2
 
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M")
