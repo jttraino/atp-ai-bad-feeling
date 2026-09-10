@@ -16,7 +16,7 @@ set -uo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 FIX="$REPO/tests/fixtures"
 STUBS="$REPO/tests/stubs"
-DEFAULT_FOLLOW="https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html"
+DEFAULT_FOLLOW="https://jttraino.github.io/atp-ai-bad-feeling/closeout-keynote/presentation.html"
 KEEP=0
 [[ "${1:-}" == "--keep" ]] && { KEEP=1; shift; }
 
@@ -41,9 +41,9 @@ check(){ if eval "$2"; then ok "$1"; else bad "$1"; fi; }
 new_scratch() {
   SCRATCH="$(mktemp -d)"
   cp -r "$REPO"/{stations,tools,assets} "$SCRATCH/"
-  mkdir -p "$SCRATCH/closing-keynote" "$SCRATCH/Downloads"
+  mkdir -p "$SCRATCH/closeout-keynote" "$SCRATCH/Downloads"
   rm -f "$SCRATCH"/stations/*/questions.md "$SCRATCH"/stations/*/transcript.*
-  DECK="$SCRATCH/closing-keynote/presentation.html"
+  DECK="$SCRATCH/closeout-keynote/presentation.html"
 }
 
 seed_questions() {  # the pre-event artifact: question lists in place

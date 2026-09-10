@@ -1,11 +1,11 @@
 # Deck Builder
 
-Turns a validated JSON payload into `closing-keynote/presentation.html`: one self-contained file, no network, no dependencies, arrow keys or Next to move, and a QR code back to this repo.
+Turns a validated JSON payload into `closeout-keynote/presentation.html`: one self-contained file, no network, no dependencies, arrow keys or Next to move, and a QR code back to this repo.
 
 ```bash
 python3 tools/build-deck/build_deck.py \
   --payload payload.json \
-  --out closing-keynote/presentation.html \
+  --out closeout-keynote/presentation.html \
   --sources sky-city=transcript,swamp-planet=fallback,... \
   --mode live
 ```

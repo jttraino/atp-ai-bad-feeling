@@ -13,7 +13,7 @@ That split is deliberate and it is the whole reliability argument:
     overwritten with something that failed validation.
 
 Usage:
-  build_deck.py --payload payload.json --out closing-keynote/presentation.html
+  build_deck.py --payload payload.json --out closeout-keynote/presentation.html
   build_deck.py --payload payload.json --out ... --mode seeded
 """
 
@@ -348,7 +348,7 @@ def points_html(points):
 
 
 DEFAULT_FOLLOW_URL = ("https://jttraino.github.io/atp-ai-bad-feeling/"
-                      "closing-keynote/presentation.html")
+                      "closeout-keynote/presentation.html")
 
 
 def qr_svg(url):

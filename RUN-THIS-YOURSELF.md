@@ -1,6 +1,6 @@
 # Run This Yourself
 
-This repo is the whole method for an event called "Your AI Program Has a Bad Feeling About This": five parallel rooms, nobody in more than one of them, and a closing keynote built from all five in the ten minutes it took people to walk back to their seats.
+This repo is the whole method for an event called "Your AI Program Has a Bad Feeling About This": five parallel rooms, nobody in more than one of them, and a closeout keynote built from all five in the ten minutes it took people to walk back to their seats.
 
 Two things are worth taking. The **event format**, which is a way to get a room of senior people to say true things out loud. And the **discipline behind the keynote**, which is a small, boring set of rules that made an AI system reliable enough to stand behind in front of a hundred people, with no chance to review the output.
 
@@ -171,7 +171,7 @@ These are plain text and portable. Paste them into whatever your organization ha
 
 **1. Adapt the repo to your event** (for a tool that can read and edit the checkout)
 
-> This repo runs a five-room workshop and builds the closing keynote from the room transcripts. Read RUN-THIS-YOURSELF.md and coordinator-checklist.md first. Adapt it for us: our event is [WHAT IT IS] for [WHO IS COMING], and our five sessions are [LIST]. Update the station ids and themes everywhere they appear, rewrite tools/synthesize-keynote/framework.md for our themes, and replace the two method screens with placeholders I can fill in. Then run tests/rehearse.sh and fix anything that fails. Do not change the JSON schema or the validation.
+> This repo runs a five-room workshop and builds the closeout keynote from the room transcripts. Read RUN-THIS-YOURSELF.md and coordinator-checklist.md first. Adapt it for us: our event is [WHAT IT IS] for [WHO IS COMING], and our five sessions are [LIST]. Update the station ids and themes everywhere they appear, rewrite tools/synthesize-keynote/framework.md for our themes, and replace the two method screens with placeholders I can fill in. Then run tests/rehearse.sh and fix anything that fails. Do not change the JSON schema or the validation.
 
 **2. Draft the question lists**
 
@@ -197,7 +197,7 @@ Then save the JSON and run the deck builder on it directly:
 
 ```bash
 python3 tools/build-deck/build_deck.py --payload out.json \
-  --out closing-keynote/presentation.html \
+  --out closeout-keynote/presentation.html \
   --sources sky-city=transcript,swamp-planet=transcript,...
 ```
 

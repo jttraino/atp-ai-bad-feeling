@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds the Throne Room deck from whatever is currently sitting in stations/*/,
-# and writes it to closing-keynote/presentation.html.
+# and writes it to closeout-keynote/presentation.html.
 #
 # For each station, in priority order, it uses:
 #   1. transcript.md / transcript.txt   the real transcript, plain text
@@ -40,7 +40,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 STATIONS_DIR="$REPO_ROOT/stations"
 FRAMEWORK="$REPO_ROOT/tools/synthesize-keynote/framework.md"
 BUILDER="$REPO_ROOT/tools/build-deck/build_deck.py"
-OUT_FILE="$REPO_ROOT/closing-keynote/presentation.html"
+OUT_FILE="$REPO_ROOT/closeout-keynote/presentation.html"
 CLAUDE_BIN="${CLAUDE_BIN:-claude}"
 MODE="${MODE:-live}"
 PRIMARY_MODEL="${PRIMARY_MODEL-}"
@@ -50,7 +50,7 @@ DEADLINE_S="${DEADLINE_S:-180}"
 GRACE_S="${GRACE_S:-45}"
 VOICES="${VOICES-}"
 VOICE_MODEL="${VOICE_MODEL-$PRIMARY_MODEL}"
-FOLLOW_URL="${FOLLOW_URL-https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html}"
+FOLLOW_URL="${FOLLOW_URL-https://jttraino.github.io/atp-ai-bad-feeling/closeout-keynote/presentation.html}"
 VOICE_DIR="$REPO_ROOT/tools/synthesize-keynote/voices"
 VOICE_BRIEF="$REPO_ROOT/tools/synthesize-keynote/voices.md"
 DEFAULT_VOICES="yoda,vader,threepio"

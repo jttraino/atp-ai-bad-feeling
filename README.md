@@ -10,7 +10,7 @@ Public archive for the ATP event "Your AI Program Has a Bad Feeling About This."
 
 <p align="center"><img src="assets/repo-qr-code.png" alt="QR code linking to this repo" width="200"></p>
 
-Scan the QR code above to come back to this repo after the event. It's also displayed at the event itself, where you'll find the station transcripts and the closing keynote talking points.
+Scan the QR code above to come back to this repo after the event. It's also displayed at the event itself, where you'll find the station transcripts and the closeout keynote talking points.
 
 ## Format
 
@@ -26,13 +26,13 @@ Attendees split into five themed stations (about 25 people each), each covering 
 
 Each station is a guided discussion, not a talk: the station sponsor puts a list of roughly eight questions to their station and the room answers. Fleet Command hosts, records, and transcribes each one via an independent Teams meeting, not the sponsor, and every station has an Astromech whose only job is to watch that the capture is actually working. No one in any single station gets the full picture. That's the point of what comes next.
 
-Immediately afterward, the group reassembles for **the Throne Room**, the closing keynote. Everyone who fought the battle in a different ship, back in one room at the end. It has the high ground: the one vantage point that actually sees the patterns across all five stations at once, distilled into shared talking points. See [`closing-keynote/`](closing-keynote/).
+Immediately afterward, the group reassembles for **the Throne Room**, the closeout keynote. Everyone who fought the battle in a different ship, back in one room at the end. It has the high ground: the one vantage point that actually sees the patterns across all five stations at once, distilled into shared talking points. See [`closeout-keynote/`](closeout-keynote/).
 
 This repo documents the full method, not just the output. That includes [how the Throne Room deck was actually synthesized](tools/synthesize-keynote/) from the five station transcripts in the few minutes between sessions ending and the group reassembling, and [the rehearsal harness](tests/) we used to run the whole night end to end beforehand, including every way it could fail.
 
 ## Take this and run it yourself
 
-**[RUN-THIS-YOURSELF.md](RUN-THIS-YOURSELF.md)** is the transferable part: ten principles that made the closing keynote reliable enough to present unreviewed in front of a hundred people, each with the code that implements it and the defect it caught, followed by how to run the event format at your own organization.
+**[RUN-THIS-YOURSELF.md](RUN-THIS-YOURSELF.md)** is the transferable part: ten principles that made the closeout keynote reliable enough to present unreviewed in front of a hundred people, each with the code that implements it and the defect it caught, followed by how to run the event format at your own organization.
 
 The short version, since the event is about why enterprise AI programs fail and it would be embarrassing to run it on one that does: be deterministic wherever determinism is available, never ask a model a question you can already answer, constrain the output until a machine can validate it, write the evals before the night and test the disasters, score the things you would otherwise argue about, and measure instead of estimating.
 
@@ -43,7 +43,7 @@ The short version, since the event is about why enterprise AI programs fail and 
 - [`station-sponsor-instructions.md`](station-sponsor-instructions.md): what station sponsors needed to prepare and run their session
 - [`coordinator-checklist.md`](coordinator-checklist.md): Fleet Command's runbook for hosting, recording, and monitoring all five stations, and running the closing synthesis
 - `stations/`: question list per station before the event, transcript and notes after it
-- [`closing-keynote/`](closing-keynote/): the Throne Room, the synthesized closing keynote deck, added after the event. [Read it here.](https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html)
+- [`closeout-keynote/`](closeout-keynote/): the Throne Room, the synthesized closeout keynote deck, added after the event. [Read it here.](https://jttraino.github.io/atp-ai-bad-feeling/closeout-keynote/presentation.html)
 - [`tools/synthesize-keynote/`](tools/synthesize-keynote/): the tool and guiding framework used to turn the five transcripts into the keynote deck
 - [`tools/intake-transcript/`](tools/intake-transcript/): files transcripts off the laptop and out of email as they arrive
 - [`tools/build-deck/`](tools/build-deck/): validates the model's output and renders the deck, deterministically

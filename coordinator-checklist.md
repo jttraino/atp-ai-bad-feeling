@@ -1,6 +1,6 @@
 # Fleet Command Checklist, ATP Event, September 17, 2026 ABY
 
-Fleet Command hosts and records every station's Teams meeting, monitors all five during the event, and runs the keynote synthesis in the window before the Throne Room, the closing keynote. This is that role's runbook.
+Fleet Command hosts and records every station's Teams meeting, monitors all five during the event, and runs the keynote synthesis in the window before the Throne Room, the closeout keynote. This is that role's runbook.
 
 ## Before the event
 
@@ -30,7 +30,7 @@ Each station runs as a guided discussion off a list of roughly eight questions. 
 - [ ] Chase the sponsors for their final, reviewed version by **Tuesday, September 15**. Wednesday is workable. Thursday morning is the outer edge, and still fine to absorb, since integrating a late list is cheap. An absent list is not.
 - [ ] Pre-fill likely answers against each station's questions and keep them in `questions.md` alongside the questions themselves. This is the actual work that makes the fallback usable, and it has to be done before the day.
 - [ ] Once lists start coming in, run `tools/synthesize-keynote/seed.sh`. It builds a complete, presentable deck from the question lists alone, with every station marked as a fallback. **From that moment there is always a deck**, and every later run can only improve on it. Nothing on the night can leave you standing in front of the room with nothing.
-- [ ] **Commit and push that seeded deck.** `closing-keynote/presentation.html` is generated, not tracked by default, so the published URL that every screen's QR points at does not exist until a deck is pushed. Doing it now means the follow-along link is already live and already tested days before anyone scans it, rather than depending on a push made ninety seconds before you start talking.
+- [ ] **Commit and push that seeded deck.** `closeout-keynote/presentation.html` is generated, not tracked by default, so the published URL that every screen's QR points at does not exist until a deck is pushed. Doing it now means the follow-along link is already live and already tested days before anyone scans it, rather than depending on a push made ninety seconds before you start talking.
 - [ ] Run `tests/rehearse.sh` after any change to the question lists or the tools. It rehearses the whole night, including the disasters, in about two seconds. See [`tests/README.md`](tests/README.md).
 
 ## Day before / morning of
@@ -107,7 +107,7 @@ That 10 minutes has to be absorbed by the run of show while the room moves back 
 - [ ] Read its output. It says how many stations came from a real transcript, names any on a fallback, says which model wrote the deck, and names anything it trimmed. If it says the standby carried it, that is fine and the deck says so on screen.
 - [ ] **If it says REJECTED, do not panic and do not re-run blindly.** The deck already on disk is untouched and presentable. Present that.
 - [ ] **Commit and push the deck now, before presenting.** The QR on every screen points at the published copy, and it 404s until this is done. Pages publishes in under a minute, which is about slide three.
-- [ ] Open `closing-keynote/presentation.html` in a browser, put it on the projector, and **press P**. It sizes itself to the screen. Use + and - if the back of the room still cannot read it, and D to reveal the detail on any screen. Arrow keys to move. Fleet Command presents live, adapting rather than reading it verbatim.
+- [ ] Open `closeout-keynote/presentation.html` in a browser, put it on the projector, and **press P**. It sizes itself to the screen. Use + and - if the back of the room still cannot read it, and D to reveal the detail on any screen. Arrow keys to move. Fleet Command presents live, adapting rather than reading it verbatim.
 - [ ] **Optional, only if the room is still settling:** re-run with `--voices` to add the character voices, then press 1 to 5 or V mid-presentation to switch narrator. This takes a few minutes and is never on the critical path, because the deck you already have stays exactly where it is until the voices are ready. If the run of show is tight, skip it: generate them the day before against the seeded deck instead and rehearse with those.
 
 ## If something fails mid-session

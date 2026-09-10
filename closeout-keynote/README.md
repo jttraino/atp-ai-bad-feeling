@@ -1,6 +1,6 @@
 # The Throne Room
 
-The closing keynote. This is where the five stations stop being five separate stories and start being one picture.
+The closeout keynote. This is where the five stations stop being five separate stories and start being one picture.
 
 Yavin 4, at the end. Everyone who flew the battle in a different ship, in different squadrons, seeing only their own slice of it, back in one room together to find out what actually happened. That's this room, and it's why the medals get handed out at the end rather than the beginning.
 
@@ -8,7 +8,7 @@ Yavin 4, at the end. Everyone who flew the battle in a different ship, in differ
 
 Press **P** for projector mode, which sizes itself to the screen it is on. Every screen also carries a QR to its own anchor on the published copy, so anyone in the room can scan mid-talk and land on that exact screen with the full detail the projector cannot show:
 
-**https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html**
+**https://jttraino.github.io/atp-ai-bad-feeling/closeout-keynote/presentation.html**
 
 That URL serves whatever deck was last committed here, so it is live from the moment the pre-seeded version is pushed and improves as real transcripts land.
 

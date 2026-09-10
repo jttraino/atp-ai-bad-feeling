@@ -12,7 +12,7 @@ tools/synthesize-keynote/synthesize.sh --voices=yoda,vader # just these two
 tools/synthesize-keynote/synthesize.sh --help
 ```
 
-Both write `closing-keynote/presentation.html`. Both are safe to re-run as often as you like.
+Both write `closeout-keynote/presentation.html`. Both are safe to re-run as often as you like.
 
 ## How it fits into the event
 
@@ -128,7 +128,7 @@ Press **P**. That switches the deck into projector mode and it sizes itself to t
 Every screen carries a QR to **its own anchor**, so someone scanning during station four lands on station four, with the full detail that would not fit on the projector.
 
 ```
-FOLLOW_URL=https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html
+FOLLOW_URL=https://jttraino.github.io/atp-ai-bad-feeling/closeout-keynote/presentation.html
 tools/synthesize-keynote/synthesize.sh --no-follow      # no QR, no link
 ```
 
