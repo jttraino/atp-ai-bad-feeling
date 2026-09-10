@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Stands in for the `claude` CLI on PATH during rehearsals.
+# Accepts and ignores -p, exactly as the real CLI takes the prompt as an argument.
+while [[ "${1:-}" == -* ]]; do shift; done
+exec python3 "$(dirname "$(readlink -f "$0")")/model_stub.py" "$@"

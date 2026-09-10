@@ -28,7 +28,7 @@ Each station is a guided discussion, not a talk: the station sponsor puts a list
 
 Immediately afterward, the group reassembles for **the Throne Room**, the closing keynote. Everyone who fought the battle in a different ship, back in one room at the end. It has the high ground: the one vantage point that actually sees the patterns across all five stations at once, distilled into shared talking points. See [`closing-keynote/`](closing-keynote/).
 
-This repo documents the full method, not just the output. That includes [how the Throne Room talking points were actually synthesized](tools/synthesize-keynote/) from the five station transcripts, in the few minutes between sessions ending and the group reassembling.
+This repo documents the full method, not just the output. That includes [how the Throne Room deck was actually synthesized](tools/synthesize-keynote/) from the five station transcripts in the few minutes between sessions ending and the group reassembling, and [the rehearsal harness](tests/) we used to run the whole night end to end beforehand, including every way it could fail.
 
 ## Contents
 
@@ -37,7 +37,10 @@ This repo documents the full method, not just the output. That includes [how the
 - [`coordinator-checklist.md`](coordinator-checklist.md): Fleet Command's runbook for hosting, recording, and monitoring all five stations, and running the closing synthesis
 - `stations/`: question list per station before the event, transcript and notes after it
 - `closing-keynote/`: the Throne Room, the synthesized closing keynote talking points, added after the event
-- [`tools/synthesize-keynote/`](tools/synthesize-keynote/): the tool and guiding framework used to turn the five transcripts into the keynote draft
+- [`tools/synthesize-keynote/`](tools/synthesize-keynote/): the tool and guiding framework used to turn the five transcripts into the keynote deck
+- [`tools/intake-transcript/`](tools/intake-transcript/): files transcripts off the laptop and out of email as they arrive
+- [`tools/build-deck/`](tools/build-deck/): validates the model's output and renders the deck, deterministically
+- [`tests/`](tests/): the rehearsal harness we ran the night on before the night, and the four real defects it caught
 
 ## Contributing
 

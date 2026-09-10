@@ -1,0 +1,105 @@
+Sky City-20260917_190412-Meeting Recording
+
+September 17, 2026, 7:04PM
+
+[]
+John Trainor started transcription
+
+[]
+Dana Whitfield 0:12
+Alright, Sky City, infrastructure and integration with third-party tools. I'm Dana Whitfield, VP Platform Engineering at Meridian Freight. First question: which third-party AI tool did you integrate first, and what did the vendor's demo not tell you?
+
+[]
+Kevin Osei 0:59
+For us it was a document extraction vendor. The demo ran on eight sample invoices. We have about four hundred thousand a month and roughly a third are scanned faxes. That was not in the demo.
+
+[]
+Dana Whitfield 1:46
+Speak toward the laptop if you can, we're recording this. Anyone else?
+
+[]
+Angela Ruiz 2:33
+Same shape of problem. Our vendor's demo was single tenant. We're multi-tenant and the moment we turned on row level permissions the latency went from about two hundred milliseconds to almost four seconds.
+
+[]
+Dana Whitfield 3:20
+So where did it actually break for people: auth, rate limits, data format, or latency?
+
+[]
+Kevin Osei 4:07
+Rate limits. They sold us on sixty requests a second and the contract said sixty requests a second. What it did not say is that's a shared pool across all their customers in our region. On a Monday morning we were getting maybe eleven.
+
+[]
+Marcus Dell 4:54
+Auth for us. Their tokens expired every hour and there was no refresh flow, so we built a cron job that logs in as a service account and scrapes a bearer token. That is in production right now. I am not proud of it.
+
+[]
+Dana Whitfield 5:41
+How long from signing to anything in production?
+
+[]
+Angela Ruiz 6:28
+Fourteen months. Sales cycle promised six weeks to first value.
+
+[]
+Kevin Osei 7:15
+Nine for us.
+
+[]
+Marcus Dell 8:02
+We are twenty two months in and not in production. We're piloting a second vendor in parallel now, which I think means the first one failed but nobody will say that.
+
+[]
+Dana Whitfield 8:49
+What happened the first time the vendor changed their model version?
+
+[]
+Angela Ruiz 9:36
+They pushed a new model on a Thursday with no notice. Our extraction accuracy on one document type dropped from about ninety four percent to seventy one. We found out because a customer called. There was no version pinning offered on our tier. It's available on enterprise, which is four times the price.
+
+[]
+Marcus Dell 10:23
+We had the opposite. They pinned us to an old version and then deprecated it with thirty days notice.
+
+[]
+Dana Whitfield 11:10
+Who owns it when it breaks at two in the morning?
+
+[]
+Kevin Osei 11:57
+We do. Their SLA is on their API being up. Our workflow being correct is not their problem, and honestly, reading it again after the fact, it never said it was.
+
+[]
+Dana Whitfield 12:44
+Show of hands, who built an abstraction layer? Okay, about half. Do you regret it?
+
+[]
+Angela Ruiz 13:31
+We spent five months building one. I would do it again. We swapped vendors in three weeks last quarter.
+
+[]
+Marcus Dell 14:18
+We didn't and we're locked in. Their export format is a proprietary JSON dialect and getting our own documents back out is a services engagement. They quoted us forty thousand dollars to export our own data.
+
+[]
+Dana Whitfield 15:05
+Last one. Starting over Monday, what do you refuse to sign?
+
+[]
+Kevin Osei 15:52
+Anything without model version pinning at my price tier.
+
+[]
+Angela Ruiz 16:39
+Anything where the rate limit is not dedicated and in writing.
+
+[]
+Marcus Dell 17:26
+Data export. In a documented format, at no cost, testable before we go live. I would walk away over that clause now.
+
+[]
+Dana Whitfield 18:13
+That's time. Thanks everyone, this was great.
+
+[]
+John Trainor stopped transcription

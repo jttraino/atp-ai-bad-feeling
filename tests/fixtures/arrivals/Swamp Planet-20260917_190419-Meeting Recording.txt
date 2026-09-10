@@ -1,0 +1,81 @@
+Swamp Planet-20260917_190412-Meeting Recording
+
+September 17, 2026, 7:04PM
+
+[]
+John Trainor started transcription
+
+[]
+Corey Boglesong 0:12
+Swamp Planet. Technical debt and data quality. I'm Corey Boglesong, CTO at Aaron's. Let's start here: what did you find out about your data the first time an AI system tried to use it?
+
+[]
+Tasha Green 0:59
+That our documented schema was fiction. There's a column called customer_status that the docs say has four values. In production it has thirty one, including one that is just an empty string with a space in it, which represents about eight percent of rows and nobody knows what it means.
+
+[]
+Corey Boglesong 1:46
+Speak up toward the laptop. Anyone else find something like that?
+
+[]
+Ron Petrakis 2:33
+We found two customer tables from an acquisition in 2019 that were supposed to be merged. They were merged. Both of them. Twice. We have about a hundred and ninety thousand duplicate customers and the dedupe logic ran on email, so anyone who changed jobs is two people.
+
+[]
+Corey Boglesong 3:20
+How much of your AI project turned out to be a data project?
+
+[]
+Tasha Green 4:07
+Ninety percent. And we budgeted zero, because the pitch deck had a slide that said our data was an asset.
+
+[]
+Ron Petrakis 4:54
+I'd say seventy. But the seventy came out of the engineering budget for the model, so the model got the leftovers.
+
+[]
+Dev Saraf 5:41
+For us it was less about cleaning and more about nobody owning it. Every problem we found, we'd trace it back to a system, and the person who understood that system left in 2021. There's no owner. There's a Confluence page from 2019 and a Slack channel with four people in it.
+
+[]
+Corey Boglesong 6:28
+Did you fix it, or work around it?
+
+[]
+Ron Petrakis 7:15
+Worked around it. There's a filter in our pipeline that drops any record where the state field isn't two characters. It drops about four percent of rows. It's been there eighteen months. It was supposed to be temporary and it is now load bearing, because downstream reports are tuned to the filtered volume.
+
+[]
+Tasha Green 8:02
+We tried to fix it and broke the month-end close. Finance found out three weeks later and it took a day and a half to explain what an embedding was to someone who just wanted their number back.
+
+[]
+Corey Boglesong 8:49
+Has an AI system confidently given you a wrong answer off bad data, in front of a customer?
+
+[]
+Dev Saraf 9:36
+Yes. Ours quoted a delivery date based on a lead time field that had defaulted to zero for a whole product category. It told about four hundred customers their order would arrive the same day. The system was working exactly as designed. The data was garbage and the output looked completely normal.
+
+[]
+Ron Petrakis 10:23
+That's the thing that scares me. An outage is loud. This was quiet for six weeks.
+
+[]
+Corey Boglesong 11:10
+What would you tell someone about to start?
+
+[]
+Tasha Green 11:57
+Profile your data before you promise a date. Not the schema, the actual contents. Count the distinct values in every column you plan to use and look at them with your own eyes.
+
+[]
+Dev Saraf 12:44
+And find out who owns each source. If the answer is nobody, that's your project, not the model.
+
+[]
+Corey Boglesong 13:31
+That's time. Thanks everyone, this was great.
+
+[]
+John Trainor stopped transcription

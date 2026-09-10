@@ -1,0 +1,89 @@
+Asteroid Field-20260917_190412-Meeting Recording
+
+September 17, 2026, 7:04PM
+
+[]
+John Trainor started transcription
+
+[]
+Rebecca Ahn 0:12
+Asteroid Field. Compliance, legal, and scope creep. I'm Rebecca Ahn, General Counsel at Northgate Utilities. What did Legal ask that you could not answer?
+
+[]
+Hollis Tran 0:59
+Where the training data came from. We asked the vendor. They said it was proprietary. Our GC said then we can't use it, and honestly she was right.
+
+[]
+Daniel Reyes 1:46
+For us it was: can you explain to a regulator why this specific decision was made. And the honest answer was no, we can show you the inputs and the output and nothing in between.
+
+[]
+Rebecca Ahn 2:33
+Toward the laptop, please, everyone, we're recording. How long did legal review add?
+
+[]
+Hollis Tran 3:20
+Seven months.
+
+[]
+Daniel Reyes 4:07
+Four, and I'd say three of those were us finding out what the question even was.
+
+[]
+Marta Bielski 4:54
+Nine months and it eventually killed the use case.
+
+[]
+Rebecca Ahn 5:41
+Say more about that.
+
+[]
+Marta Bielski 6:28
+Automated adverse action decisions. We're required to give a specific reason. The model gave a score. We spent nine months trying to make a reason out of a score and eventually Legal said no, and Legal was correct. We should have known that in week one. It's in the regulation. Nobody read it until month six.
+
+[]
+Rebecca Ahn 7:15
+Who signs that an AI decision is defensible?
+
+[]
+Daniel Reyes 8:02
+Nobody. We've been looking for that person for a year. Every executive we ask points at another one.
+
+[]
+Hollis Tran 8:49
+We solved it by putting a human in the loop, which sounds responsible, and in practice is one person approving four hundred recommendations a day by clicking yes. That's not a control. That's a signature.
+
+[]
+Rebecca Ahn 9:36
+That's a good line. How much did scope change between proposal and what you built?
+
+[]
+Daniel Reyes 10:23
+The original proposal was eleven pages. The thing we built has audit logging, human review, an explainability report, a bias audit, a data retention policy and a model card. None of that was in the eleven pages, and each one arrived separately as a surprise.
+
+[]
+Marta Bielski 11:10
+Every review adds a requirement. No review ever removes one. That's the whole dynamic.
+
+[]
+Rebecca Ahn 11:57
+Are your regulators saying anything yet?
+
+[]
+Hollis Tran 12:44
+Ours has no formal position, which is worse than a strict rule. If they told me no I could plan. Right now I'm guessing what they'll think in two years and building to my guess.
+
+[]
+Rebecca Ahn 13:31
+Week one advice?
+
+[]
+Marta Bielski 14:18
+Bring Legal into the design. They're cheap as a constraint and ruinous as a veto in month nine.
+
+[]
+Rebecca Ahn 15:05
+That's time. Thanks everyone, this was great.
+
+[]
+John Trainor stopped transcription

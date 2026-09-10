@@ -1,0 +1,89 @@
+Ice Planet-20260917_190412-Meeting Recording
+
+September 17, 2026, 7:04PM
+
+[]
+John Trainor started transcription
+
+[]
+Priya Raghunathan 0:12
+Ice Planet. Use cases stuck in limbo. I'm Priya, Director of Data Science at Halcyon Health. Question one, and be honest: how many AI use cases has your company started, and how many are in production?
+
+[]
+Sam Forrester 0:59
+Started, I want to say nineteen. In production, two. And one of those two is a chatbot on our internal help desk that I would describe as barely alive.
+
+[]
+Nadia Kohl 1:46
+We have eleven in flight. Zero in production. We've been at this for two years.
+
+[]
+Priya Raghunathan 2:33
+Say that toward the laptop, that's a number people should hear. Eleven and zero?
+
+[]
+Nadia Kohl 3:20
+Eleven and zero. And nobody has cancelled any of them.
+
+[]
+Priya Raghunathan 4:07
+What's the most common reason one stalls?
+
+[]
+Sam Forrester 4:54
+There's no owner on the other side. Data science builds it, and then it needs to live somewhere, and the platform team's roadmap is full, and there's no budget line for running it. So it just sits in a repo.
+
+[]
+Tim Olutayo 5:41
+For us it's the last mile. The model is fine. Getting it in front of a nurse, inside the software the nurse already uses, requires an integration nobody scoped and a vendor who doesn't want to do it.
+
+[]
+Priya Raghunathan 6:28
+Who decides a pilot is finished?
+
+[]
+Nadia Kohl 7:15
+Nobody. That's the actual answer. Closing it means writing down that it didn't work, and the person who sponsored it is now a VP.
+
+[]
+Sam Forrester 8:02
+We have a project that has been ninety percent done for fourteen months. Every status report says ninety percent.
+
+[]
+Priya Raghunathan 8:49
+What does that cost you, given nobody cancelled it?
+
+[]
+Tim Olutayo 9:36
+We added it up last quarter because Finance asked. Cloud spend on idle endpoints for the stalled projects was about eleven thousand a month. That's not the real cost though. The real cost is that we can't get approval for a new one, because the last six are still open.
+
+[]
+Nadia Kohl 10:23
+That's exactly it. The graveyard is what's blocking the next thing.
+
+[]
+Priya Raghunathan 11:10
+Is the blocker technical, organizational, or political?
+
+[]
+Sam Forrester 11:57
+Organizational, and I'd say ninety percent of the time.
+
+[]
+Tim Olutayo 12:44
+Political for us. The model works. Nobody wants to be the person who signs that it's allowed to touch a patient record.
+
+[]
+Priya Raghunathan 13:31
+Last one. What would have to be true for the thing in your backlog to ship next quarter?
+
+[]
+Tim Olutayo 14:18
+A named production owner with budget, and one executive willing to accept the risk in writing. That's it. That's the whole list. Neither is a technology problem.
+
+[]
+Priya Raghunathan 15:05
+That's time. Thanks everyone, this was great.
+
+[]
+John Trainor stopped transcription

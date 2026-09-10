@@ -4,6 +4,8 @@ The closing keynote. This is where the five stations stop being five separate st
 
 Yavin 4, at the end. Everyone who flew the battle in a different ship, in different squadrons, seeing only their own slice of it, back in one room together to find out what actually happened. That's this room, and it's why the medals get handed out at the end rather than the beginning.
 
-This folder fills in after the event on September 17, 2026 ABY, once all five station transcripts have landed.
+`presentation.html` lands here: one self-contained file, no network, arrow keys or Next to move, and a QR code back to this repo on the way out.
 
-The draft comes from [`tools/synthesize-keynote/`](../tools/synthesize-keynote/). Fleet Command opens the result in Obsidian and presents it live, clicking through by hand. It is not an automated slide deck.
+A first version is built days before the event by [`tools/synthesize-keynote/seed.sh`](../tools/synthesize-keynote/) from the station question lists alone, so a presentable deck exists before anyone speaks. It is rebuilt in the gap after the stations wrap, from whatever transcripts actually arrived, and any station still running on its question list is labelled as such on its own slide.
+
+Fleet Command drives it live and adapts. It is a set of talking points that happens to be shaped like slides, not a script.

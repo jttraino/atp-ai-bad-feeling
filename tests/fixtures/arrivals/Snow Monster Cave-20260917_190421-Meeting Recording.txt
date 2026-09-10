@@ -1,0 +1,93 @@
+Snow Monster Cave-20260917_190412-Meeting Recording
+
+September 17, 2026, 7:04PM
+
+[]
+John Trainor started transcription
+
+[]
+Marcus Bell 0:12
+Snow Monster Cave. Unexpected costs and security holes. Marcus Bell, CISO at Tessera Financial. What did your AI work actually cost against what was budgeted?
+
+[]
+Grace Lindqvist 0:59
+We budgeted forty thousand for the year on inference. We spent that in March. The full year came in around three hundred and ten thousand.
+
+[]
+Marcus Bell 1:46
+Say the numbers toward the laptop, those are worth capturing. Forty budgeted, three ten actual?
+
+[]
+Grace Lindqvist 2:33
+Three hundred and ten. And the reason is retries. Nobody modeled retries. Every failed call was billed and our retry logic was three attempts with no backoff.
+
+[]
+Owen Baptiste 3:20
+Ours wasn't tokens at all. It was people. We hired two MLOps engineers we hadn't planned for, that's four hundred thousand fully loaded, and they spend most of their time on monitoring and evaluation, not on models.
+
+[]
+Marcus Bell 4:07
+So which surprised people most: tokens, compute, storage, or people?
+
+[]
+Owen Baptiste 4:54
+People, and it isn't close. The token spend is on a dashboard someone looks at. The headcount is in a different budget and nobody adds them together.
+
+[]
+Priyanka Shah 5:41
+Storage for us, weirdly. We embedded our whole document corpus, then re-embedded it when we changed models, then kept both because nobody was sure it was safe to delete the old one. We're paying for three copies of everything.
+
+[]
+Marcus Bell 6:28
+Alright. Has anyone found company data somewhere it shouldn't be?
+
+[]
+Priyanka Shah 7:15
+Yes. We found an entire customer contract pasted into a consumer chatbot. Found it because the employee mentioned it in a all hands, proudly, as a productivity tip.
+
+[]
+Grace Lindqvist 8:02
+We ran DLP against outbound and found about six hundred pastes a month into AI tools we hadn't approved. Six hundred. From a company of nine hundred people.
+
+[]
+Marcus Bell 8:49
+So how do you handle unapproved tools?
+
+[]
+Owen Baptiste 9:36
+We blocked them and it went to personal phones inside a week. Now we can't see any of it. Blocking made our visibility worse, not better.
+
+[]
+Priyanka Shah 10:23
+We went the other way. We sanctioned one tool, made it free and easy, and shadow usage dropped a lot. Not to zero. But we can see most of it now.
+
+[]
+Marcus Bell 11:10
+What's your exposure if a vendor is breached and your prompts are in their logs?
+
+[]
+Grace Lindqvist 11:57
+Much bigger than we told the board. Our prompts contain account numbers because the workflow puts them there. Nobody classified prompts as a data store. They aren't in our data inventory at all.
+
+[]
+Marcus Bell 12:44
+Did anyone get an AI vendor through your normal security review?
+
+[]
+Owen Baptiste 13:31
+We tried. The review assumes software that changes when you deploy it. This changes on their schedule without telling you. There's no question on our questionnaire that catches that, so it passed. It passed and it shouldn't have.
+
+[]
+Marcus Bell 14:18
+One control, starting over?
+
+[]
+Grace Lindqvist 15:05
+Logging and egress visibility before any capability. You can't govern what you can't see, and we bought capability first for two years.
+
+[]
+Marcus Bell 15:52
+That's time. Thanks everyone, this was great.
+
+[]
+John Trainor stopped transcription

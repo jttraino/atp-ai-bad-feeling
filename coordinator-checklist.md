@@ -29,7 +29,8 @@ Each station runs as a guided discussion off a list of roughly eight questions. 
 - [ ] Collect each station's question list as soon as it exists, even in draft. Save it into `stations/<name>/questions.md` in this repo.
 - [ ] Chase the sponsors for their final, reviewed version by **Tuesday, September 15**. Wednesday is workable. Thursday morning is the outer edge, and still fine to absorb, since integrating a late list is cheap. An absent list is not.
 - [ ] Pre-fill likely answers against each station's questions and keep them in `questions.md` alongside the questions themselves. This is the actual work that makes the fallback usable, and it has to be done before the day.
-- [ ] Once lists start coming in, test `tools/synthesize-keynote/synthesize.sh` against them (as stand-in fallback content) to confirm the framework produces usable output. Tune `framework.md` now, not on the day.
+- [ ] Once lists start coming in, run `tools/synthesize-keynote/seed.sh`. It builds a complete, presentable deck from the question lists alone, with every station marked as a fallback. **From that moment there is always a deck**, and every later run can only improve on it. Nothing on the night can leave you standing in front of the room with nothing.
+- [ ] Run `tests/rehearse.sh` after any change to the question lists or the tools. It rehearses the whole night, including the disasters, in about two seconds. See [`tests/README.md`](tests/README.md).
 
 ## Day before / morning of
 
@@ -76,7 +77,7 @@ One per station. R2 rode in the socket watching the systems so the pilot could f
 ## As each station wraps
 
 - [ ] **Confirm the meeting was ended, not just left.** Ending the meeting is what triggers Teams to finalize the session and generate the transcript. A sponsor who closes their laptop or hits Leave has not started that clock. As meeting owner, Fleet Command can end any of the five directly, so sweep all five as the sessions wrap rather than assuming.
-- [ ] No Bothans required to smuggle this one in. The transcript already lives on Fleet Command's own machine. Export it and drop it into `stations/<name>/transcript.md` in this repo.
+- [ ] No Bothans required to smuggle this one in. The transcript already lives on Fleet Command's own machine. Export it to `~/Downloads` and run `tools/intake-transcript/intake.sh`, which files it, converts the `.docx`, and prints the status of all five. It never overwrites a transcript already filed, so run it as often as you like.
 - [ ] Mark it on the tracker below.
 
 | Station | Transcript captured | Notes (e.g. fallback needed) |
@@ -89,17 +90,20 @@ One per station. R2 rode in the socket watching the systems so the pilot could f
 
 ## In the gap before the Throne Room
 
-**Measured worst case: about 8 minutes from last station ending to a presentable draft.** Never tell me the odds. Where that number comes from, tested repeatedly on real 45-minute meetings at the same time of day:
+**Measured worst case: about 10 minutes from last station ending to a presentable deck.** Never tell me the odds. Every number below was measured in rehearsal against full-length transcripts, not estimated:
 
 - 2.5 to 5 minutes for Teams to generate a single transcript once the meeting is ended. Five minutes was the worst observed, audio-only.
 - The five stations won't end simultaneously. Assume a couple of minutes of stagger, which puts the last transcript landing around 7 minutes after the first station wraps.
-- About 1 minute to run the synthesis and have a draft open.
+- **69 to 164 seconds** for the model to read every word said in the building and answer. This was budgeted at one minute until the rehearsal harness measured it. Note the spread: four runs varied more than twofold, and the slowest was on the smallest input, so this is not something you can shorten by trimming the transcripts. Plan against three minutes, not the median.
+- Under a second to validate and build the deck.
 
-That 8 minutes has to be absorbed by the run of show while the room moves back to the keynote area. **Adjust this section against the real run of show once Scott and Tom have it**, since it's the one number here that depends on somebody else's document.
+That 10 minutes has to be absorbed by the run of show while the room moves back to the keynote area. **Adjust this section against the real run of show once Scott and Tom have it**, since it's the one number here that depends on somebody else's document. Re-measure any time with `REAL_MODEL=1 tests/rehearse.sh fullsize`.
 
+- [ ] Run `tools/intake-transcript/intake.sh` one last time and read its five-station status table.
 - [ ] Run `./tools/synthesize-keynote/synthesize.sh`.
-- [ ] Check its warnings for any station using its fallback question list instead of a real transcript, or missing entirely.
-- [ ] Open `closing-keynote/talking-points-draft.md` in Obsidian. This is not an automated slide deck. Fleet Command presents it live, clicking through by hand, adapting on the fly rather than reading it verbatim.
+- [ ] Read its output. It says how many stations came from a real transcript, names any on a fallback, and names anything it trimmed.
+- [ ] **If it says REJECTED, do not panic and do not re-run blindly.** The deck already on disk is untouched and presentable. Present that.
+- [ ] Open `closing-keynote/presentation.html` in a browser. Arrow keys or Next. Fleet Command presents it live, adapting on the fly rather than reading it verbatim.
 
 ## If something fails mid-session
 
@@ -107,7 +111,8 @@ That 8 minutes has to be absorbed by the run of show while the room moves back t
 
 - Recording or transcription didn't start, or stopped: rejoin and restart it. The meeting is still running. This is what the Astromechs are watching for.
 - Teams fails entirely for a station: fall back to the sponsor's second device, if they brought one, emailed to john@johntrainor.com as the session ends. Where the Astromech carried it around the room, this may actually be the better capture of the two.
-- No usable audio at all: "I find your lack of transcript disturbing." But the synthesis script automatically falls back to that station's `questions.md`, the question list plus pre-filled likely answers, and flags it as such, so the station still appears in the keynote, clearly marked as not sourced from a transcript. An older code, sir, but it checks out.
+- No usable audio at all: "I find your lack of transcript disturbing." But the synthesis script automatically falls back to that station's `questions.md`, the question list plus pre-filled likely answers, and the deck flags it in a banner on that station's own slide. The station still appears, clearly marked as not sourced from a transcript. An older code, sir, but it checks out.
+- The model returns nonsense, or the CLI dies: the run is rejected, nothing is overwritten, and the deck already on disk stands. This is rehearsed in `tests/rehearse.sh` under `garbage`, `badschema` and `crash`.
 
 ## Crew manifest
 

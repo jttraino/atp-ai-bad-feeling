@@ -1,28 +1,44 @@
-# Keynote Synthesis Tool
+# Keynote Synthesis
 
-This is the actual tool used to turn the five station transcripts into the Throne Room talking points, in near real time between the stations ending and the group reassembling. It's checked in here so the whole process, not just the resulting content, is visible.
-
-## How it fits into the event flow
-
-1. All five stations run in parallel, each recorded and transcribed via a Fleet-Command-hosted Teams meeting (see [`../../station-sponsor-instructions.md`](../../station-sponsor-instructions.md)).
-2. As each session wraps, its exported transcript is dropped into `stations/<name>/transcript.md` (or `.txt`/`.docx`) in this repo.
-3. Run `./synthesize.sh` from anywhere. It reads whatever's currently in `stations/*/`, combines it with the guiding brief in [`framework.md`](framework.md), and calls the `claude` CLI to produce a first-draft `closing-keynote/talking-points-draft.md`.
-4. Fleet Command opens that draft in Obsidian and presents the Throne Room live, clicking through the markdown by hand. It's not an automated slide deck, it's a head start on the five minutes it would otherwise take to build one from a blank page.
-
-## Usage
+The tool that turns the five station transcripts into the Throne Room deck, in the few minutes between the stations ending and the group reassembling. Checked in here so the whole process, not just the resulting content, is visible.
 
 ```bash
-./synthesize.sh
+tools/synthesize-keynote/seed.sh          # days before: build the floor from question lists
+tools/synthesize-keynote/synthesize.sh    # on the night: rebuild from whatever has arrived
 ```
 
-Requires the `claude` CLI installed and logged in. If `pandoc` is installed, `.docx` transcripts are also accepted. Otherwise export or paste the transcript as plain text into `transcript.md`.
+Both write `closing-keynote/presentation.html`. Both are safe to re-run as often as you like.
 
-## Fallback behavior
+## How it fits into the event
 
-Every station runs as a guided discussion off a list of roughly eight questions, collected ahead of the event into `stations/<name>/questions.md` along with pre-filled likely answers. That file is the fallback. If a station's transcript wasn't captured for any reason, the script uses its question list instead, and the output explicitly flags that station as using a fallback rather than presenting it as equivalent to a real transcript. A station with neither a transcript nor a question list is reported as missing so it isn't silently dropped from the keynote.
+1. **Days before.** Question lists land in `stations/<name>/questions.md`, each with pre-filled likely answers. `seed.sh` builds a complete, presentable deck from them, with every station marked as a fallback. From this point on there is always a deck. Nothing that happens on the night can leave Fleet Command in front of the room with nothing.
+2. **On the night.** As each station wraps, its transcript is filed by [`tools/intake-transcript/`](../intake-transcript/) into `stations/<name>/transcript.md`.
+3. **In the gap.** `synthesize.sh` reads whatever is currently there, prefers a real transcript over a question list per station, asks the model for structured content, validates it, and rebuilds the deck.
+4. **Presenting.** Open the HTML in a browser. Arrow keys or Next. Fleet Command drives it live and adapts; it is not read verbatim.
 
-The fallback is deliberately weaker than the real thing, and that's the point. It establishes what a station actually covered without inventing quotes from a room nobody recorded.
+Per station, in priority order: `transcript.md` / `transcript.txt`, then `transcript.docx` via pandoc, then `questions.md` as the flagged fallback. A station with none of those is a hard error, because a deck that silently drops a station is worse than no deck.
 
-## Why this is public
+## What the model is and isn't asked for
 
-The point of this repo is not just to archive what was said at each station. It's to show how the entire event, from station sponsor logistics to the closing synthesis, was actually put together, so anyone running a similar event can see, and reuse, the method.
+It gets the transcripts and the brief in [`framework.md`](framework.md), and it returns **JSON, not a deck**. No HTML, no formatting, no slide order, and specifically not which stations had a real transcript, because that is already known from disk. The deck is assembled from that JSON by [`tools/build-deck/`](../build-deck/), which rejects anything that doesn't fit the schema and leaves the existing deck in place when it does.
+
+The prompt is piped on **stdin**, not passed as an argument. Five real 45-minute transcripts come to about 285KB, and Linux caps a single argv string at 128KB, so the obvious `-p "$(cat ...)"` works in every small test and fails only when the transcripts are full length. Which is to say, only on the night. See [`tests/README.md`](../../tests/README.md).
+
+## Timing
+
+Measured, not estimated, against five full-length transcripts with the real CLI:
+
+| Step | Measured |
+|---|---|
+| Teams generating one transcript after a meeting is **ended** | 2.5 to 5 min |
+| Five staggered endings, last transcript in hand | ~7 min |
+| Model call | **69 s to 164 s** |
+| Validation and deck build | < 1 s |
+
+Call it ten minutes end to end, worst case.
+
+The model call is the part worth understanding. Four real runs came in at 69, 102, 105 and 164 seconds, and **the slowest was on the smallest input**. Latency varies more than twofold run to run and is not driven by transcript length, so plan against the slow end and not the median. Re-measure any time with `REAL_MODEL=1 tests/rehearse.sh fullsize`.
+
+## Requires
+
+The `claude` CLI, logged in. `pandoc` for `.docx` transcripts. Python 3 for the builder and validator.

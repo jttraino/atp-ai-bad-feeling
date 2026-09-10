@@ -1,2 +1,10 @@
 # Local Obsidian vault state (pane layout, appearance, plugin settings)
 .obsidian/
+
+# Deck builder leaves the previous version beside the new one
+*.prev
+*.tmp
+
+# Python bytecode from the rehearsal harness
+__pycache__/
+*.pyc
