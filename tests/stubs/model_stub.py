@@ -93,7 +93,8 @@ for sid in order:
     if src == "fallback":
         lede = ("No recording survived this station, so what follows is the agenda its sponsor "
                 "prepared rather than what the room said.")
-        pts = [(t, "Expected from the question list, not reported from the room: " + d.split(". ")[0] + ".")
+        pts = [(t, "Expected from the question list, not reported from the room: "
+                   + d.split(". ")[0].rstrip(".") + ".")
                for t, d in pts[:3]]
         take = "This station's real answers are still on a laptop somewhere. Treat this as the agenda, not the outcome."
     payload["stations"].append({
