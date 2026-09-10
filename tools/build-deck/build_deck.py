@@ -49,7 +49,7 @@ STATION_THEME = {s[0]: s[2] for s in STATIONS}
 # mean the model misunderstood the task rather than got wordy.
 # A full palette per station, not just an accent, because an accent was not enough to
 # tell the room it had moved. Dark for the swamp, the cave and the asteroid field;
-# light for Bespin and Hoth.
+# light for Sky City and Ice Planet.
 #
 # `bg` is the page behind the card and can be any CSS background, so the clouds and the
 # murk are gradients rather than images and the file stays self-contained and offline.
@@ -60,7 +60,7 @@ STATION_THEME = {s[0]: s[2] for s in STATIONS}
 # The check earned its keep twice before any of these existed: the original brand blue
 # was failing at 3.98:1 and the original muted grey at 3.80:1.
 THEMES = {
-    "sky-city": {  # Bespin, late afternoon, above the clouds
+    "sky-city": {  # above the clouds, late afternoon
         "bg": ("radial-gradient(1200px 520px at 12% 8%, #FFE7C7 0%, rgba(255,231,199,0) 62%), "
                "radial-gradient(900px 420px at 88% 22%, #FFD1B0 0%, rgba(255,209,176,0) 60%), "
                "radial-gradient(1000px 500px at 50% 100%, #F7B98A 0%, rgba(247,185,138,0) 65%), "
@@ -69,7 +69,7 @@ THEMES = {
         "ink": "#2A1A0C", "ink2": "#5C4531", "ink3": "#7A6047",
         "accent": "#9A4F08", "warn": "#8F4B08", "warnbg": "#FDF1E1",
     },
-    "swamp-planet": {  # Dagobah, under the canopy
+    "swamp-planet": {  # under the swamp canopy
         "bg": ("radial-gradient(900px 480px at 20% 10%, #2C4020 0%, rgba(44,64,32,0) 60%), "
                "radial-gradient(760px 420px at 82% 78%, #1B3018 0%, rgba(27,48,24,0) 62%), "
                "linear-gradient(165deg, #16210F 0%, #1B2A13 50%, #0E170A 100%)"),
@@ -77,7 +77,7 @@ THEMES = {
         "ink": "#EDF3E4", "ink2": "#C3D2B2", "ink3": "#9DB088",
         "accent": "#A8D06A", "warn": "#E8B45C", "warnbg": "#33280F",
     },
-    "ice-planet": {  # Hoth, daylight on the plain
+    "ice-planet": {  # daylight on the ice plain
         "bg": ("radial-gradient(1100px 480px at 24% 6%, #FFFFFF 0%, rgba(255,255,255,0) 60%), "
                "radial-gradient(900px 500px at 78% 82%, #BFDCEC 0%, rgba(191,220,236,0) 62%), "
                "linear-gradient(175deg, #F2F9FD 0%, #DCEBF5 55%, #C2DAEA 100%)"),
@@ -421,7 +421,7 @@ def method_screens(mode, generated_at, counts, engine=""):
                 'This deck existed before the last one finished talking.</p>'
                 + points_html([
                     {"t": "Every station was recorded to its own meeting, hosted by one person",
-                     "d": "Not by the sponsor running the room. One account owned all five, so no session "
+                     "d": "Not by the leader running the room. One account owned all five, so no session "
                           "depended on a presenter remembering to press a button correctly."},
                     {"t": "Ending the meeting is what starts the transcript",
                      "d": "Teams generates a transcript 2.5 to 5 minutes after a meeting is ended, not "
@@ -554,13 +554,13 @@ def station_screen(st, mode="live"):
                else '<span class="pill">TRANSCRIPT</span>')
     elif mode == "seeded":
         banner = ('<div class="flag"><b>This session has not happened yet.</b> You are early. '
-                  'What follows is the question list this station\'s sponsor prepared and the '
+                  'What follows is the question list this station\'s leader prepared and the '
                   'answers we expect to hear, published in advance so the link works before '
                   'anyone needs it. On the night it is replaced by what the room actually said.</div>')
         tag = '<span class="pill warn">PREVIEW</span>'
     else:
         banner = ('<div class="flag"><b>Not from a transcript.</b> This station\'s recording did not '
-                  'produce usable audio. What follows is built from the question list its sponsor '
+                  'produce usable audio. What follows is built from the question list its leader '
                   'prepared, and the answers we expected, not from what the room actually said.</div>')
         tag = '<span class="pill warn">FALLBACK</span>'
     return {

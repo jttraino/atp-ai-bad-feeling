@@ -98,7 +98,7 @@ CONTENT = {
  ], "An outage is loud. Bad data is quiet, and it is quiet for six weeks."),
  "ice-planet": ("This room could not name a technical blocker. Every stall was a person nobody had appointed.", [
    ("Eleven in flight, zero in production, two years in", "And not one of the eleven has been cancelled. Another attendee reported nineteen started against two live, one of which was described as barely alive."),
-   ("Ninety percent done for fourteen months", "Every status report says ninety percent. Closing it would mean writing down that it failed, and its sponsor has since been promoted."),
+   ("Ninety percent done for fourteen months", "Every status report says ninety percent. Closing it would mean writing down that it failed, and its leader has since been promoted."),
    ("$11,000 a month in idle endpoints, and that is not the real cost", "The real cost is that the graveyard blocks approval for anything new. Six open projects is the reason there is no seventh."),
    ("The last mile is somebody else's software", "The model is fine. Getting it in front of a nurse, inside the tool the nurse already uses, needs an integration nobody scoped and a vendor with no interest."),
    ("The whole list is two items, neither technical", "A named production owner with budget, and one executive willing to accept the risk in writing."),
@@ -139,7 +139,7 @@ for sid in order:
     if MODE == "liar":
         src = "transcript"
     if src == "fallback":
-        lede = ("No recording survived this station, so what follows is the agenda its sponsor "
+        lede = ("No recording survived this station, so what follows is the agenda its leader "
                 "prepared rather than what the room said.")
         pts = [(t, "Expected from the question list, not reported from the room: "
                    + d.split(". ")[0].rstrip(".") + ".")

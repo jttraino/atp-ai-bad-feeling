@@ -24,7 +24,7 @@ Attendees split into five themed stations (about 25 people each), each covering 
 | [Snow Monster Cave](stations/snow-monster-cave/) | Unexpected costs and security vulnerabilities |
 | [Asteroid Field](stations/asteroid-field/) | Compliance, legal obstacles, and scope creep |
 
-Each station is a guided discussion, not a talk: the station sponsor puts a list of roughly eight questions to their station and the room answers. Fleet Command hosts, records, and transcribes each one via an independent Teams meeting, not the sponsor, and every station has an Astromech whose only job is to watch that the capture is actually working. No one in any single station gets the full picture. That's the point of what comes next.
+Each station is a guided discussion, not a talk: the station leader puts a list of roughly eight questions to their station and the room answers. Fleet Command hosts, records, and transcribes each one via an independent Teams meeting, not the leader, and every station has an Astromech whose only job is to watch that the capture is actually working. No one in any single station gets the full picture. That's the point of what comes next.
 
 Immediately afterward, the group reassembles for **the Throne Room**, the closeout session. Everyone who fought the battle in a different ship, back in one room at the end. It has the high ground: the one vantage point that actually sees the patterns across all five stations at once, distilled into shared talking points. See [`closeout/`](closeout/).
 
@@ -40,7 +40,7 @@ The short version, since the event is about why enterprise AI programs fail and 
 
 - [`RUN-THIS-YOURSELF.md`](RUN-THIS-YOURSELF.md): the principles behind the method, and how to run it at your own organization
 - [`crew-manifest.md`](crew-manifest.md): who held which role on the day, and what was still unfilled going in
-- [`station-sponsor-instructions.md`](station-sponsor-instructions.md): what station sponsors needed to prepare and run their session
+- [`station-leader-instructions.md`](station-leader-instructions.md): what station leaders needed to prepare and run their session
 - [`coordinator-checklist.md`](coordinator-checklist.md): Fleet Command's runbook for hosting, recording, and monitoring all five stations, and running the closing synthesis
 - `stations/`: question list per station before the event, transcript and notes after it
 - [`closeout/`](closeout/): the Throne Room, the synthesized closeout session deck, added after the event. [Read it here.](https://jttraino.github.io/atp-ai-bad-feeling/closeout/presentation.html)

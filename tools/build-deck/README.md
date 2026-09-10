@@ -43,9 +43,9 @@ Each station screen gets a complete palette, not an accent: page background, car
 
 | Station | Look |
 |---|---|
-| Sky City | Bespin above the clouds. Warm sunset gradient, cream card, dark ink. |
-| Swamp Planet | Dagobah under the canopy. Dark, deep green. |
-| Ice Planet | Hoth in daylight. Pale blue-white, white card. |
+| Sky City | Above the clouds, late afternoon. Warm sunset gradient, cream card, dark ink. |
+| Swamp Planet | Under the swamp canopy. Dark, deep green. |
+| Ice Planet | The ice plain in daylight. Pale blue-white, white card. |
 | Snow Monster Cave | Inside the cave. Near-black with red. |
 | Asteroid Field | Deep space, with rocks. Near-black with slate blue. |
 | The three method screens | Default light. Those screens are ours. |

@@ -6,7 +6,7 @@ Note what this brief does **not** ask for: a deck, a slide, any HTML, or any for
 
 ## Event context (for the model)
 
-This is the Throne Room, the closeout session for ATP's "Your AI Program Has a Bad Feeling About This." It's an interactive workshop on why enterprise AI initiatives fail, run as the honest debrief nobody runs at their own company. Attendees split into five themed stations, each a guided discussion where the station sponsor put a list of roughly eight questions to the room and the room answered:
+This is the Throne Room, the closeout session for ATP's "Your AI Program Has a Bad Feeling About This." It's an interactive workshop on why enterprise AI initiatives fail, run as the honest debrief nobody runs at their own company. Attendees split into five themed stations, each a guided discussion where the station leader put a list of roughly eight questions to the room and the room answered:
 
 - **Sky City** (`sky-city`): infrastructure and integration challenges with third-party tools
 - **Swamp Planet** (`swamp-planet`): technical debt and data quality issues
