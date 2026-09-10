@@ -23,7 +23,7 @@ KEEP=0
 ALL=(seed happy mixed docx disaster late garbage badschema liar crash nothing noprior fullsize
      hedge-primary hedge-standby hedge-primary-bad hedge-both-bad hedge-disabled
      no-hedge-flag voices voices-partial voices-all-fail voices-launder voices-timid refs-overdone
-     project follow qr-decodes demo)
+     project follow qr-decodes demo theming)
 SCENARIOS=("${@:-}")
 [[ -z "${SCENARIOS[0]:-}" ]] && SCENARIOS=("${ALL[@]}")
 
@@ -514,6 +514,35 @@ scen_demo() {  # a public URL full of invented people has to say so on every scr
   run_synth live
   check "live build has no demo notice"         "! deck_says 'This is a demo build'"
   check "live build says TRANSCRIPT"            "deck_says '>TRANSCRIPT<'"
+}
+
+scen_theming() {  # one accent per station, and none of them unreadable
+  new_scratch; seed_questions; establish_floor
+  for st in "Sky City" "Swamp Planet" "Ice Planet" "Snow Monster Cave" "Asteroid Field"; do arrive "$st" txt; done
+  ( cd "$SCRATCH" && ./tools/intake-transcript/intake.sh "$SCRATCH/Downloads" ) >/dev/null 2>&1
+  run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "five distinct station accents"         "[[ \$(deck_json ACCENTS | python3 -c 'import json,sys;d=json.load(sys.stdin);print(len(set(d.values())))') -eq 5 ]]"
+  check "accent is applied per screen"          "deck_says 'ACCENTS[s.id] || DEFAULT_ACCENT'"
+  check "print pages carry their accent too"    "deck_says 'style=\"--brand:'"
+  check "paper and ink are never themed"        "[[ \$(grep -c -- '--bg: #ffffff' '$DECK') -eq 1 ]]"
+
+  # Every accent readable from the back of the room, measured rather than eyeballed.
+  local res; res="$(python3 - "$DECK" <<'CONTRASTPY2'
+import json, re, sys, pathlib
+src = pathlib.Path(sys.argv[1]).read_text()
+def lum(h):
+    h=h.lstrip("#"); ch=[int(h[k:k+2],16)/255 for k in (0,2,4)]
+    ch=[c/12.92 if c<=0.03928 else ((c+0.055)/1.055)**2.4 for c in ch]
+    return 0.2126*ch[0]+0.7152*ch[1]+0.0722*ch[2]
+ratio=lambda fg:(lambda a,b:(a+0.05)/(b+0.05))(*sorted((lum(fg),lum("#ffffff")),reverse=True))
+cols=re.findall(r'"(#[0-9A-Fa-f]{6})"', re.search(r"const ACCENTS = (\{[^}]*\})", src).group(1))
+cols.append(re.search(r'const DEFAULT_ACCENT = "(#[0-9A-Fa-f]{6})"', src).group(1))
+print("FAIL" if any(ratio(c) < 4.5 for c in cols) else "OK", min(f"{ratio(c):.2f}" for c in cols))
+CONTRASTPY2
+)"
+  if [[ "$res" == OK* ]]; then ok "every accent clears WCAG AA (worst ${res#OK })"
+  else bad "an accent fails WCAG AA: $res"; fi
 }
 
 # ---------------------------------------------------------------- driver

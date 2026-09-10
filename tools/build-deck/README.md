@@ -37,6 +37,14 @@ On a hard rejection the existing deck is left byte-for-byte untouched and the fa
 
 This closes a real hole found in rehearsal: a model that relabelled a fallback as a transcript made the on-screen "not from a transcript" warning disappear, which is precisely the failure the warning exists to prevent. The fix is not a better prompt. It is not asking the question.
 
+## Station accents
+
+Each station screen carries its own accent colour, so the room can see it has moved without being told: Bespin amber for Sky City, Dagobah moss for Swamp Planet, glacial blue for Ice Planet, deep red for Snow Monster Cave, slate for Asteroid Field. The three screens about the method keep the default blue, since those are ours.
+
+**Only the accent changes.** Paper stays white and ink stays near-black on every screen. This gets projected into a bar, and a themed background would undo the work that made it readable from the back of the room.
+
+**Every accent is checked against white at build time and the build fails below WCAG AA.** Five palettes is five chances to get contrast wrong by eye. The first thing that check found was that the original brand blue had been failing at 3.98:1 all along, in the point numerals and the pill text, since before any theming existed.
+
 ## Output
 
 Every run writes the previous deck to `presentation.html.prev` first, then writes to a temp file and moves it into place, so there is no window where the file on disk is half-written.

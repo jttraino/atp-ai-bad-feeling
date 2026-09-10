@@ -47,6 +47,47 @@ STATION_THEME = {s[0]: s[2] for s in STATIONS}
 # boundary and reported. Structural problems (a missing station, a bad id, the wrong
 # number of points, output that isn't JSON) are still hard rejections, because those
 # mean the model misunderstood the task rather than got wordy.
+# One accent per station, so the room can see it has moved without being told. Only
+# the accent changes: paper stays white and ink stays near-black on every screen,
+# because this gets projected into a bar and a themed background would undo the work
+# that made it readable from the back.
+#
+# Every value is checked against white at build time and the build fails below WCAG AA.
+# Five palettes is five chances to get contrast wrong by eye, and the first thing the
+# check found was that the original brand blue had been failing at 3.98:1 all along.
+DEFAULT_ACCENT = "#2C6FBF"
+ACCENTS = {
+    "sky-city": "#A4560A",           # Bespin, late afternoon
+    "swamp-planet": "#3F5D28",       # Dagobah moss
+    "ice-planet": "#176684",         # Hoth, glacial
+    "snow-monster-cave": "#9B2226",  # the cave, and the room about breaches
+    "asteroid-field": "#455663",     # slate
+}
+MIN_CONTRAST = 4.5
+
+
+def _relative_luminance(hex_colour):
+    h = hex_colour.lstrip("#")
+    ch = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    ch = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in ch]
+    return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2]
+
+
+def contrast_ratio(fg, bg="#ffffff"):
+    a, b = sorted((_relative_luminance(fg), _relative_luminance(bg)), reverse=True)
+    return (a + 0.05) / (b + 0.05)
+
+
+def check_accents():
+    """Refuse to build a deck nobody at the back can read. Returns a list of failures."""
+    bad = []
+    for name, colour in [("default", DEFAULT_ACCENT)] + sorted(ACCENTS.items()):
+        r = contrast_ratio(colour)
+        if r < MIN_CONTRAST:
+            bad.append(f"{name} {colour} is {r:.2f}:1 against white, below AA {MIN_CONTRAST}:1")
+    return bad
+
+
 VOICE_LABELS = {"straight": "Straight", "threepio": "C-3PO",
                 "yoda": "Yoda", "vader": "Vader"}
 
@@ -518,7 +559,7 @@ TEMPLATE = """<!DOCTYPE html>
     --s: 1;
     --fs: calc(var(--base-fs) * var(--s));
     --maxw: 940px;
-    --brand: #2F7FE4;
+    --brand: __DEFAULT_ACCENT__;
     --warn: #B4610C;
     --ink: #14181a;
     --ink-2: #4a5257;
@@ -698,6 +739,8 @@ TEMPLATE = """<!DOCTYPE html>
 const DECKS = __DECKS__;
 const VOICES = __VOICES__;
 const UNVOICED = __UNVOICED__;
+const ACCENTS = __ACCENTS__;
+const DEFAULT_ACCENT = __DEFAULT_ACCENT_JS__;
 const QRS = __QRS__;            // screen id -> inline SVG, one per screen, not per voice
 const FOLLOW_URL = __FOLLOW_URL__;
 const DEMO_NOTICE = __DEMO_NOTICE__;
@@ -752,6 +795,7 @@ function setVoice(v) {
 function render() {
   const SCREENS = screens();
   const s = SCREENS[i];
+  document.documentElement.style.setProperty("--brand", ACCENTS[s.id] || DEFAULT_ACCENT);
   if (DEMO_NOTICE) { el("demobar").hidden = false; el("demobar").innerHTML = DEMO_NOTICE; }
   el("kicker").textContent = s.kicker.toUpperCase();
   el("count").textContent = (i + 1) + " / " + SCREENS.length;
@@ -839,7 +883,8 @@ document.onkeydown = ev => {
 function buildPrint() {
   const SCREENS = screens();
   el("printAll").innerHTML = SCREENS.map((s, n) =>
-    '<div class="page"><div class="topline"><span class="wordmark">ATP</span>' +
+    '<div class="page" style="--brand:' + (ACCENTS[s.id] || DEFAULT_ACCENT) + '">' +
+    '<div class="topline"><span class="wordmark">ATP</span>' +
     '<span class="divider-v"></span><span class="kicker">' + s.kicker.toUpperCase() + '</span>' +
     '<span class="count">' + (n + 1) + ' / ' + SCREENS.length + '</span></div>' +
     '<h1>' + s.title + '</h1><div class="rule"></div>' + s.body +
@@ -893,7 +938,10 @@ def render_html(decks, order, mode, generated_at, follow_url=""):
             .replace("__UNVOICED__", json.dumps(list(UNVOICED)))
             .replace("__QRS__", json.dumps(qrs, ensure_ascii=False))
             .replace("__FOLLOW_URL__", json.dumps(follow_url))
-            .replace("__DEMO_NOTICE__", json.dumps(DEMO_NOTICE if mode == "demo" else "")))
+            .replace("__DEMO_NOTICE__", json.dumps(DEMO_NOTICE if mode == "demo" else ""))
+            .replace("__DEFAULT_ACCENT__", DEFAULT_ACCENT)
+            .replace("__DEFAULT_ACCENT_JS__", json.dumps(DEFAULT_ACCENT))
+            .replace("__ACCENTS__", json.dumps(ACCENTS, ensure_ascii=False)))
 
 
 # --------------------------------------------------------------------------- payload loading
@@ -981,6 +1029,13 @@ def main():
 
     for warning in CLAMPED:
         print(f"CLAMPED: {warning}", file=sys.stderr)
+
+    failures = check_accents()
+    if failures:
+        for f in failures:
+            print(f"REJECTED: accent contrast: {f}", file=sys.stderr)
+        print("REJECTED: fix ACCENTS in build_deck.py. Nothing was written.", file=sys.stderr)
+        return 2
 
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M")
     decks = {"straight": build(data, args.mode, generated_at, args.engine)}
