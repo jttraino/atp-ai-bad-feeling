@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 # Builds a draft of the Throne Room talking points from whatever is
-# currently sitting in bases/*/, and writes it to closing-keynote/talking-points-draft.md.
+# currently sitting in stations/*/, and writes it to closing-keynote/talking-points-draft.md.
 #
-# For each base, in priority order, it uses:
+# For each station, in priority order, it uses:
 #   1. transcript.md or transcript.txt   the real Teams transcript, pasted in as plain text
 #   2. transcript.docx                   converted via pandoc, if pandoc is installed
-#   3. questions.md                      the base's question list with pre-filled likely
+#   3. questions.md                      the station's question list with pre-filled likely
 #                                         answers, used as a fallback if no transcript
 #                                         was captured
-# A base with none of the above is reported as missing entirely.
+# A station with none of the above is reported as missing entirely.
 #
 # Requires the `claude` CLI to be available and logged in.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-BASES_DIR="$REPO_ROOT/bases"
+STATIONS_DIR="$REPO_ROOT/stations"
 FRAMEWORK="$REPO_ROOT/tools/synthesize-keynote/framework.md"
 OUT_DIR="$REPO_ROOT/closing-keynote"
 OUT_FILE="$OUT_DIR/talking-points-draft.md"
@@ -25,7 +25,7 @@ combined="$(mktemp)"
 missing=()
 fallback=()
 
-for dir in "$BASES_DIR"/*/; do
+for dir in "$STATIONS_DIR"/*/; do
   name="$(basename "$dir")"
   content=""
   source_note=""
@@ -41,7 +41,7 @@ for dir in "$BASES_DIR"/*/; do
     source_note="Source: transcript (converted from .docx)"
   elif [[ -f "$dir/questions.md" ]]; then
     content="$(cat "$dir/questions.md")"
-    source_note="Source: FALLBACK. Question list with pre-filled likely answers, no transcript was captured for this base."
+    source_note="Source: FALLBACK. Question list with pre-filled likely answers, no transcript was captured for this station."
     fallback+=("$name")
   else
     missing+=("$name")
@@ -49,7 +49,7 @@ for dir in "$BASES_DIR"/*/; do
   fi
 
   {
-    echo "## Base: $name"
+    echo "## Station: $name"
     echo "_${source_note}_"
     echo
     echo "$content"
@@ -70,7 +70,7 @@ prompt_file="$(mktemp)"
   echo
   echo "---"
   echo
-  echo "Raw base inputs follow below."
+  echo "Raw station inputs follow below."
   echo
   cat "$combined"
 } > "$prompt_file"
