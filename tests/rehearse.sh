@@ -141,7 +141,10 @@ scen_seed() {  # days before: build the floor from question lists alone
   STUB_MODE=good run_synth seeded
   check "seed run exits 0"                      "[[ $RC -eq 0 ]]"
   check "deck exists before the event"          "[[ -f '$DECK' ]]"
-  check "all 5 stations flagged as fallback"    "[[ \$(grep -c 'FALLBACK' '$DECK') -ge 5 ]]"
+  check "all 5 stations marked PREVIEW"         "[[ \$(grep -c 'PREVIEW' '$DECK') -ge 5 ]]"
+  check "says the session has not happened yet" "deck_says 'This session has not happened yet'"
+  check "does NOT claim a recording failed"     "! deck_says 'did not produce usable audio'"
+  check "patterns screen says nobody said this" "deck_says 'Nobody has said any of this yet'"
   check "deck says it was built pre-event"      "deck_says 'before the stations ran'"
   check "title marks it pre-seeded"             "deck_says 'pre-seeded'"
   check "QR code embedded"                      "deck_says 'data:image/png;base64,'"
@@ -197,6 +200,8 @@ scen_disaster() {  # every recording failed
   check "still exits 0"                         "[[ $RC -eq 0 ]]"
   check "0/5 from transcript"                   "grep -q '0/5 stations from a real transcript' '$SCRATCH/synth.log'"
   check "all 5 flagged on screen"               "[[ \$(grep -c 'Not from a transcript' '$DECK') -eq 5 ]]"
+  check "live failure says the recording failed" "deck_says 'did not produce usable audio'"
+  check "and does not call it a preview"        "! deck_says 'has not happened yet'"
   check "there is still a deck to present"      "[[ -s '$DECK' ]]"
 }
 

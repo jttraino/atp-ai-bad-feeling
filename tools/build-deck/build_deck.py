@@ -387,13 +387,27 @@ def method_screens(mode, generated_at, counts, engine=""):
     ]
 
 
-def station_screen(st):
+def station_screen(st, mode="live"):
+    """One station's screen.
+
+    A flagged station means two completely different things depending on when the deck
+    was built, and saying the wrong one is worse than saying nothing. Before the event
+    nothing has failed, it simply has not happened yet, and someone who finds the deck
+    early should be told that rather than left to conclude five recordings broke."""
     flagged = st["source"] == "fallback"
-    banner = ('<div class="flag"><b>Not from a transcript.</b> This station\'s recording did not '
-              'produce usable audio. What follows is built from the question list its sponsor '
-              'prepared, and the answers we expected, not from what the room actually said.</div>'
-              if flagged else "")
-    tag = '<span class="pill warn">FALLBACK</span>' if flagged else '<span class="pill">TRANSCRIPT</span>'
+    if not flagged:
+        banner, tag = "", '<span class="pill">TRANSCRIPT</span>'
+    elif mode == "seeded":
+        banner = ('<div class="flag"><b>This session has not happened yet.</b> You are early. '
+                  'What follows is the question list this station\'s sponsor prepared and the '
+                  'answers we expect to hear, published in advance so the link works before '
+                  'anyone needs it. On the night it is replaced by what the room actually said.</div>')
+        tag = '<span class="pill warn">PREVIEW</span>'
+    else:
+        banner = ('<div class="flag"><b>Not from a transcript.</b> This station\'s recording did not '
+                  'produce usable audio. What follows is built from the question list its sponsor '
+                  'prepared, and the answers we expected, not from what the room actually said.</div>')
+        tag = '<span class="pill warn">FALLBACK</span>'
     return {
         "id": st["id"],
         "kicker": st["name"],
@@ -409,15 +423,18 @@ def build(data, mode, generated_at, engine=""):
     qr_block = f'<img class="qr" alt="QR code to {REPO_URL}" src="{qr}">' if qr else ""
 
     screens = method_screens(mode, generated_at, (live, 5 - live), engine)
-    screens += [station_screen(s) for s in data["stations"]]
+    screens += [station_screen(s, mode) for s in data["stations"]]
     screens.append({
         "id": "patterns",
         "kicker": "Across all five",
         "title": "What nobody in one room could see",
         "takeaway": data["closing_line"],
         "body":
-            '<p class="lede">Each station saw its own failure mode. These showed up in more than '
-            'one of them, which is the only reason this session exists.</p>'
+            ('<p class="lede">Nobody has said any of this yet. These are the patterns we expect to '
+             'connect the five stations, written in advance. The real ones get written on the night, '
+             'from what the rooms actually say.</p>' if mode == "seeded" else
+             '<p class="lede">Each station saw its own failure mode. These showed up in more than '
+             'one of them, which is the only reason this session exists.</p>')
             + points_html(data["patterns"])
             + '<div class="callout"><div class="h">' + e(data["closing_line"]) + '</div>'
               '<div class="b">Everything behind this deck, including the station transcripts and the '
