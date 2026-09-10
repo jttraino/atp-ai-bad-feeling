@@ -95,7 +95,7 @@ Every defect below was found by running the whole thing end to end. Not one was 
 - **A bug that would only ever appear live.** The prompt was passed as a shell argument. Linux caps a single argument at 128KB and five real transcripts come to 285KB, so it passed every small test and would have died on the night, in the room, in front of everyone.
 - **Parallel model calls that ran in sequence**, producing correct output the whole time. Caught only because a test asserted on elapsed time rather than on the result.
 - **QR codes that rendered as perfectly sized blank squares.** Right dimensions, right position, nothing inside. No assertion about the markup would have caught it, so the test now scans the code back with a barcode reader.
-- **A narrator that rewrote 9% of the deck** and passed every schema check while being completely pointless on stage.
+- **A narrator that changed 9% of the words and passed every check.** Correcting one failure produced its exact opposite: the first Yoda inverted nearly every sentence into something you had to read twice, and the fix came back 91% identical to the plain text, validating perfectly and pointless on stage. Vader landed at 58% of fields rewritten. Worked examples fixed both, and a divergence score now flags it, because the answer to fear is never the obviously wrong one, it is the one that looks exactly right.
 
 If your tests only assert on output, they will miss anything about time, size, or whether the thing is actually visible.
 

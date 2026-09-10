@@ -523,9 +523,14 @@ def receipts_screen(qr_block):
                 {"t": "The QR codes rendered as perfectly sized blank squares",
                  "d": "Right dimensions, right position, nothing inside. No assertion about the markup "
                       "would have caught it, so the test now scans the code back with a barcode reader."},
-                {"t": "A narrator that rewrote 9% of the deck and called it a voice",
-                 "d": "It passed every schema check and was pointless. That is the failure mode worth "
-                      "fearing: not the answer that is obviously wrong, the one that looks exactly right."},
+                {"t": "A narrator that changed 9% of the words and passed every check",
+                 "d": "Correcting one failure produced its exact opposite. The first Yoda inverted "
+                      "nearly every sentence into something you had to read twice. The fix came back "
+                      "91% identical to the plain text: it validated perfectly and was pointless on "
+                      "stage. Vader landed at 58% of fields rewritten and is now at 100%. Three worked "
+                      "examples per character fixed both, showing one real sentence too weak, right, "
+                      "and too far. The answer to fear is never the obviously wrong one. It is the one "
+                      "that looks exactly right."},
             ])
             + '<div class="callout"><div class="h">Take the whole thing</div>'
               '<div class="b">The principles above, each with the code that implements it and the '
