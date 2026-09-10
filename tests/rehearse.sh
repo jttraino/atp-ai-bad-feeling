@@ -23,7 +23,7 @@ KEEP=0
 ALL=(seed happy mixed docx disaster late garbage badschema liar crash nothing noprior fullsize
      hedge-primary hedge-standby hedge-primary-bad hedge-both-bad hedge-disabled
      no-hedge-flag voices voices-partial voices-all-fail voices-launder voices-timid refs-overdone
-     project follow qr-decodes demo theming)
+     project follow qr-decodes demo theming docs)
 SCENARIOS=("${@:-}")
 [[ -z "${SCENARIOS[0]:-}" ]] && SCENARIOS=("${ALL[@]}")
 
@@ -545,6 +545,20 @@ CONTRASTPY2
   else bad "an accent fails WCAG AA: $res"; fi
 }
 
+scen_docs() {  # the scenario table has silently drifted twice; stop it happening again
+  local missing
+  missing="$(python3 - "$REPO" <<'DOCSPY'
+import pathlib, re, sys
+repo = pathlib.Path(sys.argv[1])
+all_block = re.search(r"^ALL=\((.*?)\)$", (repo / "tests/rehearse.sh").read_text(), re.S | re.M).group(1)
+table = (repo / "tests/README.md").read_text()
+print(" ".join(x for x in all_block.split() if f"`{x}`" not in table))
+DOCSPY
+)"
+  if [[ -z "$missing" ]]; then ok "every scenario is documented in tests/README.md"
+  else bad "undocumented scenarios: $missing"; fi
+}
+
 # ---------------------------------------------------------------- driver
 echo
 echo "Rehearsal: ${SCENARIOS[*]}"
@@ -554,9 +568,12 @@ echo
 for SCEN in "${SCENARIOS[@]}"; do
   echo "  ${c_d}scenario:${c_0} $SCEN"
   ELAPSED_MS=0
+  SCRATCH=""          # not every scenario needs a scratch copy of the repo
   "scen_${SCEN//-/_}"
   echo "    ${c_d}synthesis wall time: ${ELAPSED_MS}ms${c_0}"
-  if [[ $KEEP == 1 ]]; then echo "    ${c_d}scratch: $SCRATCH${c_0}"; else rm -rf "$SCRATCH"; fi
+  if [[ -n "$SCRATCH" ]]; then
+    if [[ $KEEP == 1 ]]; then echo "    ${c_d}scratch: $SCRATCH${c_0}"; else rm -rf "$SCRATCH"; fi
+  fi
   echo
 done
 

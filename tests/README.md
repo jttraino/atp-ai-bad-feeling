@@ -38,6 +38,12 @@ REAL_MODEL=1 tests/rehearse.sh fullsize    # the real claude CLI, real-length tr
 | `voices-launder` | A voice quietly drops the figures, and gets called out for it. |
 | `voices-timid` | A voice that validates perfectly and is pointless on stage. |
 | `refs-overdone` | Star Wars references piling up on one slide. |
+| `project` | Projector mode exists, scales off one variable, and fits itself to the screen. |
+| `follow` | Every screen carries a QR and a link to its own anchor, and `--no-follow` removes them. |
+| `qr-decodes` | The QR is rendered and scanned back with zbarimg. Skips if the tools are missing. |
+| `demo` | A demo build says so on every screen, and a live build never does. |
+| `theming` | Five distinct station accents, applied per screen, every one clearing WCAG AA. |
+| `docs` | Every scenario in the runner appears in this table. It has drifted twice. |
 
 ## What the reps actually found
 
