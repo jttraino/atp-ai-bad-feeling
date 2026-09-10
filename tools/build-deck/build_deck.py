@@ -46,6 +46,13 @@ STATION_THEME = {s[0]: s[2] for s in STATIONS}
 # boundary and reported. Structural problems (a missing station, a bad id, the wrong
 # number of points, output that isn't JSON) are still hard rejections, because those
 # mean the model misunderstood the task rather than got wordy.
+VOICE_LABELS = {"straight": "Straight", "solo": "Han Solo", "threepio": "C-3PO",
+                "yoda": "Yoda", "vader": "Vader"}
+
+# Screens written by us, not by the model. They stay in one voice: they are the
+# credibility of the whole deck, and a joke is a bad place to keep your evidence.
+UNVOICED = ("method", "reliability")
+
 LIMITS = {"lede": 500, "takeaway": 280, "t": 150, "d": 560, "closing_line": 360}
 
 CLAMPED = []
@@ -159,6 +166,30 @@ def validate(payload, sources):
 
 
 # --------------------------------------------------------------------------- render
+
+NUMBERS = re.compile(r"\d(?:[\d,.]*\d)?")
+
+
+def all_text(data):
+    out = [data["closing_line"]]
+    for st in data["stations"]:
+        out += [st["lede"], st["takeaway"]]
+        out += [p["t"] for p in st["points"]] + [p["d"] for p in st["points"]]
+    out += [p["t"] for p in data["patterns"]] + [p["d"] for p in data["patterns"]]
+    return " ".join(out)
+
+
+def numbers_lost(straight, voiced):
+    """Figures present in the straight deck that the voice pass dropped.
+
+    The voice brief says every number survives, and that is the only reason the joke
+    is allowed near the findings at all. Reported rather than fatal, because a voice
+    may legitimately spell a figure out in words, which this cannot see. Worth looking
+    at before you present it."""
+    before = set(NUMBERS.findall(all_text(straight)))
+    after = set(NUMBERS.findall(all_text(voiced)))
+    return sorted(n for n in before - after if len(n.replace(",", "").replace(".", "")) >= 2)
+
 
 def e(s):
     return html.escape(s, quote=False)
@@ -385,6 +416,13 @@ TEMPLATE = """<!DOCTYPE html>
   button:disabled { opacity: .4; cursor: default; }
   .nav .right { margin-left: auto; font-size: 12px; color: var(--ink-3); }
 
+  .voices { display: flex; align-items: center; gap: 6px; margin-top: 14px;
+            padding-top: 14px; border-top: 1px solid var(--line); }
+  .voices .lab { font-size: 11.5px; letter-spacing: .08em; color: var(--ink-3); font-weight: 700; margin-right: 4px; }
+  .voices button { font-size: 12px; padding: 4px 10px; }
+  .voices button.on { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .voices .hint { margin-left: auto; font-size: 11.5px; color: var(--ink-3); }
+
   #printAll { display: none; }
   @media print {
     body { background: #fff; }
@@ -418,15 +456,35 @@ TEMPLATE = """<!DOCTYPE html>
       <button id="next" class="primary">Next</button>
       <div class="right">__FOOTER__</div>
     </div>
+    <div class="voices" id="voices" hidden>
+      <span class="lab">VOICE</span>
+      <span id="voiceButtons"></span>
+      <span class="hint" id="voiceHint"></span>
+    </div>
   </div>
   <div id="printAll"></div>
 </div>
 <script>
-const SCREENS = __SCREENS__;
+// VOICES is [[key, label], ...] in display order.
+// UNVOICED lists the screen ids that never change voice: they are ours, not the model's.
+const DECKS = __DECKS__;
+const VOICES = __VOICES__;
+const UNVOICED = __UNVOICED__;
 let i = 0;
+let voice = "straight";
 const el = id => document.getElementById(id);
+const screens = () => DECKS[voice] || DECKS.straight;
+
+function setVoice(v) {
+  if (!DECKS[v]) return;
+  voice = v;
+  document.querySelectorAll("#voiceButtons button").forEach(b =>
+    b.classList.toggle("on", b.dataset.voice === v));
+  render();
+}
 
 function render() {
+  const SCREENS = screens();
   const s = SCREENS[i];
   el("kicker").textContent = s.kicker.toUpperCase();
   el("count").textContent = (i + 1) + " / " + SCREENS.length;
@@ -446,17 +504,39 @@ function render() {
 
   el("prev").disabled = i === 0;
   el("next").disabled = i === SCREENS.length - 1;
+  el("voiceHint").textContent =
+    UNVOICED.indexOf(s.id) !== -1 ? "this screen is ours, so it stays straight"
+                                  : "keys 1-" + VOICES.length + ", or V to cycle";
   window.scrollTo(0, 0);
 }
 el("prev").onclick = () => { i = Math.max(0, i - 1); render(); };
-el("next").onclick = () => { i = Math.min(SCREENS.length - 1, i + 1); render(); };
+el("next").onclick = () => { i = Math.min(screens().length - 1, i + 1); render(); };
+
+if (VOICES.length > 1) {
+  el("voices").hidden = false;
+  el("voiceButtons").innerHTML = VOICES.map(([k, label]) =>
+    '<button data-voice="' + k + '">' + label + '</button>').join(" ");
+  document.querySelectorAll("#voiceButtons button").forEach(b =>
+    b.onclick = () => setVoice(b.dataset.voice));
+}
+
 document.onkeydown = ev => {
   if (ev.key === "ArrowRight" || ev.key === " " || ev.key === "PageDown") el("next").click();
   if (ev.key === "ArrowLeft" || ev.key === "PageUp") el("prev").click();
   if (ev.key === "Home") { i = 0; render(); }
-  if (ev.key === "End") { i = SCREENS.length - 1; render(); }
+  if (ev.key === "End") { i = screens().length - 1; render(); }
+  // Voice switching is meant to happen live, mid-sentence, without losing your place.
+  if (VOICES.length > 1) {
+    if (ev.key.toLowerCase() === "v") {
+      const n = VOICES.findIndex(v => v[0] === voice);
+      setVoice(VOICES[(n + 1) % VOICES.length][0]);
+    }
+    const d = parseInt(ev.key, 10);
+    if (d >= 1 && d <= VOICES.length) setVoice(VOICES[d - 1][0]);
+  }
 };
 function buildPrint() {
+  const SCREENS = screens();
   el("printAll").innerHTML = SCREENS.map((s, n) =>
     '<div class="page"><div class="topline"><span class="wordmark">ATP</span>' +
     '<span class="divider-v"></span><span class="kicker">' + s.kicker.toUpperCase() + '</span>' +
@@ -474,15 +554,18 @@ render();
 """
 
 
-def render_html(screens, mode, generated_at):
+def render_html(decks, order, mode, generated_at):
     title = "The Throne Room, ATP September 17, 2026"
     if mode == "seeded":
         title += " (pre-seeded)"
     footer = f"ATP &middot; {'Pre-seeded' if mode == 'seeded' else 'Live'} &middot; {generated_at}"
+    voices = [[k, VOICE_LABELS.get(k, k.title())] for k in order]
     return (TEMPLATE
             .replace("__TITLE__", html.escape(title))
             .replace("__FOOTER__", footer)
-            .replace("__SCREENS__", json.dumps(screens, ensure_ascii=False, indent=1)))
+            .replace("__DECKS__", json.dumps(decks, ensure_ascii=False, indent=1))
+            .replace("__VOICES__", json.dumps(voices, ensure_ascii=False))
+            .replace("__UNVOICED__", json.dumps(list(UNVOICED))))
 
 
 # --------------------------------------------------------------------------- payload loading
@@ -517,6 +600,8 @@ def main():
     ap.add_argument("--payload", required=True, help="JSON payload file, or - for stdin")
     ap.add_argument("--out", required=True, help="output .html path")
     ap.add_argument("--mode", choices=["live", "seeded"], default="live")
+    ap.add_argument("--voice", action="append", default=[], metavar="NAME=PATH",
+                    help="a character-voice payload; repeatable. Same schema, same validation.")
     ap.add_argument("--check", action="store_true",
                     help="validate the payload and exit; write nothing")
     ap.add_argument("--engine", default="",
@@ -560,13 +645,38 @@ def main():
         print(f"CLAMPED: {warning}", file=sys.stderr)
 
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M")
-    screens = build(data, args.mode, generated_at, args.engine)
+    decks = {"straight": build(data, args.mode, generated_at, args.engine)}
+    order = ["straight"]
+
+    # A voice is just another payload. It goes through the identical validator, and a
+    # voice that fails is dropped rather than taking the deck down with it: the straight
+    # version is the deck, and the voices are a party trick layered on top of it.
+    for spec in args.voice:
+        name, _, path = spec.partition("=")
+        name = name.strip().lower()
+        if not name or not path:
+            print(f"REJECTED: --voice {spec!r} is not NAME=PATH", file=sys.stderr)
+            return 2
+        try:
+            vdata = validate(extract_json(pathlib.Path(path).read_text()), sources)
+        except (ValidationError, OSError) as exc:
+            print(f"DROPPED voice {name}: {exc}", file=sys.stderr)
+            continue
+        lost = numbers_lost(data, vdata)
+        if lost:
+            print(f"WARNING voice {name}: these figures are in the straight deck but not "
+                  f"in this voice: {', '.join(lost)}. Check the slides before presenting it.",
+                  file=sys.stderr)
+        decks[name] = build(vdata, args.mode, generated_at, args.engine)
+        order.append(name)
+
+    screens = decks["straight"]
 
     out.parent.mkdir(parents=True, exist_ok=True)
     if out.exists():
         out.with_suffix(out.suffix + ".prev").write_text(out.read_text())
     tmp = out.with_suffix(out.suffix + ".tmp")
-    tmp.write_text(render_html(screens, args.mode, generated_at))
+    tmp.write_text(render_html(decks, order, args.mode, generated_at))
     tmp.replace(out)
 
     live = sum(1 for s in data["stations"] if s["source"] == "transcript")
@@ -577,6 +687,8 @@ def main():
         print(f"  flagged as fallback on screen: {', '.join(fb)}")
     if CLAMPED:
         print(f"  {len(CLAMPED)} field(s) trimmed to fit the layout")
+    if len(order) > 1:
+        print(f"  voices: {', '.join(order[1:])} (press 1-{len(order)} or V while presenting)")
     return 0
 
 

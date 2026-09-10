@@ -20,7 +20,8 @@ KEEP=0
 [[ "${1:-}" == "--keep" ]] && { KEEP=1; shift; }
 
 ALL=(seed happy mixed docx disaster late garbage badschema liar crash nothing noprior fullsize
-     hedge-primary hedge-standby hedge-primary-bad hedge-both-bad hedge-disabled)
+     hedge-primary hedge-standby hedge-primary-bad hedge-both-bad hedge-disabled
+     no-hedge-flag voices voices-partial voices-all-fail voices-launder)
 SCENARIOS=("${@:-}")
 [[ -z "${SCENARIOS[0]:-}" ]] && SCENARIOS=("${ALL[@]}")
 
@@ -66,14 +67,15 @@ run_synth() {
   local mode="${1:-live}" t0 t1
   t0=$(date +%s%N)
   if [[ "${REAL_MODEL:-0}" == "1" ]]; then
-    ( cd "$SCRATCH" && MODE="$mode" CLAUDE_BIN=claude \
-        ./tools/synthesize-keynote/synthesize.sh ) >"$SCRATCH/synth.log" 2>&1
+    ( cd "$SCRATCH" && MODE="$mode" CLAUDE_BIN=claude VOICES="${VOICES:-}" \
+        ./tools/synthesize-keynote/synthesize.sh ${SYNTH_ARGS:-} ) >"$SCRATCH/synth.log" 2>&1
   else
     ( cd "$SCRATCH" && MODE="$mode" CLAUDE_BIN="$STUBS/claude" STUB_MODE="${STUB_MODE:-good}" \
         STUB_MODE_PRIMARY="${STUB_MODE_PRIMARY:-}" STUB_MODE_FAST="${STUB_MODE_FAST:-}" \
         STUB_DELAY_PRIMARY="${STUB_DELAY_PRIMARY:-0}" STUB_DELAY_FAST="${STUB_DELAY_FAST:-0}" \
         DEADLINE_S="${DEADLINE_S:-150}" GRACE_S="${GRACE_S:-60}" FAST_MODEL="${FAST_MODEL-haiku}" \
-        ./tools/synthesize-keynote/synthesize.sh ) >"$SCRATCH/synth.log" 2>&1
+        STUB_VOICE_FAIL="${STUB_VOICE_FAIL:-}" STUB_VOICE_VAGUE="${STUB_VOICE_VAGUE:-}" VOICES="${VOICES:-}" \
+        ./tools/synthesize-keynote/synthesize.sh ${SYNTH_ARGS:-} ) >"$SCRATCH/synth.log" 2>&1
   fi
   RC=$?
   t1=$(date +%s%N)
@@ -102,12 +104,32 @@ specificity() {
   for re in "${FACTS[@]}"; do grep -Eqi "$re" "$DECK" 2>/dev/null && n=$((n+1)); done
   echo $n
 }
-deck_screens(){ python3 - "$DECK" <<'PY'
-import re,sys,json
-m=re.search(r"const SCREENS = (\[.*?\]);\n", open(sys.argv[1]).read(), re.S)
-print(len(json.loads(m.group(1))) if m else 0)
-PY
+# Pull a JS literal out of the deck by matching brackets rather than by regex. The
+# values are multi-line JSON and one of them used to sit next to a // comment, which
+# is exactly the kind of thing a lazy regex gets quietly wrong.
+deck_json() { python3 - "$DECK" "$1" <<'DECKPY'
+import sys, json
+src, name = open(sys.argv[1]).read(), sys.argv[2]
+i = src.index(f"const {name} = ") + len(f"const {name} = ")
+open_c = src[i]; close_c = {"[": "]", "{": "}"}[open_c]
+depth, j, instr, esc = 0, i, False, False
+while j < len(src):
+    c = src[j]
+    if instr:
+        if esc: esc = False
+        elif c == "\\": esc = True
+        elif c == '"': instr = False
+    elif c == '"': instr = True
+    elif c == open_c: depth += 1
+    elif c == close_c:
+        depth -= 1
+        if depth == 0: break
+    j += 1
+print(json.dumps(json.loads(src[i:j + 1])))
+DECKPY
 }
+
+deck_screens(){ deck_json DECKS | python3 -c "import json,sys; print(len(json.load(sys.stdin)['straight']))" 2>/dev/null || echo 0; }
 
 # ---------------------------------------------------------------- scenarios
 
@@ -327,6 +349,61 @@ scen_hedge_disabled() {  # FAST_MODEL empty: single path, no hang waiting on a s
   check "existing deck untouched"               "[[ \$(md5sum '$DECK' | cut -d' ' -f1) == '$before' ]]"
   if [[ $ELAPSED_MS -lt 20000 ]]; then ok "gave up promptly, no phantom standby wait (${ELAPSED_MS}ms)"
   else bad "hung ${ELAPSED_MS}ms waiting for a standby that was never started"; fi
+}
+
+# ---- optional extras: the hedge switch, and the character voices ---------------
+
+deck_voices() { deck_json VOICES | python3 -c "import json,sys; print(' '.join(v[0] for v in json.load(sys.stdin)))" 2>/dev/null || echo ""; }
+
+scen_no_hedge_flag() {  # --no-hedge on a run that succeeds: one model, no standby
+  new_scratch; seed_questions; establish_floor
+  SYNTH_ARGS="--no-hedge" run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "no standby was started"                "! grep -q 'running in parallel' '$SCRATCH/synth.log'"
+  check "primary still produced the deck"       "grep -q 'from the primary model' '$SCRATCH/synth.log'"
+  check "deck is complete"                      "[[ \$(deck_screens) -eq 8 ]]"
+}
+
+scen_voices() {  # the live toggle
+  new_scratch; seed_questions; establish_floor
+  SYNTH_ARGS="--voices=yoda,vader" run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "both voices survived"                  "[[ \"\$(deck_voices)\" == 'straight yoda vader' ]]"
+  check "deck carries yoda's text"              "deck_says '[Yoda]'"
+  check "deck carries vader's text"             "deck_says '[Darth Vader]'"
+  check "straight text is still there too"      "grep -Eqi '400,000|four hundred thousand' '$DECK'"
+  check "voice bar is rendered"                 "deck_says 'id=\"voiceButtons\"'"
+  check "method screens excluded from voicing"  "deck_says 'UNVOICED'"
+  check "straight deck was up before voices"    "grep -q 'Straight deck up' '$SCRATCH/synth.log'"
+}
+
+scen_voices_partial() {  # one voice fails: drop it, keep the rest, never lose the deck
+  new_scratch; seed_questions; establish_floor
+  STUB_VOICE_FAIL=darth SYNTH_ARGS="--voices=yoda,vader" run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "the bad voice was dropped"             "grep -q 'vader: unusable' '$SCRATCH/synth.log'"
+  check "the good voice survived"               "[[ \"\$(deck_voices)\" == 'straight yoda' ]]"
+  check "deck is still complete"                "[[ \$(deck_screens) -eq 8 ]]"
+}
+
+scen_voices_all_fail() {  # every voice fails: straight deck stands, exit still clean
+  new_scratch; seed_questions; establish_floor
+  STUB_VOICE_FAIL=yoda,darth SYNTH_ARGS="--voices=yoda,vader" run_synth live
+  check "exits 0 anyway"                        "[[ $RC -eq 0 ]]"
+  check "says no voice survived"                "grep -q 'No voice survived' '$SCRATCH/synth.log'"
+  check "deck has only the straight voice"      "[[ \"\$(deck_voices)\" == 'straight' ]]"
+  check "no voice bar to show"                  "[[ \$(deck_json VOICES | python3 -c 'import json,sys;print(len(json.load(sys.stdin)))') -eq 1 ]]"
+  check "deck is still complete and real"       "grep -Eqi '400,000|four hundred thousand' '$DECK'"
+}
+
+scen_voices_launder() {  # a voice that quietly drops the numbers must be called out
+  new_scratch; seed_questions; establish_floor
+  STUB_VOICE_VAGUE=1 SYNTH_ARGS="--voices=yoda" run_synth live
+  check "exits 0"                               "[[ $RC -eq 0 ]]"
+  check "warns that figures went missing"       "grep -q 'WARNING voice yoda' '$SCRATCH/synth.log'"
+  check "names a specific missing figure"       "grep -q '190,000' '$SCRATCH/synth.log'"
+  check "voice is still offered, not dropped"   "[[ \"\$(deck_voices)\" == 'straight yoda' ]]"
+  check "straight deck keeps its numbers"       "grep -Eqi '400,000|four hundred thousand' '$DECK'"
 }
 
 # ---------------------------------------------------------------- driver

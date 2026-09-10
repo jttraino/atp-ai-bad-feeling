@@ -18,9 +18,18 @@
 #   CLAUDE_BIN    model CLI to invoke (default: claude)
 #   MODE          live | seeded  (default: live)
 #   PRIMARY_MODEL model for the good answer (default: the CLI's own default)
-#   FAST_MODEL    standby model run in parallel (default: haiku; empty disables the hedge)
+#   FAST_MODEL    standby model for the hedge (default: haiku)
+#   HEDGE         on | off  (default: on).  --no-hedge does the same thing.
 #   DEADLINE_S    how long the primary gets before we prefer the standby (default: 180)
 #   GRACE_S       extra time to wait for the standby after that (default: 45)
+#   VOICES        comma separated character voices, or empty for none (default: none)
+#   VOICE_MODEL   model for the voice passes (default: the primary)
+#
+# Flags:
+#   --no-hedge            one model only, half the tokens, no insurance
+#   --voices[=a,b,c]      add character voices; default set is yoda,vader,solo,threepio
+#   --no-voices           explicit off
+#   --deadline SECONDS
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -32,8 +41,32 @@ CLAUDE_BIN="${CLAUDE_BIN:-claude}"
 MODE="${MODE:-live}"
 PRIMARY_MODEL="${PRIMARY_MODEL-}"
 FAST_MODEL="${FAST_MODEL-haiku}"
+HEDGE="${HEDGE:-on}"
 DEADLINE_S="${DEADLINE_S:-180}"
 GRACE_S="${GRACE_S:-45}"
+VOICES="${VOICES-}"
+VOICE_MODEL="${VOICE_MODEL-$PRIMARY_MODEL}"
+VOICE_DIR="$REPO_ROOT/tools/synthesize-keynote/voices"
+VOICE_BRIEF="$REPO_ROOT/tools/synthesize-keynote/voices.md"
+DEFAULT_VOICES="yoda,vader,solo,threepio"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --hedge)      HEDGE=on; shift ;;
+    --no-hedge)   HEDGE=off; shift ;;
+    --voices)     VOICES="$DEFAULT_VOICES"; shift ;;
+    --voices=*)   VOICES="${1#*=}"; shift ;;
+    --no-voices)  VOICES=""; shift ;;
+    --deadline)   DEADLINE_S="$2"; shift 2 ;;
+    -h|--help)    awk 'NR>1 && /^#/ {sub(/^# ?/, ""); print; next} NR>1 {exit}' "${BASH_SOURCE[0]}"; exit 0 ;;
+    *) echo "Unknown option: $1" >&2; exit 64 ;;
+  esac
+done
+
+# The hedge is a toggle, not a fact of life. Off is a legitimate choice: it halves the
+# tokens and it is the right call for a dry run, a re-run when you already know the
+# model is behaving, or any time you are not standing in front of a room.
+[[ "$HEDGE" == "off" ]] && FAST_MODEL=""
 
 STATION_IDS=(sky-city swamp-planet ice-planet snow-monster-cave asteroid-field)
 
@@ -217,15 +250,92 @@ fi
 
 echo "Usable output in ${model_elapsed}s from $engine" >&2
 
-python3 "$BUILDER" --payload "$winner" --out "$OUT_FILE" --mode "$MODE" \
-    --sources "$sources" --engine "$engine"
-rc=$?
-rm -f "$payload".*
+if ! python3 "$BUILDER" --payload "$winner" --out "$OUT_FILE" --mode "$MODE" \
+    --sources "$sources" --engine "$engine"; then
+  echo "FAILED after $(( $(date +%s) - started ))s. Present the deck that is already there." >&2
+  exit 2
+fi
+echo "Straight deck up at $(( $(date +%s) - started ))s." >&2
 
-elapsed=$(( $(date +%s) - started ))
-if [[ $rc -ne 0 ]]; then
-  echo "FAILED after ${elapsed}s. Present the deck that is already there." >&2
-  exit $rc
+# ------------------------------------------------------------------- voices
+#
+# Deliberately AFTER the deck has already been written. A voice pass measured at 174
+# seconds even though its input is twenty times smaller than the main prompt, because
+# latency here tracks output tokens and plain variance, not input size. So this never
+# goes on the critical path: the straight deck is on disk and presentable before the
+# first voice call is made, and if every voice fails or you run out of time, you lose
+# nothing you had a minute ago.
+#
+# Run it the day before, or on the night after the deck is up and people are still
+# walking back to their seats.
+
+if [[ -n "$VOICES" ]]; then
+  echo "Generating voices: $VOICES (the deck above is already presentable)" >&2
+  voice_started=$(date +%s)
+  IFS=',' read -ra VLIST <<< "$VOICES"
+  vpids=(); vnames=()
+
+  for v in "${VLIST[@]}"; do
+    v="$(echo "$v" | tr -d '[:space:]')"
+    if [[ ! -f "$VOICE_DIR/$v.md" ]]; then
+      echo "  skipping unknown voice '$v' (no $VOICE_DIR/$v.md)" >&2
+      continue
+    fi
+    python3 - "$VOICE_BRIEF" "$VOICE_DIR/$v.md" "$winner" > "$payload.vp.$v" <<'PYEOF'
+import pathlib, sys
+brief, direction, content = (pathlib.Path(a).read_text() for a in sys.argv[1:4])
+print(brief.replace("__VOICE_DIRECTION__", direction.strip()))
+print("\n---\n\nThe validated JSON follows.\n")
+print(content)
+PYEOF
+    (
+      if [[ -n "$VOICE_MODEL" ]]; then
+        "$CLAUDE_BIN" --model "$VOICE_MODEL" -p < "$payload.vp.$v" > "$payload.v.$v.out" 2>"$payload.v.$v.err"
+      else
+        "$CLAUDE_BIN" -p < "$payload.vp.$v" > "$payload.v.$v.out" 2>"$payload.v.$v.err"
+      fi
+      echo $? > "$payload.v.$v.rc"
+    ) >/dev/null 2>&1 &
+    vpids+=($!); vnames+=("$v")
+  done
+
+  if [[ ${#vnames[@]} -gt 0 ]]; then
+    vdeadline=$(( $(date +%s) + ${VOICE_TIMEOUT_S:-420} ))
+    while :; do
+      done_count=0
+      for v in "${vnames[@]}"; do [[ -f "$payload.v.$v.rc" ]] && done_count=$((done_count+1)); done
+      [[ $done_count -eq ${#vnames[@]} ]] && break
+      [[ $(date +%s) -ge $vdeadline ]] && { echo "  voice deadline reached with $done_count/${#vnames[@]} done" >&2; break; }
+      sleep 2
+    done
+    for pid in "${vpids[@]}"; do kill "$pid" 2>/dev/null || true; done
+    wait 2>/dev/null || true
+
+    voice_args=()
+    for v in "${vnames[@]}"; do
+      if [[ -f "$payload.v.$v.rc" && "$(cat "$payload.v.$v.rc")" == "0" ]] \
+         && python3 "$BUILDER" --check --payload "$payload.v.$v.out" --out "$OUT_FILE" \
+              --sources "$sources" >/dev/null 2>"$payload.v.$v.val"; then
+        voice_args+=(--voice "$v=$payload.v.$v.out")
+        echo "  $v: ok" >&2
+      else
+        echo "  $v: unusable, dropped. $(head -1 "$payload.v.$v.val" 2>/dev/null)" >&2
+      fi
+    done
+
+    if [[ ${#voice_args[@]} -gt 0 ]]; then
+      # Rebuild with the voices folded in. Same validator, same everything: a voice is
+      # just another payload that has to pass the schema before it can reach a slide.
+      if python3 "$BUILDER" --payload "$winner" --out "$OUT_FILE" --mode "$MODE" \
+          --sources "$sources" --engine "$engine" "${voice_args[@]}"; then
+        echo "Voices added in $(( $(date +%s) - voice_started ))s." >&2
+      else
+        echo "Voice rebuild failed; the straight deck on disk is untouched." >&2
+      fi
+    else
+      echo "No voice survived validation. The straight deck stands." >&2
+    fi
+  fi
 fi
 
-echo "Total ${elapsed}s. Open $OUT_FILE and present. Arrow keys or Next."
+echo "Total $(( $(date +%s) - started ))s. Open $OUT_FILE and present. Arrow keys or Next."

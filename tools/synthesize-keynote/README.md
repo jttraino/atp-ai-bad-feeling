@@ -5,6 +5,11 @@ The tool that turns the five station transcripts into the Throne Room deck, in t
 ```bash
 tools/synthesize-keynote/seed.sh          # days before: build the floor from question lists
 tools/synthesize-keynote/synthesize.sh    # on the night: rebuild from whatever has arrived
+
+tools/synthesize-keynote/synthesize.sh --no-hedge          # one model, half the tokens
+tools/synthesize-keynote/synthesize.sh --voices            # add the character voices
+tools/synthesize-keynote/synthesize.sh --voices=yoda,solo  # just these two
+tools/synthesize-keynote/synthesize.sh --help
 ```
 
 Both write `closing-keynote/presentation.html`. Both are safe to re-run as often as you like.
@@ -52,6 +57,8 @@ DEADLINE_S=180         how long the primary gets
 GRACE_S=45             extra time to wait for the standby after that
 ```
 
+**It is optional.** `--no-hedge`, or `HEDGE=off`, runs a single model and halves the tokens. That is the right call for a dry run, for a re-run when you already know the model is behaving, and for any time you are not standing in front of a room. It is on by default because the night is the case it was built for.
+
 **Why not a race.** Taking whichever finishes first means presenting the weaker deck any time the standby happens to land a few seconds earlier, which on these measurements is most of the time. Quality is the thing we are protecting; the deadline is the thing we are insuring against.
 
 **Why not a sequential retry.** A serial fallback burns the primary's entire deadline before the standby even starts. At the measured numbers that is 180 seconds gone, then 81 more. Running them together caps the worst case at roughly the deadline.
@@ -71,3 +78,22 @@ This gives three rungs, each one presentable on its own: the primary model, the 
 ## Requires
 
 The `claude` CLI, logged in. `pandoc` for `.docx` transcripts. Python 3 for the builder and validator.
+
+## Character voices
+
+A live toggle during the keynote: same findings, same numbers, same slide, different narrator. Press **1** to **5**, or **V** to cycle. The screen you are on does not change, so you can switch mid-sentence and keep your place.
+
+```bash
+tools/synthesize-keynote/synthesize.sh --voices             # yoda,vader,solo,threepio
+tools/synthesize-keynote/synthesize.sh --voices=yoda,solo
+```
+
+Voices are defined one per file in [`voices/`](voices/), so adding one is writing a paragraph of direction. The shared rules live in [`voices.md`](voices.md).
+
+**Off by default, and always a second pass after the deck is already written.** A single voice pass measured at 174 seconds even though its input is twenty times smaller than the main prompt, because latency here tracks output tokens and plain variance, not input size. So it never goes on the critical path: the straight deck is on disk and presentable before the first voice call is made. Run it the day before, or on the night once the deck is up and people are still walking back to their seats.
+
+**A voice is just another payload.** It goes through the identical schema validator, so it cannot drop a station, rename one, or change how many points a slide has. One that fails validation is dropped and the others carry on; if all of them fail, the straight deck stands and the run still exits clean.
+
+**The numbers are checked, not trusted.** After a voice validates, its figures are compared against the straight deck's and anything missing is named in a warning. The joke is only allowed near the findings because the findings survive it, so that claim gets verified rather than asserted. It is a warning and not a rejection, because a voice may legitimately spell a figure out in words.
+
+**The two method screens never change voice.** They are our words rather than the model's, and they are the evidence for everything else in the deck. A joke is a bad place to keep your evidence.

@@ -31,6 +31,11 @@ REAL_MODEL=1 tests/rehearse.sh fullsize    # the real claude CLI, real-length tr
 | `hedge-primary-bad` | The primary returns fast but useless; switch immediately rather than waiting out the deadline. |
 | `hedge-both-bad` | Both models fail. The seeded deck is the whole point. |
 | `hedge-disabled` | `FAST_MODEL=""`. Single path, and no hang waiting on a standby that was never started. |
+| `no-hedge-flag` | `--no-hedge` on a run that succeeds: one model, no standby, complete deck. |
+| `voices` | Two character voices generated and toggleable in the deck. |
+| `voices-partial` | One voice fails validation. Drop it, keep the other, never lose the deck. |
+| `voices-all-fail` | Every voice fails. The straight deck stands and the run still exits clean. |
+| `voices-launder` | A voice quietly drops the figures, and gets called out for it. |
 
 ## What the reps actually found
 

@@ -100,10 +100,11 @@ One per station. R2 rode in the socket watching the systems so the pilot could f
 That 10 minutes has to be absorbed by the run of show while the room moves back to the keynote area. **Adjust this section against the real run of show once Scott and Tom have it**, since it's the one number here that depends on somebody else's document. Re-measure any time with `REAL_MODEL=1 tests/rehearse.sh fullsize`.
 
 - [ ] Run `tools/intake-transcript/intake.sh` one last time and read its five-station status table.
-- [ ] Run `./tools/synthesize-keynote/synthesize.sh`. It fires two models in parallel: the primary gets 180 seconds, and a haiku standby answers the same question as insurance against a slow night. You do not have to do anything differently; it picks one and tells you which.
+- [ ] Run `./tools/synthesize-keynote/synthesize.sh`. It fires two models in parallel: the primary gets 180 seconds, and a haiku standby answers the same question as insurance against a slow night. You do not have to do anything differently; it picks one and tells you which. Add `--no-hedge` to run a single model, which is the right call for a dry run and the wrong one tonight.
 - [ ] Read its output. It says how many stations came from a real transcript, names any on a fallback, says which model wrote the deck, and names anything it trimmed. If it says the standby carried it, that is fine and the deck says so on screen.
 - [ ] **If it says REJECTED, do not panic and do not re-run blindly.** The deck already on disk is untouched and presentable. Present that.
 - [ ] Open `closing-keynote/presentation.html` in a browser. Arrow keys or Next. Fleet Command presents it live, adapting on the fly rather than reading it verbatim.
+- [ ] **Optional, only if the room is still settling:** re-run with `--voices` to add the character voices, then press 1 to 5 or V mid-presentation to switch narrator. This takes a few minutes and is never on the critical path, because the deck you already have stays exactly where it is until the voices are ready. If the run of show is tight, skip it: generate them the day before against the seeded deck instead and rehearse with those.
 
 ## If something fails mid-session
 

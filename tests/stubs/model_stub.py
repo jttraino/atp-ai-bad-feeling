@@ -30,6 +30,36 @@ if DELAY:
 
 prompt = " ".join(sys.argv[1:]) or sys.stdin.read()
 
+# A voice pass is a different job: it gets an already-validated payload back and
+# rewrites the prose. The stub fakes that by tagging every text field, which is enough
+# for the harness to prove the deck really is carrying separate content per voice.
+if "# Voice Brief" in prompt:
+    voice = "unknown"
+    m = re.search(r"^## The voice\s*\n+#\s*(.+)$", prompt, re.M)
+    if m:
+        voice = m.group(1).strip()
+    if os.environ.get("STUB_VOICE_FAIL", "") and voice.lower().startswith(
+            tuple(v.strip().lower() for v in os.environ["STUB_VOICE_FAIL"].split(",") if v.strip())):
+        print("I'm afraid I can't do that.")
+        sys.exit(0)
+    body = json.loads(prompt[prompt.rindex("{"):prompt.rindex("}") + 1]
+                      if False else re.search(r"(\{[\s\S]*\})\s*$", prompt).group(1))
+    tag = f"[{voice}]"
+    vague = os.environ.get("STUB_VOICE_VAGUE", "") == "1"
+    def rev(t):
+        if vague:
+            t = re.sub(r"\d(?:[\d,.]*\d)?", "several", t)
+        return f"{tag} {t}"
+    for st in body.get("stations", []):
+        st["lede"] = rev(st["lede"]); st["takeaway"] = rev(st["takeaway"])
+        for pt in st["points"]:
+            pt["t"] = rev(pt["t"]); pt["d"] = rev(pt["d"])
+    for pt in body.get("patterns", []):
+        pt["t"] = rev(pt["t"]); pt["d"] = rev(pt["d"])
+    body["closing_line"] = rev(body["closing_line"])
+    print(json.dumps(body, indent=2))
+    sys.exit(0)
+
 if MODE == "fail":
     print("Error: API request failed after 3 retries (rate_limit_error)", file=sys.stderr)
     sys.exit(1)
