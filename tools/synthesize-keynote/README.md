@@ -96,4 +96,6 @@ Voices are defined one per file in [`voices/`](voices/), so adding one is writin
 
 **The numbers are checked, not trusted.** After a voice validates, its figures are compared against the straight deck's and anything missing is named in a warning. The joke is only allowed near the findings because the findings survive it, so that claim gets verified rather than asserted. It is a warning and not a rejection, because a voice may legitimately spell a figure out in words.
 
+**Two quality checks the schema cannot make.** A voice can validate perfectly and still be wrong in two ways, so both are measured and reported: figures that vanished between the straight deck and the voice, and a voice that rewrote too little to be worth a button (under 60% of fields changed). Both were real failures in live runs before they were checks.
+
 **The two method screens never change voice.** They are our words rather than the model's, and they are the evidence for everything else in the deck. A joke is a bad place to keep your evidence.

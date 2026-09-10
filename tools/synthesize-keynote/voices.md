@@ -21,6 +21,7 @@ Rules, all enforced:
 - **Do not invent findings.** You are re-voicing sentences, not writing new ones. If you cannot say something in this voice, say it plainly rather than making something up.
 - **Keep it roughly the same length.** These are slides.
 - No em dashes.
+- **The voice must be unmistakable.** If a reader could not name the character from a single slide, you have not done the job, and a barely-adjusted straight sentence is the most common way to fail this. Every `lede`, `t`, `d` and `takeaway` should read as that character, not just a few of them. The calibration section below shows the intended intensity, including what falling short of it looks like.
 - **Readability is the constraint on all of this.** A sentence the room has to parse twice has failed, however good the impression is. When the voice and the clarity of a finding pull against each other, the finding wins.
 
 ## The voice

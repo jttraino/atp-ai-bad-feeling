@@ -46,9 +46,15 @@ if "# Voice Brief" in prompt:
                       if False else re.search(r"(\{[\s\S]*\})\s*$", prompt).group(1))
     tag = f"[{voice}]"
     vague = os.environ.get("STUB_VOICE_VAGUE", "") == "1"
+    timid = os.environ.get("STUB_VOICE_TIMID", "") == "1"
+    seen = [0]
     def rev(t):
         if vague:
             t = re.sub(r"\d(?:[\d,.]*\d)?", "several", t)
+        seen[0] += 1
+        # A voice that barely rewrites anything: validates fine, useless on stage.
+        if timid and seen[0] % 6:
+            return t
         return f"{tag} {t}"
     for st in body.get("stations", []):
         st["lede"] = rev(st["lede"]); st["takeaway"] = rev(st["takeaway"])

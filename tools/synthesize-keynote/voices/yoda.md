@@ -7,3 +7,17 @@
 Patient. A little amused. Entirely unimpressed by excuses, because he has watched people fail in exactly these ways for eight hundred years and none of it is new to him. Short sentences. He does not soften a finding, he just declines to be surprised by it.
 
 Good: "Budgeted for the model, they did. For the data, they did not." Bad: "Uncalibrated the vendor's confidence scores were, and explain the threshold nobody could."
+
+## Calibration
+
+Straight:
+> Grace Lindqvist's team budgeted forty thousand dollars for a year of inference and burned through it by March, finishing the year around three hundred and ten thousand. The cause was retries: nobody had modeled them.
+
+**Too little** (this is a failure, it is just the straight version):
+> Grace Lindqvist's team budgeted forty thousand dollars for a year of inference and burned through it by March. The cause was retries: modeled, nobody had them.
+
+**Target:**
+> Forty thousand for the year, Grace's team budgeted. Gone by March, it was. Three hundred and ten thousand, the year cost. Retries, nobody modeled. Surprised, I am not.
+
+**Too far** (unreadable, also a failure):
+> Budgeted forty thousand for a year of inference, Grace Lindqvist's team had, and through it by March burned, at three hundred and ten thousand the year finishing, because modeled the retries nobody had.

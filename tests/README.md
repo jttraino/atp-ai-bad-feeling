@@ -36,6 +36,7 @@ REAL_MODEL=1 tests/rehearse.sh fullsize    # the real claude CLI, real-length tr
 | `voices-partial` | One voice fails validation. Drop it, keep the other, never lose the deck. |
 | `voices-all-fail` | Every voice fails. The straight deck stands and the run still exits clean. |
 | `voices-launder` | A voice quietly drops the figures, and gets called out for it. |
+| `voices-timid` | A voice that validates perfectly and is pointless on stage. |
 
 ## What the reps actually found
 
@@ -52,6 +53,8 @@ Every one of these was a real defect found by running the thing, not by reading 
 **A 600-word test transcript flatters everything.** The fixtures are written to be readable. Real stations produce something like 8,500 words each. `tests/inflate.py` pads the fixtures to that length so the timing rep measures the real thing; without it, two of the four findings above stay hidden.
 
 **The parallel models ran strictly in sequence, and looked fine doing it.** `primary_pid=$(spawn primary ...)` starts a background subshell, but the subshell inherits the command substitution's pipe, and `$( )` blocks until every holder of that pipe closes it. So each "background" call blocked the caller until it finished. The hedge produced correct output the entire time; it was simply useless, because both calls were serial. Found only because `hedge-primary` asserts on elapsed time rather than on the result. A test that had checked the output alone would have passed forever.
+
+**Calibrating a prompt by adjective does not work, in either direction.** The first live Yoda pass inverted nearly every sentence into things like "Assigned it a category to be tracked in, nobody had." The fix was a rule saying invert at most one sentence in three and let readability win. The next live pass came back **91% textually identical to the straight deck**: it validated perfectly, and it was pointless, because a button that changes four words is not worth pressing. Neither version was catchable by the schema. What fixed it was replacing the adjectives with a three-point worked example in each voice file, showing the same real sentence rendered too little, at target, and too far. There is now an automatic check for the second failure, because it is the one you do not notice: if under 60% of fields were actually rewritten, the run says so and names the file to strengthen.
 
 **`kill` on an already-dead process tripped `set -e`.** Cleaning up the losing model ended the script with a nonzero status even after a completely successful run. Found by `hedge-primary` asserting `exits 0`.
 

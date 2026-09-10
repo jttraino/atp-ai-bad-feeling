@@ -191,6 +191,31 @@ def numbers_lost(straight, voiced):
     return sorted(n for n in before - after if len(n.replace(",", "").replace(".", "")) >= 2)
 
 
+def fields(data):
+    out = [data["closing_line"]]
+    for st in data["stations"]:
+        out += [st["lede"], st["takeaway"]]
+        for p in st["points"]:
+            out += [p["t"], p["d"]]
+    for p in data["patterns"]:
+        out += [p["t"], p["d"]]
+    return out
+
+
+def voice_divergence(straight, voiced):
+    """Share of fields the voice pass actually rewrote.
+
+    A voice that comes back almost identical to the straight deck is a failure the
+    schema cannot see: it validates perfectly and is simply pointless on stage. This
+    is the cheap automatic version of noticing that by eye, which is how it was found
+    the first time. Low scores mean the direction was too timid, not that the deck
+    is broken, so it warns rather than rejects."""
+    a, b = fields(straight), fields(voiced)
+    if len(a) != len(b) or not a:
+        return 1.0
+    return sum(1 for x, y in zip(a, b) if x.strip() != y.strip()) / len(a)
+
+
 def e(s):
     return html.escape(s, quote=False)
 
@@ -662,6 +687,11 @@ def main():
         except (ValidationError, OSError) as exc:
             print(f"DROPPED voice {name}: {exc}", file=sys.stderr)
             continue
+        div = voice_divergence(data, vdata)
+        if div < 0.6:
+            print(f"WARNING voice {name}: only {div:.0%} of fields were actually rewritten. "
+                  f"This reads as the straight deck with a few words moved, which is not "
+                  f"worth a button. Strengthen voices/{name}.md and re-run.", file=sys.stderr)
         lost = numbers_lost(data, vdata)
         if lost:
             print(f"WARNING voice {name}: these figures are in the straight deck but not "
