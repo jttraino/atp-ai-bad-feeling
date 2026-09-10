@@ -47,7 +47,7 @@ STATION_THEME = {s[0]: s[2] for s in STATIONS}
 # boundary and reported. Structural problems (a missing station, a bad id, the wrong
 # number of points, output that isn't JSON) are still hard rejections, because those
 # mean the model misunderstood the task rather than got wordy.
-VOICE_LABELS = {"straight": "Straight", "solo": "Han Solo", "threepio": "C-3PO",
+VOICE_LABELS = {"straight": "Straight", "threepio": "C-3PO",
                 "yoda": "Yoda", "vader": "Vader"}
 
 # Screens written by us, not by the model. They stay in one voice: they are the

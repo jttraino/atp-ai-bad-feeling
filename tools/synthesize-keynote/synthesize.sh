@@ -29,7 +29,7 @@
 #
 # Flags:
 #   --no-hedge            one model only, half the tokens, no insurance
-#   --voices[=a,b,c]      add character voices; default set is yoda,vader,solo,threepio
+#   --voices[=a,b,c]      add character voices; default set is yoda,vader,threepio
 #   --no-voices           explicit off
 #   --deadline SECONDS
 #   --follow-url URL      override the published URL shown in the QR on every screen
@@ -53,7 +53,7 @@ VOICE_MODEL="${VOICE_MODEL-$PRIMARY_MODEL}"
 FOLLOW_URL="${FOLLOW_URL-https://jttraino.github.io/atp-ai-bad-feeling/closing-keynote/presentation.html}"
 VOICE_DIR="$REPO_ROOT/tools/synthesize-keynote/voices"
 VOICE_BRIEF="$REPO_ROOT/tools/synthesize-keynote/voices.md"
-DEFAULT_VOICES="yoda,vader,solo,threepio"
+DEFAULT_VOICES="yoda,vader,threepio"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in

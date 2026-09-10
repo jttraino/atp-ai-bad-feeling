@@ -8,7 +8,7 @@ tools/synthesize-keynote/synthesize.sh    # on the night: rebuild from whatever 
 
 tools/synthesize-keynote/synthesize.sh --no-hedge          # one model, half the tokens
 tools/synthesize-keynote/synthesize.sh --voices            # add the character voices
-tools/synthesize-keynote/synthesize.sh --voices=yoda,solo  # just these two
+tools/synthesize-keynote/synthesize.sh --voices=yoda,vader # just these two
 tools/synthesize-keynote/synthesize.sh --help
 ```
 
@@ -84,8 +84,8 @@ The `claude` CLI, logged in. `pandoc` for `.docx` transcripts. Python 3 for the 
 A live toggle during the keynote: same findings, same numbers, same slide, different narrator. Press **1** to **5**, or **V** to cycle. The screen you are on does not change, so you can switch mid-sentence and keep your place.
 
 ```bash
-tools/synthesize-keynote/synthesize.sh --voices             # yoda,vader,solo,threepio
-tools/synthesize-keynote/synthesize.sh --voices=yoda,solo
+tools/synthesize-keynote/synthesize.sh --voices             # yoda,vader,threepio
+tools/synthesize-keynote/synthesize.sh --voices=yoda,vader
 ```
 
 Voices are defined one per file in [`voices/`](voices/), so adding one is writing a paragraph of direction. The shared rules live in [`voices.md`](voices.md).
